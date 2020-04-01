@@ -237,10 +237,9 @@ public class SignupActivity extends AppCompatActivity {
                                 sp.setuserid((String) jsonObject.get("uid"));
                                 sp.setpassword(txtPassword.getText().toString());
                                 ShowDialog("Signup", "your account successfully created!!!");
-                                DateFormat df = new SimpleDateFormat("dd-M-yy HH"); // Format time
+                                DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss"); // Format time
                                 String currentTime = df.format(Calendar.getInstance().getTime());
                                 SharedPreferenceManager.getInstance(SignupActivity.this).storeStringInSharedPreferences(Constant.signupTime, currentTime);
-                                SharedPreferenceManager.getInstance(SignupActivity.this).storeIntInSharedPreferences(Constant.signupTime2, 0);
                                 utils.alertBox(SignupActivity.this, "Congratulation", "Signup Successfully, Kinldy contact your administrator", "OK", new setOnitemClickListner() {
                                     @Override
                                     public void onClick(DialogInterface view, int i) {

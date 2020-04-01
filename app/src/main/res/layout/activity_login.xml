@@ -23,7 +23,6 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
-        android:layout_marginTop="20dp"
         android:layout_below="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
@@ -118,6 +117,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_hide"
+                        android:clickable="true"
                         android:tint="@color/colorPrimary"></ImageView>
                 </LinearLayout>
 
@@ -160,7 +160,6 @@
                         android:layout_marginRight="80dp"
                         android:background="@drawable/bg_changes"
                         android:fontFamily="sans-serif-smallcaps"
-                        android:onClick="onClick"
                         android:singleLine="false"
                         android:text="Sign Up"
                         android:textColor="@color/colorGray" />

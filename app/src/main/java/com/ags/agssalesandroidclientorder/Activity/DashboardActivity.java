@@ -132,7 +132,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         sp = new SharedPreferenceHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Dashboard");
-        toolbar.setSubtitle(sp.getrole()+": "+sp.getusername());
+        toolbar.setSubtitle(sp.getrole() + ": " + sp.getusername());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
@@ -183,14 +183,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         total_Amount.setText(db.getTotalAmount());
         total_Products_Count.setText(String.valueOf(db.getProductCount()));
         total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
-        new FontImprima(this,total_Orders_Count);
-        new FontImprima(this,total_Amount);
-        new FontImprima(this,total_Products_Count);
-        new FontImprima(this,total_Customer_Count);
-        new FontImprima(this,total_Orders_Count);
-        new FontImprima(this,total_Amount);
-        new FontImprima(this,total_Products_Count);
-        new FontImprima(this,total_Customer_Count);
+        new FontImprima(this, total_Orders_Count);
+        new FontImprima(this, total_Amount);
+        new FontImprima(this, total_Products_Count);
+        new FontImprima(this, total_Customer_Count);
+        new FontImprima(this, total_Orders_Count);
+        new FontImprima(this, total_Amount);
+        new FontImprima(this, total_Products_Count);
+        new FontImprima(this, total_Customer_Count);
     }
 
     @Override
@@ -581,6 +581,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     view.dismiss();
                 }
             });
+            return;
         } catch (DocumentException e) {
             utils.alertBox(DashboardActivity.this, "Error", e.getMessage(), "OK", new setOnitemClickListner() {
                 @Override
@@ -588,6 +589,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     view.dismiss();
                 }
             });
+            return;
+        } catch (Exception e) {
+            utils.alertBox(DashboardActivity.this, "Error", "There is no data to save for export pdf file", "OK", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    view.dismiss();
+                }
+            });
+            return;
         } finally {
             utils.alertBox(DashboardActivity.this, "Export PDF", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
                         @Override
@@ -599,7 +609,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     }, new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
-                            openFile(file,filename);
+                            openFile(file, filename);
                             view.dismiss();
                         }
                     }
@@ -731,7 +741,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         alertDialog.show();
         final EditText pdf_name = promptsView.findViewById(R.id.pdf_name);
         location = promptsView.findViewById(R.id.location);
-        location.setText("Folder: "+Environment.getExternalStorageDirectory() + File.separator + "AGS");
+        location.setText("Folder: " + Environment.getExternalStorageDirectory() + File.separator + "AGS");
         Button pdf_name_btn = promptsView.findViewById(R.id.pdf_name_btn);
         pdf_name_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -747,7 +757,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Uri uri = FileProvider.getUriForFile(
                 this,
                 "com.ags.agssalesandroidclientorder.provider", //(use your app signature + ".provider" )
-                new File(file.getPath() + "/"+filename + ".pdf"));
+                new File(file.getPath() + "/" + filename + ".pdf"));
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND);
         share.setType("*/*");
@@ -758,11 +768,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         return share;
     }
 
-    public void openFile(File file,String filename) {
+    public void openFile(File file, String filename) {
         Uri uri = FileProvider.getUriForFile(
                 this,
                 "com.ags.agssalesandroidclientorder.provider", //(use your app signature + ".provider" )
-                new File(file.getPath() + "/"+filename + ".pdf"));
+                new File(file.getPath() + "/" + filename + ".pdf"));
         try {
             Intent intentUrl = new Intent(Intent.ACTION_VIEW);
             intentUrl.setDataAndType(uri, "application/pdf");

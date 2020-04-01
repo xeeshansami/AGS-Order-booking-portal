@@ -76,14 +76,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.ags.agssalesandroidclientorder.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     JSONArray jsonArrayForCustomers, jsonArrayForProducts, jsonArrayForSalesman;
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
@@ -131,43 +135,10 @@ public class LoginActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         setContentView(R.layout.activity_login);
         setDownloadLayout();
-        //Current
-        DateFormat df = new SimpleDateFormat("dd-M-yy HH"); // Format time
-        String currentTime = df.format(Calendar.getInstance().getTime());
-        String[] currentDateTime = dateTimeSplitter(currentTime);
-        Log.i("current_date", currentDateTime[0]);
-        Log.i("current_time", currentDateTime[1]);
-        String[] items = currentDateTime[0].split("-");
-//        System.out.println("meri dat" + items[0] + " " + items[1] + " " + items[2]);
+        signUpBtnCheck();
 
-
-        //PreviousTime
-    /*    if(SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime)!=null) {
-            String previousTime = SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime);
-            String[] previousDateTime = dateTimeSplitter(previousTime);
-            Log.i(" previous_date", previousDateTime[0]);
-            Log.i(" previous_time", previousDateTime[1]);
-            String[] previousItems = previousDateTime[0].split("-");
-//            System.out.println("meri dat" + previousItems[0] + " " + previousItems[1] + " " + previousItems[2]);
-            btnLogin2 = findViewById(R.id.btnLogin2);
-
-
-     *//*   if () {
-            btnLogin2.setEnabled(false);
-        } else {
-            btnLogin2.setEnabled(false);
-        }*//*
-        }*/
-
-        utils = new
-
-                Utils();
-
-        databse = FirebaseDatabase.getInstance().
-
-                getReference("ConsumerAppVersion");
-
-
+        utils = new Utils();
+        databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         getAppVersion();
         // Session manager
         session = new SessionManager(getApplicationContext());
@@ -208,6 +179,83 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void printDifference(Date startDate, Date endDate) {
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+
+        System.out.println("startDate : " + startDate);
+        System.out.println("endDate : " + endDate);
+        System.out.println("different : " + different);
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+        long elapsedSeconds = different / secondsInMilli;
+        System.out.printf("%d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+        if (elapsedDays > 0) {
+            btnLogin2.setEnabled(true);
+            btnLogin2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            if (elapsedHours < 24) {
+                btnLogin2.setTextColor(getResources().getColor(R.color.disableColor));
+                btnLogin2.setBackground(getResources().getDrawable(R.drawable.dashed_border_disabled));
+                btnLogin2.setEnabled(false);
+            } else {
+                btnLogin2.setEnabled(true);
+                btnLogin2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
+    }
+
+    public void date(String perviousDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+        try {
+            String currentTime = simpleDateFormat.format(Calendar.getInstance().getTime());
+            Date date1 = simpleDateFormat.parse(currentTime);
+            Date date2 = simpleDateFormat.parse(perviousDate);
+            printDifference(date1, date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void signUpBtnCheck() {
+        btnLogin2 = findViewById(R.id.btnLogin2);
+        if (!TextUtils.isEmpty(SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime)) &&
+                SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime) != null) {
+            String previousTime = SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime);
+            date(previousTime);
+        } else {
+            btnLogin2.setEnabled(true);
+            btnLogin2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
     public boolean validation() {
         String email = txtUsername.getText().toString().trim();
         String pwd = txtPassword.getText().toString().trim();
@@ -231,7 +279,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public String[] dateTimeSplitter(String time) {
         String[] dateTime = new String[2];
-        dateTime[0] = time.split("")[0]; // date
+        dateTime[0] = time.split(" ")[0]; // date
         dateTime[1] = time.split(" ")[1]; // time
         return dateTime;
     }
@@ -521,7 +569,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<JSONArray> jsonArrays) {
             super.onPostExecute(jsonArrays);
-            if (jsonArrayForCustomers!=null && jsonArrayForProducts!=null && jsonArrayForSalesman!=null) {
+            if (jsonArrays.size() != 0) {
                 jsonArrayForCustomers = jsonArrays.get(0);
                 jsonArrayForProducts = jsonArrays.get(1);
                 jsonArrayForSalesman = jsonArrays.get(2);
@@ -718,14 +766,11 @@ public class LoginActivity extends AppCompatActivity {
         return (x / y) * 100;
     }
 
+    @Override
     public void onClick(View v) {
 // TODO Auto-generated method stub
-/// Create Intent for SignUpActivity abd Start The Activity
-        if (isCheckUpdate) {
-            Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-            startActivity(intent);
-        } else {
-            getAppVersion();
+        if (v.getId() == R.id.btnLogin2) {
+
         }
     }
 };
