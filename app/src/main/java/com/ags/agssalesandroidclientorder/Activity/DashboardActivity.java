@@ -719,7 +719,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
         alertDialog = alertDialogBuilder.create();
-        alertDialog.setCancelable(false);
         alertDialog.show();
         final EditText pdf_name = promptsView.findViewById(R.id.pdf_name);
         location = promptsView.findViewById(R.id.location);

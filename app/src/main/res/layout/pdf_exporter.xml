@@ -5,8 +5,9 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:padding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:orientation="horizontal">
@@ -52,6 +53,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bottom"
             android:orientation="horizontal"
             android:weightSum="5">
 
@@ -61,7 +63,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:background="@drawable/bottom"
+                android:background="@null"
                 android:drawableLeft="@drawable/ic_file"
                 android:drawableTint="@color/colorPrimary"
                 android:hint="Type name"
