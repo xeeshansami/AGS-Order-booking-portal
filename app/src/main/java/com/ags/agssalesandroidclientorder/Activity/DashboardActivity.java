@@ -13,8 +13,11 @@ import android.app.ProgressDialog;
 import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
 
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -39,7 +42,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.ags.agssalesandroidclientorder.utils.Constant;
 import com.ags.agssalesandroidclientorder.utils.FontImprima;
 import com.ags.agssalesandroidclientorder.utils.Utils;
 import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
@@ -51,9 +56,9 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.model.Dash;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -121,13 +126,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Log.i("beforePercentage", "" + (int) (x / y));
         return (x / y) * 100;
     }
-
+    TextView syncBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
         utils = new Utils();
         setDownloadLayout();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
         db = new DatabaseHandler(this);
         sp = new SharedPreferenceHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -229,7 +235,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-
                 sp.clearAll();
                 //db.clearAll();
                 // Session manager
@@ -465,6 +470,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             document.close();
         }*/
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
+
     public void createPdf(List<EntityOrderAndDetails> allProdsAndDetails, final String filename) {
         try {
             String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
@@ -611,16 +622,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void ChangeSyncButtonState() {
 
-        TextView txtBtn = (TextView) findViewById(R.id.syncNowBtn);
+        syncBtn = (TextView) findViewById(R.id.syncNowBtn);
 
         if (db.getOrderCount() == 0) {
-            txtBtn.setTextColor(Color.BLACK);
-            txtBtn.setBackgroundResource(R.color.disableColor);
-            txtBtn.setText("Nothing to sync");
+            syncBtn.setTextColor(Color.BLACK);
+            syncBtn.setBackgroundResource(R.color.disableColor);
+            syncBtn.setText("Nothing to sync");
         } else {
-            txtBtn.setTextColor(Color.WHITE);
-            txtBtn.setBackgroundResource(R.color.activeColor);
-            txtBtn.setText("Sync Now");
+            syncBtn.setTextColor(Color.WHITE);
+            syncBtn.setBackgroundResource(R.color.activeColor);
+            syncBtn.setText("Sync Now");
         }
 
     }
@@ -641,34 +652,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.orderPdf:
                 exportPdf();
+                drawer.closeDrawers();
                 break;
             case R.id.download:
-                if (utils.checkConnection(this)) {
-                    if (utils.isNetAvailable(this)) {
-                        StartDownloading();
-                    } else {
-                        utils.alertBox(this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                            }
-                        });
-                    }
-                } else {
-                    utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                            view.dismiss();
-                        }
-                    }, new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            finish();
-                            view.dismiss();
-                        }
-                    });
-                }
+                downloadMasterData();
                 drawer.closeDrawers();
                 break;
             case R.id.orderForm:
@@ -683,10 +670,116 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 logout();
                 drawer.closeDrawers();
                 break;
+            case R.id.clearMaster:
+                deleteMasterData();
+                drawer.closeDrawers();
+                break;
+            case R.id.clearOrders:
+                deleteOrders();
+                drawer.closeDrawers();
+                break;
             default:
                 break;
         }
         return true;
+    }
+
+    public void downloadMasterData() {
+        if (utils.checkConnection(this)) {
+            if (utils.isNetAvailable(this)) {
+                utils.alertBox(this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        StartDownloading();
+                        view.dismiss();
+                    }
+                });
+            } else {
+                utils.alertBox(this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                    }
+                });
+            }
+        } else {
+            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    view.dismiss();
+                }
+            }, new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                    view.dismiss();
+                }
+            });
+        }
+    }
+
+    public void deleteOrders() {
+        utils.alertBox(this, "Alert", "Are you sure delete all orders", "Yes", "No", new setOnitemClickListner() {
+            @Override
+            public void onClick(DialogInterface view, int i) {
+                utils.showLoader(DashboardActivity.this);
+                if (db.delete(0)) {
+                    utils.hideLoader();
+                    utils.alertBox(DashboardActivity.this, "Congratulation!", "All orders have been deleted successfully", "Ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            Intent intent = new Intent(Constant.SYNC_MASTER_DATA);
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                            view.dismiss();
+                        }
+                    });
+                } else {
+                    utils.hideLoader();
+                    Snackbar.make(findViewById(android.R.id.content), "Something wend wrong, please try again later", 1000).show();
+                }
+                view.dismiss();
+            }
+        });
+    }
+
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (db.getOrderCount() == 0) {
+                syncBtn.setTextColor(Color.BLACK);
+                syncBtn.setBackgroundResource(R.color.disableColor);
+                syncBtn.setText("Nothing to sync");
+            } else {
+                syncBtn.setTextColor(Color.WHITE);
+                syncBtn.setBackgroundResource(R.color.activeColor);
+                syncBtn.setText("Sync Now");
+            }
+        }
+    };
+
+    public void deleteMasterData() {
+        utils.alertBox(this, "Alert", "Are you sure delete all master data", "Yes", "No", new setOnitemClickListner() {
+            @Override
+            public void onClick(DialogInterface view, int i) {
+                utils.showLoader(DashboardActivity.this);
+                if (db.delete(1)) {
+                    utils.hideLoader();
+                    utils.alertBox(DashboardActivity.this, "Congratulation!", "Master data have been deleted successfully", "Ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+
+                            view.dismiss();
+                        }
+                    });
+                } else {
+                    utils.hideLoader();
+                    Snackbar.make(findViewById(android.R.id.content), "Something wend wrong, please try again later", 1000).show();
+                }
+                view.dismiss();
+            }
+        });
     }
 
     public boolean isInternetAvailable() {

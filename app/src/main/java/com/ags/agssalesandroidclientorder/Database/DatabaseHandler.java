@@ -853,12 +853,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return orderAndDetailsList;
     }
 
-    public void deleteOrders() {
+    public boolean delete(int value) {
         SQLiteDatabase db = this.getReadableDatabase();
+        if (value == 0) {
+            String orderList = "delete from " + TABLE_ORDER_LIST;
+            String orderDetailList = "delete from " + TABLE_ORDER_LIST_DETAIL;
+            db.execSQL(orderList);
+            db.execSQL(orderDetailList);
+            return true;
+        } else if (value == 1) {
+            String customers = "delete from " + TABLE_CUSTOMER;
+            String products = "delete from " + TABLE_PRODUCT;
+            String salesman = "delete from " + TABLE_SALEMAN;
+            db.execSQL(customers);
+            db.execSQL(products);
+            db.execSQL(salesman);
+            return true;
+        } else {
+            return false;
+        }
 
-//        String sql = "delete from " + TABLE_ORDER_LIST + "; delete from " + TABLE_ORDER_LIST_DETAIL + ";";
 
-//        db.execSQL(sql);
     }
 
     public void deleteOrdersOlderThenSevenDays() {
