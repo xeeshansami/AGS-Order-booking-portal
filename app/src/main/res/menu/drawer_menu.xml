@@ -24,6 +24,10 @@
         android:icon="@drawable/ic_update_order_form"
         android:title="@string/update" />
     <item
+        android:id="@+id/clearOrders"
+        android:icon="@drawable/ic_update_order_form"
+        android:title="@string/update" />
+    <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_logout"
         android:title="@string/logout" />

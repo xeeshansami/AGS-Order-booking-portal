@@ -258,10 +258,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void LoadAllOrders(MenuItem menuItem) {
-
         Intent intent = new Intent(DashboardActivity.this, OrderListActivity.class);
         startActivity(intent);
-
     }
 
     public void UploadData(View v) {
@@ -591,12 +589,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             });
             return;
         } catch (Exception e) {
-            utils.alertBox(DashboardActivity.this, "Error", "There is no data to save for export pdf file", "OK", new setOnitemClickListner() {
-                @Override
-                public void onClick(DialogInterface view, int i) {
-                    view.dismiss();
-                }
-            });
             return;
         } finally {
             utils.alertBox(DashboardActivity.this, "Export PDF", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
@@ -747,7 +739,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onClick(View view) {
                 List<EntityOrderAndDetails> allProdsAndDetails = db.getOrderAndDetails(sp.getbranch());
-                createPdf(allProdsAndDetails, pdf_name.getText().toString().trim());
+                if (allProdsAndDetails.size() > 0 && allProdsAndDetails != null) {
+                    createPdf(allProdsAndDetails, pdf_name.getText().toString().trim());
+                } else {
+                    utils.alertBox(DashboardActivity.this, "Alert", "There is no data to save for export pdf file", "OK", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
                 alertDialog.dismiss();
             }
         });
