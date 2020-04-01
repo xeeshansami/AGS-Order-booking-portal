@@ -19,7 +19,7 @@ import com.ags.agssalesandroidclientorder.R;
  */
 public class SplashScreen extends AppCompatActivity {
     //Splash time 1sec
-    private static int SPLASH_TIME_OUT = 1000;
+    private static int SPLASH_TIME_OUT = 2000;
     TextView splashTV, splashTV2;
     FirebaseAuth firebaseAuth;
     FirebaseAuth.AuthStateListener fbAuthListener;

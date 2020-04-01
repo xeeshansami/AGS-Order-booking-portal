@@ -40,6 +40,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.ags.agssalesandroidclientorder.utils.FontImprima;
 import com.ags.agssalesandroidclientorder.utils.Utils;
 import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
@@ -127,9 +128,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         setContentView(R.layout.dashboard);
         utils = new Utils();
         setDownloadLayout();
+        db = new DatabaseHandler(this);
+        sp = new SharedPreferenceHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Dashboard");
+        toolbar.setSubtitle(sp.getrole()+": "+sp.getusername());
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Dashboard");
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -141,8 +147,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         View hView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
 
-        db = new DatabaseHandler(this);
-        sp = new SharedPreferenceHandler(this);
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
 
@@ -170,18 +175,22 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void populateDashboard() {
-
         total_Orders_Count = (TextView) findViewById(R.id.total_Orders_Count);
         total_Amount = (TextView) findViewById(R.id.total_Amount);
-
         total_Products_Count = (TextView) findViewById(R.id.total_Products_Count);
         total_Customer_Count = (TextView) findViewById(R.id.total_Customer_Count);
-
         total_Orders_Count.setText(String.valueOf(db.getOrderCount()));
         total_Amount.setText(db.getTotalAmount());
-
         total_Products_Count.setText(String.valueOf(db.getProductCount()));
         total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
+        new FontImprima(this,total_Orders_Count);
+        new FontImprima(this,total_Amount);
+        new FontImprima(this,total_Products_Count);
+        new FontImprima(this,total_Customer_Count);
+        new FontImprima(this,total_Orders_Count);
+        new FontImprima(this,total_Amount);
+        new FontImprima(this,total_Products_Count);
+        new FontImprima(this,total_Customer_Count);
     }
 
     @Override

@@ -22,7 +22,7 @@
     <string name="up">update</string>
     <string name="exit">exit</string>
     <string name="add">Add Order</string>
-    <string name="download">Download products</string>
+    <string name="download">Download master data</string>
     <string name="update">Update orders</string>
     <string name="logout">Logout</string>
     <string name="orderForm">Order form</string>

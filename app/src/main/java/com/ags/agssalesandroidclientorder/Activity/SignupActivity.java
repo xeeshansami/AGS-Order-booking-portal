@@ -112,11 +112,13 @@ public class SignupActivity extends AppCompatActivity {
                     hideImage1.setImageResource(R.drawable.ic_hide);
                     showHide = true;
                 }
+                new FontImprima(SignupActivity.this,txtRePassword);
             }
         });
         hideimage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (showHide2) {
                     txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     hideimage2.setImageResource(R.drawable.ic_show);
@@ -126,6 +128,7 @@ public class SignupActivity extends AppCompatActivity {
                     hideimage2.setImageResource(R.drawable.ic_hide);
                     showHide2 = true;
                 }
+                new FontImprima(SignupActivity.this,txtPassword);
             }
         });
 
@@ -158,30 +161,49 @@ public class SignupActivity extends AppCompatActivity {
         String rePwd = txtRePassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(fullname)) {
+            txtFullName.setFocusable(true);
+            txtFullName.setError("Full name should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Full name should not be empty", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(email)) {
+            txtEmail.setFocusable(true);
+            txtEmail.setError("Email should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Email should not be empty", 1000).show();
             return false;
         } else if (!email.matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+")) {
+            txtEmail.setFocusable(true);
+            txtEmail.setError("Please enter valid email address");
             Snackbar.make(findViewById(android.R.id.content), "Please enter valid email address", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(contact)) {
+            txtNumber.setFocusable(true);
+            txtNumber.setError("Contact should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Contact should not be empty", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(uid)) {
+            txtUserID.setFocusable(true);
+            txtUserID.setError("Username should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Username should not be empty", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(pwd)) {
+            txtPassword.setFocusable(true);
+            txtPassword.setError("Password should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Password should not be empty", 1000).show();
             return false;
         } else if (pwd.length() < 6) {
+            txtPassword.setFocusable(true);
+            txtPassword.setError("Password should be atleast 6 characters");
             Snackbar.make(findViewById(android.R.id.content), "Password should be atleast 6 characters", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(rePwd)) {
+            txtRePassword.setFocusable(true);
+            txtRePassword.setError("Confirm password should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Confirm password should not be empty", 1000).show();
             return false;
         } else if (!pwd.equals(rePwd)) {
+            txtPassword.setFocusable(true);
+            txtPassword.setError("Password & confirm password not matched");
+            txtRePassword.setText("");
             Snackbar.make(findViewById(android.R.id.content), "Password & confirm password not matched", 1000).show();
             return false;
         } else {

@@ -109,6 +109,7 @@
                     android:drawableLeft="@drawable/ic_contact"
                     android:drawableTint="@color/colorPrimary"
                     android:hint="Contact number"
+                    android:maxLength="14"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textColor="#575656"
@@ -155,6 +156,7 @@
                         android:textSize="15dp" />
 
                     <ImageView
+                        android:tint="@color/colorPrimary"
                         android:id="@+id/hideshow_img2"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -186,6 +188,7 @@
                         android:textSize="15dp" />
 
                     <ImageView
+                        android:tint="@color/colorPrimary"
                         android:id="@+id/hideshow_img"
                         android:layout_width="40dp"
                         android:layout_height="40dp"

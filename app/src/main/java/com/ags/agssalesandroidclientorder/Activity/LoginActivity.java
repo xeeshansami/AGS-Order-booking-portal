@@ -170,9 +170,7 @@ public class LoginActivity extends AppCompatActivity {
 
         getAppVersion();
         // Session manager
-        session = new
-
-                SessionManager(getApplicationContext());
+        session = new SessionManager(getApplicationContext());
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
@@ -205,6 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                     hideImage1.setImageResource(R.drawable.ic_hide);
                     showHide = true;
                 }
+                new FontImprima(LoginActivity.this, txtPassword);
             }
         });
     }
@@ -213,12 +212,16 @@ public class LoginActivity extends AppCompatActivity {
         String email = txtUsername.getText().toString().trim();
         String pwd = txtPassword.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
+            txtUsername.setError("Username should not be empty");
+            txtUsername.setFocusable(true);
             Snackbar.make(findViewById(android.R.id.content), "Username should not be empty", 1000).show();
             return false;
         } /*else if (!email.matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+")) {
             Snackbar.make(findViewById(android.R.id.content), "Please enter valid email address", 1000).show();
             return false;
         }*/ else if (TextUtils.isEmpty(pwd)) {
+            txtPassword.setError("Password should not be empty");
+            txtPassword.setFocusable(true);
             Snackbar.make(findViewById(android.R.id.content), "Password should not be empty", 1000).show();
             return false;
         } else {
@@ -518,11 +521,21 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<JSONArray> jsonArrays) {
             super.onPostExecute(jsonArrays);
-            jsonArrayForCustomers = jsonArrays.get(0);
-            jsonArrayForProducts = jsonArrays.get(1);
-            jsonArrayForSalesman = jsonArrays.get(2);
-            utils.hideLoader();
-            new Downloading().execute();
+            if (jsonArrayForCustomers!=null && jsonArrayForProducts!=null && jsonArrayForSalesman!=null) {
+                jsonArrayForCustomers = jsonArrays.get(0);
+                jsonArrayForProducts = jsonArrays.get(1);
+                jsonArrayForSalesman = jsonArrays.get(2);
+                utils.hideLoader();
+                new Downloading().execute();
+            } else {
+                utils.hideLoader();
+                // Create login session
+                session.setLogin(true);
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
         }
     }
 
@@ -669,7 +682,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             category_label.setText("Importing Salesmans....");
-                            progress_lbl.setText(i + "/" + salesman.length()+1);
+                            progress_lbl.setText(i + "/" + salesman.length() + 1);
                         }
                     });
                     JSONObject jObject = salesman.getJSONObject(i);
