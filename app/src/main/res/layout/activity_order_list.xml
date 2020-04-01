@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary">
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.10">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_btn_shape"
+                android:id="@+id/btnAllOrders"
+                android:text="All"
+                android:onClick="ShowAllOrdersList"
+                android:textColor="@color/colorPrimary"
+                android:singleLine="false"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_btn_shape"
+                android:id="@+id/btnAllPostedOrders"
+                android:text="Posted"
+                android:onClick="ShowPostedOrdersList"
+                android:textColor="@color/colorPrimary"
+                android:singleLine="false"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_btn_shape"
+                android:id="@+id/btnAllUnPostedOrders"
+                android:text="Un Posted"
+                android:onClick="ShowUnPostedOrdersList"
+                android:textColor="@color/colorPrimary"
+                android:singleLine="false"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/totalSelected"
+                android:text="Total Selected: 0"
+                android:layout_gravity="left"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_btn_shape"
+                android:id="@+id/btnMakeUnPostOrders"
+                android:text="Un Post"
+                android:onClick="UnPostelectedOrders"
+                android:textColor="@color/colorPrimary"
+                android:singleLine="false"
+                android:layout_gravity="right"
+                android:layout_weight="1"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_btn_shape"
+                android:id="@+id/btnDeleteOrders"
+                android:text="Delete"
+                android:onClick="DeleteSelectedOrders"
+                android:textColor="@color/colorPrimary"
+                android:singleLine="false"
+                android:layout_gravity="right"
+                android:layout_weight="1"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_btn_shape"
+                android:id="@+id/btnViewDetails"
+                android:text="View"
+                android:onClick="ViewDetailsOfOrder"
+                android:textColor="@color/colorPrimary"
+                android:singleLine="false"
+                android:layout_gravity="right"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lstOrders" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/resetOrder"
+        android:icon="@drawable/refresh"
+        app:showAsAction="ifRoom"
+        android:onClick="ResetOrder"
+        android:title="Reset Order">
+    </item>
+
+    <item
+        android:id="@+id/saveOrder"
+        android:icon="@drawable/save"
+        app:showAsAction="ifRoom"
+        android:onClick="SaveOrder"
+        android:title="Save Order">
+    </item>
+
+</menu>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20px">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product Name"
+                android:textColor="@color/colorPrimary" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/productName"
+                android:layout_gravity="center_horizontal"
+                android:textCursorDrawable="@null"
+                android:textColor="#575656"
+                android:singleLine="true"
+                android:textSize="15dp"
+                android:inputType="number"
+                android:focusable="true"
+                android:enabled="false"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quantity"
+                android:textColor="@color/colorPrimary" />
+
+            <EditText
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/productQty"
+                android:layout_gravity="center_horizontal"
+                android:textCursorDrawable="@null"
+                android:textColor="#575656"
+                android:singleLine="true"
+                android:textSize="15dp"
+                android:inputType="number"
+                android:focusable="true"/>
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20px"
+            android:layout_weight=".5">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bonus"
+                android:textColor="@color/colorPrimary" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/productBonus"
+                android:layout_gravity="center_horizontal"
+                android:textCursorDrawable="@null"
+                android:textColor="#575656"
+                android:singleLine="true"
+                android:textSize="15dp"
+                android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20px"
+                android:layout_weight=".5">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Discount"
+                    android:textColor="@color/colorPrimary" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/productDiscount"
+                    android:layout_gravity="center_horizontal"
+                    android:textCursorDrawable="@null"
+                    android:textColor="#575656"
+                    android:singleLine="true"
+                    android:textSize="15dp"
+                    android:inputType="number" />
+
+</LinearLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">AGS - Order Booking Portal</string>
+    <string name="title_activity_customer">CustomerActivity</string>
+    <string name="title_activity_product">ProductActivity</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_signup_acitivity">Sign Up</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="up_title">Update</string>
+    <string name="up_mes">Kindly update your application first from playstore</string>
+    <string name="up">update</string>
+    <string name="exit">exit</string>
+    <string name="add">Add Order</string>
+    <string name="download">Download products</string>
+    <string name="update">Update orders</string>
+    <string name="logout">Logout</string>
+    <string name="orderForm">Order form</string>
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drawer</string>
+    <string name="splashWelomeNote">Welcome</string>
+    <string name="splashWelomeNote2">AGS Mobile Order Booking</string>
+    <string name="something_went_wrong">Something went wrong, try again later</string>
+    <string name="notifications_admin_channel_name">admin</string>
+    <string name="notifications_admin_channel_description">admin_description</string>
+    <string name="channel_Id">channel_firebase_notification</string>
+    <string name="channel_name">channel_firebase_notificaiton_name</string>
+    <string name="channel_description">channel_firebase_notificaiton_description</string>
+    <string name="exportPDF">Export PDF</string>
+</resources>

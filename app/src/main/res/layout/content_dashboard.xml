@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_dashboard"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sync Now"
+                    android:id="@+id/syncNowBtn"
+                    android:background="#FFD10000"
+                    android:padding="10dp"
+                    android:textColor="#fff"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal"
+                    android:onClick="UploadData"/>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Order Summary"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Below is the summary which shows all created orders count and sync status."
+                                    android:textSize="10dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="20dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.40"
+                                    android:text="Total Orders"
+                                    android:background="@color/colorPrimary"
+                                    android:padding="10dp"
+                                    android:textColor="#fff" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/total_Orders_Count"
+                                    android:layout_weight=".60"
+                                    android:gravity="center_horizontal"
+                                    android:background="#ccc"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="20dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.40"
+                                    android:text="Total Amount"
+                                    android:background="@color/colorPrimary"
+                                    android:padding="10dp"
+                                    android:textColor="#fff" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/total_Amount"
+                                    android:layout_weight=".60"
+                                    android:background="#ccc"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp"
+                                    android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="20dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Configuration Data"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Below is the summary which shows configuration data summary."
+                                    android:textSize="10dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="20dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.40"
+                                    android:text="Total Products"
+                                    android:background="@color/colorPrimary"
+                                    android:padding="10dp"
+                                    android:textColor="#fff" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/total_Products_Count"
+                                    android:layout_weight=".60"
+                                    android:gravity="center_horizontal"
+                                    android:background="#ccc"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="20dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.40"
+                                    android:text="Total Customers"
+                                    android:background="@color/colorPrimary"
+                                    android:padding="10dp"
+                                    android:textColor="#fff" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/total_Customer_Count"
+                                    android:layout_weight=".60"
+                                    android:gravity="center_horizontal"
+                                    android:background="#ccc"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp" />
+
+                        </LinearLayout>
+
+                </LinearLayout>
+
+
+
+        </ScrollView>
+
+
+
+</LinearLayout>

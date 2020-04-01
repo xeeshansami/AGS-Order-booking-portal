@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add"
+        android:icon="@drawable/ic_add_order_form"
+        android:title="@string/add" />
+
+    <item
+        android:id="@+id/download"
+        android:icon="@drawable/ic_cloud_download"
+        android:title="@string/download" />
+    ...
+    <item
+        android:id="@+id/orderForm"
+        android:icon="@drawable/ic_order_form"
+        android:title="@string/orderForm" />
+    <item
+        android:id="@+id/orderPdf"
+        android:icon="@drawable/ic_pdf"
+        android:title="@string/exportPDF" />
+    <item
+        android:id="@+id/update"
+        android:icon="@drawable/ic_update_order_form"
+        android:title="@string/update" />
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/logout" />
+
+</menu>
