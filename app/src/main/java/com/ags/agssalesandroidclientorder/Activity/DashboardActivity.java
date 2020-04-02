@@ -461,10 +461,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 table.addCell(details.getOrderSalName());
                 table.addCell(details.getOrderCustCode());
                 table.addCell(details.getOrderCustName());
-                table.addCell(details.getOrderListDetailProdName());
-                table.addCell(details.getOrderListDetailProdBonus());
                 table.addCell(details.getOrderTownId());
                 table.addCell(details.getOrderListDetailProdCode());
+                table.addCell(details.getOrderListDetailProdName());
                 table.addCell(details.getOrderListDetailProdSize());
                 table.addCell(details.getOrderListDetailProdRate());
                 table.addCell(details.getOrderListDetailProdQty());
