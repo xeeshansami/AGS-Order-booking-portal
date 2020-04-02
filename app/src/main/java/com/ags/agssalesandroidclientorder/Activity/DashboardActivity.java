@@ -126,7 +126,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Log.i("beforePercentage", "" + (int) (x / y));
         return (x / y) * 100;
     }
-    TextView syncBtn;
+
+    TextView syncBtn, user_title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,10 +139,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         db = new DatabaseHandler(this);
         sp = new SharedPreferenceHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        user_title = findViewById(R.id.user_title);
         toolbar.setTitle("Dashboard");
-        toolbar.setSubtitle(sp.getrole() + ": " + sp.getusername());
+        user_title.setText(sp.getrole() + ": " + sp.getUser_Category());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -152,8 +154,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
-
-
+        TextView userid = hView.findViewById(R.id.header_userid);
+        TextView usertitle = hView.findViewById(R.id.header_username);
+        userid.setText("As Role : " + sp.getrole());
+        usertitle.setText("UserID: "+sp.getusername());
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
 
