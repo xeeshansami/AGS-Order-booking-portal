@@ -199,18 +199,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // region Customer
 
-    public void addAllCustomers(List<EntityCustomer> allCustomers) {
+    public void addAllCustomers(EntityCustomer allCustomers) {
 
         SQLiteDatabase db = this.getWritableDatabase();
+/*
+        db.execSQL("delete from " + TABLE_CUSTOMER);*/
 
-        db.execSQL("delete from " + TABLE_CUSTOMER);
+//        for (EntityCustomer customer : allCustomers) {
 
-        for (EntityCustomer customer : allCustomers) {
+        String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" + allCustomers.getCustomerBranch() + "');";
+        db.execSQL(sql);
 
-            String sql = "insert into " + TABLE_CUSTOMER + " values (" + customer.getCustomerId() + ", '" + customer.getCustomerName() + "','" + customer.getCustomerBranch() + "');";
-            db.execSQL(sql);
-
-        }
+//        }
 
     }
 
@@ -307,18 +307,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // region Salesman
 
-    public void addAllSalesMan(List<EntitySalesman> allSalesMan) {
-
+    public void addAllSalesMan(EntitySalesman allSalesMan) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        db.execSQL("delete from " + TABLE_SALEMAN);
-
-        for (EntitySalesman salesman : allSalesMan) {
-
-            String sql = "insert into " + TABLE_SALEMAN + " values (" + salesman.getSalesman_Id() + ", '" + salesman.getSalesman_Name() + "');";
-            db.execSQL(sql);
-
-        }
+//        db.execSQL("delete from " + TABLE_SALEMAN);
+//        for (EntitySalesman salesman : allSalesMan) {
+        String sql = "insert into " + TABLE_SALEMAN + " values (" + allSalesMan.getSalesman_Id() + ", '" + allSalesMan.getSalesman_Name() + "');";
+        db.execSQL(sql);
+//        }
 
     }
 
@@ -386,17 +381,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // region Products
 
-    public void addAllProducts(List<EntityProduct> allProducts) {
+    public void deleteTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_PRODUCT);
+        db.execSQL("delete from " + TABLE_SALEMAN);
+        db.execSQL("delete from " + TABLE_CUSTOMER);
+    }
+
+    public void addAllProducts(EntityProduct product) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.execSQL("delete from " + TABLE_PRODUCT);
+//        db.execSQL("delete from " + TABLE_PRODUCT);
 
-        for (EntityProduct product : allProducts) {
+//        for (EntityProduct product : allProducts) {
 
-            String sql = "insert into " + TABLE_PRODUCT + " values (" + product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', '" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
-            db.execSQL(sql);
-        }
+        String sql = "insert into " + TABLE_PRODUCT + " values (" + product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', '" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
+        db.execSQL(sql);
+//        }
     }
 
     public EntityProduct getProduct(int id) {

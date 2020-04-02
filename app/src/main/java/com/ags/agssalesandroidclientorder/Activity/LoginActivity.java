@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -181,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void printDifference(Date startDate, Date endDate) {
         //milliseconds
-        long different = endDate.getTime() - startDate.getTime();
+        long different = startDate.getTime() - endDate.getTime();
 
         System.out.println("startDate : " + startDate);
         System.out.println("endDate : " + endDate);
@@ -243,6 +244,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (!TextUtils.isEmpty(SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime)) &&
                 SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime) != null) {
             String previousTime = SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime);
+            Log.i("previousTime", " = " + previousTime);
             date(previousTime);
         } else {
             btnLogin2.setEnabled(true);
@@ -461,7 +463,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 ChangeView();
                             } else {
                                 utils.hideLoader();
-                                Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Login Failed, Invalid username or password!", Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {
@@ -498,6 +500,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
         alertDialog = alertDialogBuilder.create();
+        Toolbar  toolbar=promptsView.findViewById(R.id.toolbar);
+        toolbar.setSubtitle("Master data");
+        toolbar.setTitle("Downloading...");
+        toolbar.setNavigationIcon(R.drawable.ic_download);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
         mainProgress = promptsView.findViewById(R.id.progress_bar1);
         subProgress = promptsView.findViewById(R.id.progress_bar2);
         category_label = promptsView.findViewById(R.id.category_label);
@@ -507,7 +515,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         cancel_action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Snackbar.make(findViewById(android.R.id.content), "Importing cancelled", 1500).show();
+                utils.hideLoader();
                 alertDialog.dismiss();
+                // Create login session
+                session.setLogin(true);
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -680,69 +695,75 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected String doInBackground(Void... params) {
             try {
-                final JSONArray customers = jsonArrayForCustomers;
-                List<EntityCustomer> allCustomers = new ArrayList<EntityCustomer>();
-                for (i = 0; i < customers.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
-                    publishProgress((int) percent);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Customers....");
-                            progress_lbl.setText(i + "/" + customers.length());
-                        }
-                    });
-                    JSONObject jObject = customers.getJSONObject(i);
-                    EntityCustomer customer = new EntityCustomer();
-                    customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
-                    customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
-                    customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
-                    allCustomers.add(customer);
-                }
-                final JSONArray products = jsonArrayForProducts;
-                List<EntityProduct> allProducts = new ArrayList<EntityProduct>();
-                for (i = 0; i < products.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(maxValue)));
-                    publishProgress((int) percent);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Products....");
-                            progress_lbl.setText(i + "/" + products.length());
-                        }
-                    });
-                    JSONObject jObject = products.getJSONObject(i);
-                    EntityProduct product = new EntityProduct();
-                    product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
-                    product.setProductName(jObject.get("prod_name").toString());
-                    product.setProductSize(jObject.get("prod_size").toString());
-                    product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
-                    product.setProductCompany(jObject.get("prod_company").toString());
-                    product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
-                    allProducts.add(product);
-                }
                 final JSONArray salesman = jsonArrayForSalesman;
-                List<EntitySalesman> allSalesMan = new ArrayList<EntitySalesman>();
-                for (i = 0; i < salesman.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
-                    publishProgress((int) percent);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Salesmans....");
-                            progress_lbl.setText(i + "/" + salesman.length() + 1);
-                        }
-                    });
-                    JSONObject jObject = salesman.getJSONObject(i);
-                    EntitySalesman sman = new EntitySalesman();
-                    sman.setSalesman_Id(Integer.parseInt(jObject.get("Salesmen_Code").toString()));
-                    sman.setSalesman_Name(jObject.get("Salesmen_Name").toString());
-                    allSalesMan.add(sman);
+                final JSONArray customers = jsonArrayForCustomers;
+                final JSONArray products = jsonArrayForProducts;
+                db.deleteTable();
+                try {
+                    //TODO: PRODUCTS
+                    for (i = 0; i < products.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(maxValue)));
+                        publishProgress((int) percent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Products....");
+                                progress_lbl.setText(i + "/" + products.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = products.getJSONObject(i);
+                        EntityProduct product = new EntityProduct();
+                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
+                        product.setProductName(jObject.get("prod_name").toString());
+                        product.setProductSize(jObject.get("prod_size").toString());
+                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProductCompany(jObject.get("prod_company").toString());
+                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
+                        db.addAllProducts(product);
+                    }
+                    //TODO: SALESMAN
+                    for (i = 0; i < salesman.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
+                        publishProgress((int) percent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Salesmans....");
+                                progress_lbl.setText(i + "/" + salesman.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = salesman.getJSONObject(i);
+                        EntitySalesman sman = new EntitySalesman();
+                        sman.setSalesman_Id(Integer.parseInt(jObject.get("Salesmen_Code").toString()));
+                        sman.setSalesman_Name(jObject.get("Salesmen_Name").toString());
+                        db.addAllSalesMan(sman);
+                    }
+                    //TODO: CUSTOMERS
+                    for (i = 0; i < customers.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
+                        publishProgress((int) percent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Customers....");
+                                progress_lbl.setText(i + "/" + customers.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = customers.getJSONObject(i);
+                        EntityCustomer customer = new EntityCustomer();
+                        customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
+                        customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
+                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        db.addAllCustomers(customer);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                db.addAllCustomers(allCustomers);
-                db.addAllProducts(allProducts);
-                db.addAllSalesMan(allSalesMan);
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -751,17 +772,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             subProgress.setProgress(100);
-            category_label.setText("Importing Completed");
-            utils.hideLoader();
-            // Create login session
-            session.setLogin(true);
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    category_label.setText("Please wait...");
+                }
+            }, 500);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    category_label.setText("Importing Completed");
+                }
+            }, 500);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    utils.hideLoader();
+                    alertDialog.dismiss();
+                    // Create login session
+                    session.setLogin(true);
+                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 2000);
         }
     }
 
-    public double div(Double x, Double y) {
+    public Double div(Double x, Double y) {
         Log.i("beforePercentage", "" + (int) (x / y));
         return (x / y) * 100;
     }
@@ -773,5 +811,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
     }
-};
+}
+
+;
 

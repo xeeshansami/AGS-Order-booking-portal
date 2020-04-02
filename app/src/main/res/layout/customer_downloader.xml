@@ -1,36 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="250dp"
+    android:background="#ffff"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:background="#ffff"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_cloud_download"
-            android:tint="@color/white"></ImageView>
-
-        <TextView
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_weight="4"
-            android:drawableTint="@color/white"
-            android:gravity="center_vertical"
-            android:text="Master Data Downloading..."
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:textStyle="bold"></TextView>
-
-
-    </LinearLayout>
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -38,44 +26,55 @@
         android:layout_margin="20dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/main_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Pleas wait..."
-            android:textColor="@color/colorPrimary"
-            android:textSize="15dp"
-            android:textStyle="bold" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
 
+            <TextView
+                android:id="@+id/main_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:text="Pleas wait..."
+                android:textColor="@color/colorPrimary"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
             <ProgressBar
+                android:layout_marginLeft="@dimen/unit_10"
+                android:layout_toRightOf="@+id/main_label"
                 android:id="@+id/progress_bar1"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:layout_marginRight="10dp"
+                android:foregroundGravity="left"
                 android:indeterminateBehavior="repeat"
                 android:indeterminateDuration="10"
                 android:indeterminateOnly="true"
                 android:maxHeight="0.5dip"
                 android:visibility="visible" />
 
+
             <TextView
+                android:id="@+id/progress_lbl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:gravity="center"
-                android:text="500/100%"
-                android:textColor="@color/colorPrimary"
-                android:visibility="gone" />
-        </LinearLayout>
+                android:text="0%"
+                android:textColor="@color/colorPrimary" />
+
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/category_label"
@@ -94,16 +93,6 @@
             android:layout_weight="5"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/progress_percentage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:gravity="center"
-                android:text="0%"
-                android:textColor="@color/colorPrimary"
-                android:visibility="gone" />
 
             <ProgressBar
                 android:id="@+id/progress_bar2"
@@ -117,7 +106,7 @@
                 android:scaleY="0.5" />
 
             <TextView
-                android:id="@+id/progress_lbl"
+                android:id="@+id/progress_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"

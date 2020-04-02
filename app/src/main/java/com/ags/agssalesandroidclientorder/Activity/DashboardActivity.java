@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -136,6 +137,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         utils = new Utils();
         setDownloadLayout();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES));
         db = new DatabaseHandler(this);
         sp = new SharedPreferenceHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -157,7 +160,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         TextView userid = hView.findViewById(R.id.header_userid);
         TextView usertitle = hView.findViewById(R.id.header_username);
         userid.setText("As Role : " + sp.getrole());
-        usertitle.setText("UserID: "+sp.getusername());
+        usertitle.setText("UserID: " + sp.getusername());
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
 
@@ -356,128 +359,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         ChangeSyncButtonState();
     }
 
-    /*    public void createPdf(List<EntityOrderAndDetails> allProdsAndDetails) throws FileNotFoundException, DocumentException {
-
-            String dir = Environment.getExternalStorageDirectory() + File.separator + "myLogs";
-            File folder = new File(dir);
-            folder.mkdirs();
-
-            File file = new File(dir, "LogHistory3.pdf");
-
-
-    //        Cursor c1 = database.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_LOG, null);
-            Document document = new Document();  // create the document
-            PdfWriter.getInstance(document, new FileOutputStream(file));
-            document.open();
-
-            Font head1Font = FontFactory.getFont(FontFactory.COURIER_BOLD, 23f);
-            Font head2Font = FontFactory.getFont(FontFactory.COURIER, 10f);
-            Font head3Font = FontFactory.getFont(FontFactory.COURIER_BOLD, 10f);
-
-            Paragraph p1 = new Paragraph();
-            Paragraph p2 = new Paragraph();
-            Paragraph p3 = new Paragraph();
-
-            p1.setAlignment(Element.ALIGN_CENTER);
-            p2.setAlignment(Element.ALIGN_CENTER);
-            p3.setAlignment(Element.ALIGN_CENTER);
-
-            p1.setFont(head1Font);
-            p2.setFont(head2Font);
-            p3.setFont(head3Font);
-
-            p1.add("A.G & Sons Sukkur\n");
-            p2.add("Branch of A.G & Sons, Blacksmith Street Off Shahi Bazar Sukkur. P# 071-5625355\n");
-            p3.add("Loading Report by MUZAFFAR SAFE wise All Customers from: 01/Mar/2020 To: 16/Mar/2020 \n\n");
-
-            document.add(p1);
-            document.add(p2);
-            document.add(p3);
-
-            PdfPTable table = new PdfPTable(29);
-            table.setWidthPercentage(100);
-            table.setHorizontalAlignment(1);
-
-
-            PdfPCell cellOne = new PdfPCell(new Phrase("Location1"));
-            PdfPCell cellTwo = new PdfPCell(new Phrase("location"));
-
-            cellOne.setBorder(Rectangle.BOX);
-            cellTwo.setBorder(Rectangle.BOX);
-            cellOne.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
-            cellTwo.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
-
-
-            table.addCell(cellOne);
-            table.addCell(cellTwo);
-            table.addCell("orderAddress");
-            table.addCell("orderBranch");
-            table.addCell("orderBranchSerial");
-            table.addCell("orderCreatedOn");
-            table.addCell("orderCustAddress");
-            table.addCell("orderCustCode");
-            table.addCell("orderCustName");
-            table.addCell("oderInvoiceNo");
-            table.addCell("orderListDate");
-            table.addCell("orderListDetailId");
-            table.addCell("orderListDetailProdAmount");
-            table.addCell("orderListDetailProdBonus");
-            table.addCell("orderListDetailProdCode");
-            table.addCell("orderListDetialProdDiscount");
-            table.addCell("orderListDetailsProdName");
-            table.addCell("orderListDetailProdQty");
-            table.addCell("orderListDetailProdRate");
-            table.addCell("orderListDetailProdSide");
-            table.addCell("orderListId");
-            table.addCell("orderListId_FK");
-            table.addCell("orderSalCode");
-            table.addCell("orderSalName");
-            table.addCell("orderTotalDiscount");
-            table.addCell("orderTotalGross");
-            table.addCell("orderTotalNet");
-            table.addCell("orderTotalRemarks");
-            table.addCell("orderTownId");
-
-            for (EntityOrderAndDetails details : allProdsAndDetails) {
-                table.addCell(details.getLocation1());
-                table.addCell(details.getLocation());
-                table.addCell(details.getOrderAddress());
-                table.addCell(details.getOrderBranch());
-                table.addCell(details.getOrderBranchSerial());
-                table.addCell(details.getOrderCreatedOn());
-                table.addCell(details.getOrderCustAddress());
-                table.addCell(details.getOrderCustCode());
-                table.addCell(details.getOrderCustName());
-                table.addCell(details.getOrderInvoiceNo());
-                table.addCell(details.getOrderListDate());
-                table.addCell(details.getOrderListDetailId());
-                table.addCell(details.getOrderListDetailProdAmount());
-                table.addCell(details.getOrderListDetailProdBonus());
-                table.addCell(details.getOrderListDetailProdCode());
-                table.addCell(details.getOrderListDetailProdDiscount());
-                table.addCell(details.getOrderListDetailProdName());
-                table.addCell(details.getOrderListDetailProdQty());
-                table.addCell(details.getOrderListDetailProdRate());
-                table.addCell(details.getOrderListDetailProdSize());
-                table.addCell(details.getOrderListId());
-                table.addCell(details.getOrderListId_FK());
-                table.addCell(details.getOrderSalCode());
-                table.addCell(details.getOrderSalName());
-                table.addCell(details.getOrderTotalDiscount());
-                table.addCell(details.getOrderTotalGross());
-                table.addCell(details.getOrderTotalNet());
-                table.addCell(details.getOrderTotalRemarks());
-                table.addCell(details.getOrderTownId());
-            }
-            document.add(table);
-            document.addCreationDate();
-            document.close();
-        }*/
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(broadcastReceiver);
+        if (broadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        }
     }
 
     public void createPdf(List<EntityOrderAndDetails> allProdsAndDetails, final String filename) {
@@ -733,7 +620,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     utils.alertBox(DashboardActivity.this, "Congratulation!", "All orders have been deleted successfully", "Ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
-                            Intent intent = new Intent(Constant.SYNC_MASTER_DATA);
+                            Intent intent = new Intent(Constant.SYNC_ORDERS_DATA);
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                             view.dismiss();
                         }
@@ -748,17 +635,30 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
 
+
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (db.getOrderCount() == 0) {
-                syncBtn.setTextColor(Color.BLACK);
-                syncBtn.setBackgroundResource(R.color.disableColor);
-                syncBtn.setText("Nothing to sync");
-            } else {
-                syncBtn.setTextColor(Color.WHITE);
-                syncBtn.setBackgroundResource(R.color.activeColor);
-                syncBtn.setText("Sync Now");
+            String action = intent.getAction();
+            Log.i("Receiver", "Broadcast received: " + action);
+            if (action.equals(Constant.SYNC_MASTER_DATA)) {
+                total_Products_Count.setText(String.valueOf(0));
+                total_Customer_Count.setText(String.valueOf(0));
+            } else if (action.equals(Constant.SYNC_ORDERS_DATA)) {
+                total_Orders_Count.setText(String.valueOf(0));
+                total_Amount.setText(String.valueOf(0.00+".Rs"));
+                if (db.getOrderCount() == 0) {
+                    syncBtn.setTextColor(Color.BLACK);
+                    syncBtn.setBackgroundResource(R.color.disableColor);
+                    syncBtn.setText("Nothing to sync");
+                } else {
+                    syncBtn.setTextColor(Color.WHITE);
+                    syncBtn.setBackgroundResource(R.color.activeColor);
+                    syncBtn.setText("Sync Now");
+                }
+            }else if(action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)){
+                total_Products_Count.setText(String.valueOf(db.getProductCount()));
+                total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
             }
         }
     };
@@ -773,7 +673,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     utils.alertBox(DashboardActivity.this, "Congratulation!", "Master data have been deleted successfully", "Ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
-
+                            Intent intent = new Intent(Constant.SYNC_MASTER_DATA);
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                             view.dismiss();
                         }
                     });
@@ -805,15 +706,22 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
         alertDialog = alertDialogBuilder.create();
+        Toolbar  toolbar=promptsView.findViewById(R.id.toolbar);
+        toolbar.setSubtitle("Master data");
+        toolbar.setTitle("Downloading...");
+        toolbar.setNavigationIcon(R.drawable.ic_download);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
         mainProgress = promptsView.findViewById(R.id.progress_bar1);
         subProgress = promptsView.findViewById(R.id.progress_bar2);
         category_label = promptsView.findViewById(R.id.category_label);
-        cancel_action = promptsView.findViewById(R.id.cancel_action);
         progress_lbl = promptsView.findViewById(R.id.progress_lbl);
+        cancel_action = promptsView.findViewById(R.id.cancel_action);
         progress_percentage = promptsView.findViewById(R.id.progress_percentage);
         cancel_action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Snackbar.make(findViewById(android.R.id.content), "Importing cancelled", 1500).show();
                 alertDialog.dismiss();
             }
         });
@@ -1016,69 +924,75 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         @Override
         protected String doInBackground(Void... params) {
             try {
-                final JSONArray customers = jsonArrayForCustomers;
-                List<EntityCustomer> allCustomers = new ArrayList<EntityCustomer>();
-                for (i = 0; i < customers.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
-                    publishProgress((int) percent);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Customers....");
-                            progress_lbl.setText(i + "/" + customers.length());
-                        }
-                    });
-                    JSONObject jObject = customers.getJSONObject(i);
-                    EntityCustomer customer = new EntityCustomer();
-                    customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
-                    customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
-                    customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
-                    allCustomers.add(customer);
-                }
-                final JSONArray products = jsonArrayForProducts;
-                List<EntityProduct> allProducts = new ArrayList<EntityProduct>();
-                for (i = 0; i < products.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(maxValue)));
-                    publishProgress((int) percent);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Products....");
-                            progress_lbl.setText(i + "/" + products.length());
-                        }
-                    });
-                    JSONObject jObject = products.getJSONObject(i);
-                    EntityProduct product = new EntityProduct();
-                    product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
-                    product.setProductName(jObject.get("prod_name").toString());
-                    product.setProductSize(jObject.get("prod_size").toString());
-                    product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
-                    product.setProductCompany(jObject.get("prod_company").toString());
-                    product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
-                    allProducts.add(product);
-                }
                 final JSONArray salesman = jsonArrayForSalesman;
-                List<EntitySalesman> allSalesMan = new ArrayList<EntitySalesman>();
-                for (i = 0; i < salesman.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
-                    publishProgress((int) percent);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Salesmans....");
-                            progress_lbl.setText(i + "/" + salesman.length() + 1);
-                        }
-                    });
-                    JSONObject jObject = salesman.getJSONObject(i);
-                    EntitySalesman sman = new EntitySalesman();
-                    sman.setSalesman_Id(Integer.parseInt(jObject.get("Salesmen_Code").toString()));
-                    sman.setSalesman_Name(jObject.get("Salesmen_Name").toString());
-                    allSalesMan.add(sman);
+                final JSONArray customers = jsonArrayForCustomers;
+                final JSONArray products = jsonArrayForProducts;
+                db.deleteTable();
+                try {
+                    //TODO: PRODUCTS
+                    for (i = 0; i < products.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(maxValue)));
+                        publishProgress((int) percent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Products....");
+                                progress_lbl.setText(i + "/" + products.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = products.getJSONObject(i);
+                        EntityProduct product = new EntityProduct();
+                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
+                        product.setProductName(jObject.get("prod_name").toString());
+                        product.setProductSize(jObject.get("prod_size").toString());
+                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProductCompany(jObject.get("prod_company").toString());
+                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
+                        db.addAllProducts(product);
+                    }
+                    //TODO: SALESMAN
+                    for (i = 0; i < salesman.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
+                        publishProgress((int) percent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Salesmans....");
+                                progress_lbl.setText(i + "/" + salesman.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = salesman.getJSONObject(i);
+                        EntitySalesman sman = new EntitySalesman();
+                        sman.setSalesman_Id(Integer.parseInt(jObject.get("Salesmen_Code").toString()));
+                        sman.setSalesman_Name(jObject.get("Salesmen_Name").toString());
+                        db.addAllSalesMan(sman);
+                    }
+                    //TODO: CUSTOMERS
+                    for (i = 0; i < customers.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
+                        publishProgress((int) percent);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Customers....");
+                                progress_lbl.setText(i + "/" + customers.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = customers.getJSONObject(i);
+                        EntityCustomer customer = new EntityCustomer();
+                        customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
+                        customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
+                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        db.addAllCustomers(customer);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                db.addAllCustomers(allCustomers);
-                db.addAllProducts(allProducts);
-                db.addAllSalesMan(allSalesMan);
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -1087,15 +1001,35 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             subProgress.setProgress(100);
-            category_label.setText("Importing Completed");
-            alertDialog.dismiss();
-            utils.alertBox(DashboardActivity.this, "", "Master data've download completed", "Done", new setOnitemClickListner() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
-                public void onClick(DialogInterface view, int i) {
-                    view.dismiss();
+                public void run() {
+                    category_label.setText("Please wait...");
                 }
-            });
+            }, 500);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    category_label.setText("Importing Completed");
+                }
+            }, 500);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    utils.hideLoader();
+                    alertDialog.dismiss();
+                    // Create login session
+                    alertDialog.dismiss();
+                    Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    utils.alertBox(DashboardActivity.this, "", "Master data've download completed", "Done", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
+            }, 2000);
         }
     }
-
 }
