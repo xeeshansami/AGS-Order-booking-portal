@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     double percent = 0.0;
     int responseCode;
     String responseString = "";
-    boolean isCheckUpdate = false;
+    boolean isNotUpdated = false;
     DatabaseReference databse;
     Utils utils;
     String version;
@@ -131,6 +131,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         getAppVersion();
+    }
+
+    public void init() {
         setDownloadLayout();
         signUpBtnCheck();
         utils = new Utils();
@@ -290,7 +293,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void onResume() {
         super.onResume();
-        db.deleteOrdersOlderThenSevenDays();
+        if (db != null) {
+            db.deleteOrdersOlderThenSevenDays();
+        }
     }
 
     private void checkForPermissions() {
@@ -298,7 +303,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onGranted() {
                 // do your task.
-                downloadMasterData();
+                try {
+                    utils.showLoader(LoginActivity.this);
+                    databse.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            try {
+                                String version = dataSnapshot.child("latestverion").getValue().toString();
+                       /* Map<String, String> map = (Map) dataSnapshot.getValue();
+                        version = map.get("latestverion");*/
+                                if (BuildConfig.VERSION_NAME.equals(version)) {
+                                    downloadMasterData();
+                                } else {
+                                    utils.hideLoader();
+                                    utils.update(LoginActivity.this);
+                                }
+                            } catch (Exception e) {
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
+                } catch (Exception e) {
+                }
+
             }
 
             @Override
@@ -332,13 +365,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
                 public void onConnectionSuccess() {
-                    if (validation()) {
                         DoLogin();
-                    }
                 }
 
                 @Override
                 public void onConnectionFail(String errorMsg) {
+                    utils.hideLoader();
                     utils.alertBox(LoginActivity.this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -348,6 +380,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             }).execute();
         } else {
+            utils.hideLoader();
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
@@ -400,29 +433,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                        /* Map<String, String> map = (Map) dataSnapshot.getValue();
                         version = map.get("latestverion");*/
                         if (BuildConfig.VERSION_NAME.equals(version)) {
-                            isCheckUpdate = true;
+                            init();
                         } else {
-                            isCheckUpdate = false;
-                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                            builder.setTitle(getString(R.string.up_title));
-                            builder.setMessage(getString(R.string.up_mes));
-                            builder.setCancelable(false);
-                            builder.setPositiveButton(getString(R.string.up), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=agnsons.agssalesandroidclient")));
-                                }
-                            });
-                            builder.setNegativeButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finishAffinity();
-                                }
-                            });
-                            builder.create().show();
+                            utils.update(LoginActivity.this);
                         }
                     } catch (Exception e) {
-
                     }
 
                 }
@@ -430,35 +445,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
-
                 }
 
             });
         } catch (Exception e) {
-//            Log.i()
         }
     }
 
 
-    public void update() {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Update");
-        alertDialog.setMessage("Please update your application from playstore");
-        alertDialog.setCancelable(false);
-        alertDialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
-                dialog.dismiss();
-            }
-        });
-        alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                finishAffinity();
-                dialog.dismiss();
-            }
-        });
-        alertDialog.show();
-    }
 
     public void ShowDialog(String title, String message) {
         progressDialog.setTitle(title);
@@ -470,7 +464,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.dismiss();
     }
 
-
     public void ShowDownloadDialog() {
         ShowDialog("Download In Progress", "Authentication Successful. Downloading configuration data ...");
     }
@@ -478,7 +471,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // endregion
     // region volley request methods
     public void DoLogin() {
-        utils.showLoader(this);
+
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = url_Login + "?uname=" + txtUsername.getText().toString().trim() + "&pwd=" + txtPassword.getText().toString().trim();
@@ -622,11 +615,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 jsonArrays.add(salesman(salesmanUrl));
                 return jsonArrays;
             } else {*/
-                List<JSONArray> jsonArrays = new ArrayList<>();
-                jsonArrays.add(customer(customersUrl));
-                jsonArrays.add(products(productsUrl));
-                jsonArrays.add(salesman(salesmanUrl));
-                return jsonArrays;
+            List<JSONArray> jsonArrays = new ArrayList<>();
+            jsonArrays.add(customer(customersUrl));
+            jsonArrays.add(products(productsUrl));
+            jsonArrays.add(salesman(salesmanUrl));
+            return jsonArrays;
 //            }
         }
 

@@ -1,5 +1,6 @@
 package com.ags.agssalesandroidclientorder.Activities;
 
+import com.ags.agssalesandroidclientorder.BuildConfig;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
 import com.ags.agssalesandroidclientorder.Models.EntityOrderAndDetails;
@@ -65,6 +66,11 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -134,12 +140,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     TextView syncBtn, user_title;
+    DatabaseReference databse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
         utils = new Utils();
+        databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         setDownloadLayout();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
@@ -284,13 +292,41 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
                 public void onConnectionSuccess() {
-                    utils.alertBox(DashboardActivity.this, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            uploadProductSyncData();
-                            view.dismiss();
-                        }
-                    });
+                    try {
+                        utils.showLoader(DashboardActivity.this);
+                        databse.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                try {
+                                    String version = dataSnapshot.child("latestverion").getValue().toString();
+                                    if (BuildConfig.VERSION_NAME.equals(version)) {
+                                        utils.alertBox(DashboardActivity.this, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
+                                            @Override
+                                            public void onClick(DialogInterface view, int i) {
+                                                utils.hideLoader();
+                                                uploadProductSyncData();
+                                                view.dismiss();
+                                            }
+                                        });
+                                    } else {
+                                        utils.hideLoader();
+                                        utils.update(DashboardActivity.this);
+                                    }
+                                } catch (Exception e) {
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+
+                        });
+                    } catch (Exception e) {
+                    }
+
+
                 }
 
                 @Override
@@ -636,13 +672,39 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
                 public void onConnectionSuccess() {
-                    utils.alertBox(DashboardActivity.this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            StartDownloading();
-                            view.dismiss();
-                        }
-                    });
+                    try {
+                        utils.showLoader(DashboardActivity.this);
+                        databse.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                try {
+                                    String version = dataSnapshot.child("latestverion").getValue().toString();
+                                    if (BuildConfig.VERSION_NAME.equals(version)) {
+                                        utils.alertBox(DashboardActivity.this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
+                                            @Override
+                                            public void onClick(DialogInterface view, int i) {
+                                                utils.hideLoader();
+                                                StartDownloading();
+                                                view.dismiss();
+                                            }
+                                        });
+                                    } else {
+                                        utils.hideLoader();
+                                        utils.update(DashboardActivity.this);
+                                    }
+                                } catch (Exception e) {
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+
+                        });
+                    } catch (Exception e) {
+                    }
                 }
 
                 @Override

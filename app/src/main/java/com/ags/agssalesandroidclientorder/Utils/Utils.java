@@ -1,12 +1,18 @@
 package com.ags.agssalesandroidclientorder.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.appcompat.app.AlertDialog;
+
+import com.ags.agssalesandroidclientorder.Activities.LoginActivity;
+import com.ags.agssalesandroidclientorder.R;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -96,7 +102,7 @@ public class Utils {
     }
 
 
-    public static class CheckNetworkConnection extends AsyncTask < Void, Void, Boolean > {
+    public static class CheckNetworkConnection extends AsyncTask<Void, Void, Boolean> {
         boolean isAvailable = false;
         private OnConnectionCallback onConnectionCallback;
         private Context context;
@@ -152,4 +158,23 @@ public class Utils {
         return false;
     }
 
+    public void update(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.up_title));
+        builder.setMessage(context.getString(R.string.up_mes));
+        builder.setCancelable(false);
+        builder.setPositiveButton(context.getString(R.string.up), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity) context).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=agnsons.agssalesandroidclient")));
+            }
+        });
+        builder.setNegativeButton(context.getString(R.string.exit), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity) context).finish();
+            }
+        });
+        builder.create().show();
+    }
 }
