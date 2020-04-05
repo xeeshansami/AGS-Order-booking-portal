@@ -319,7 +319,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     }
 
-    public void uploadProductSyncData(){
+    public void uploadProductSyncData() {
         progressDialog.setTitle("Sync in progress");
         progressDialog.setMessage("Please wait while we upload your data ...");
         progressDialog.show();
@@ -592,10 +592,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 downloadMasterData();
                 drawer.closeDrawers();
                 break;
-            case R.id.orderForm:
-                startActivity(new Intent(DashboardActivity.this, OrderFormActivity.class));
-                drawer.closeDrawers();
-                break;
             case R.id.update:
                 startActivity(new Intent(DashboardActivity.this, OrderListActivity.class));
                 drawer.closeDrawers();
@@ -610,6 +606,22 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.clearOrders:
                 deleteOrders();
+                drawer.closeDrawers();
+                break;
+            case R.id.updateProfile:
+                startActivity(new Intent(this, UpdateProfile.class));
+                drawer.closeDrawers();
+                break;
+            case R.id.sendFeedback:
+                Snackbar.make(findViewById(android.R.id.content), "Feature come soon", 1000).show();
+                drawer.closeDrawers();
+                break;
+            case R.id.productOffer:
+                Snackbar.make(findViewById(android.R.id.content), "Feature come soon", 1000).show();
+                drawer.closeDrawers();
+                break;
+            case R.id.orderStatistics:
+                Snackbar.make(findViewById(android.R.id.content), "Feature come soon", 1000).show();
                 drawer.closeDrawers();
                 break;
             default:
@@ -691,10 +703,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             if (action.equals(Constant.SYNC_MASTER_DATA)) {
                 total_Products_Count.setText(String.valueOf(0));
                 total_Customer_Count.setText(String.valueOf(0));
-            }
-            else if (action.equals(Constant.SYNC_ORDERS_DATA)) {
+            } else if (action.equals(Constant.SYNC_ORDERS_DATA)) {
                 total_Orders_Count.setText(String.valueOf(0));
-                total_Amount.setText(String.valueOf(0.00+".Rs"));
+                total_Amount.setText(String.valueOf(0.00 + ".Rs"));
                 if (db.getOrderCount() == 0) {
                     syncBtn.setTextColor(Color.BLACK);
                     syncBtn.setBackgroundResource(R.color.disableColor);
@@ -704,8 +715,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     syncBtn.setBackgroundResource(R.color.activeColor);
                     syncBtn.setText("Sync Now");
                 }
-            }
-            else if(action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)){
+            } else if (action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)) {
                 total_Products_Count.setText(String.valueOf(db.getProductCount()));
                 total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
             }
@@ -755,7 +765,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
         alertDialog = alertDialogBuilder.create();
-        Toolbar  toolbar=promptsView.findViewById(R.id.toolbar);
+        Toolbar toolbar = promptsView.findViewById(R.id.toolbar);
         toolbar.setSubtitle("Master data");
         toolbar.setTitle("Downloading...");
         toolbar.setNavigationIcon(R.drawable.ic_download);
