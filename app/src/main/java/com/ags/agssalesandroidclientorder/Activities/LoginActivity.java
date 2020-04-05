@@ -82,6 +82,7 @@ import java.util.List;
 import com.ags.agssalesandroidclientorder.R;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    boolean isSalesmansDonwloadOrNot = true, isCustomersDonwloadOrNot = true, isProductsDonwloadOrNot = true;
     JSONArray jsonArrayForCustomers, jsonArrayForProducts, jsonArrayForSalesman;
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
@@ -203,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             });
         } else {
             if (elapsedHours < 24) {
-                utils.alertBox(this, "Alert", "You request for sign up from this device already sent, please wait for the confirmation or contact Admin. Request Re submission from this device will enable after 24 hours." ,
+                utils.alertBox(this, "Alert", "You request for sign up from this device already sent, please wait for the confirmation or contact Admin. Request Re submission from this device will enable after 24 hours.",
                         "Ok", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
@@ -363,11 +364,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void StartDownloading() {
+    public void StartDownloading(String role) {
+        if (role.equalsIgnoreCase("Saleman")) {
+            isSalesmansDonwloadOrNot = false;
+        } else if (role.equalsIgnoreCase("Customer")) {
+            isCustomersDonwloadOrNot = false;
+        } else {
+            isProductsDonwloadOrNot = false;
+        }
         new LoadUrls().execute();
     }
 
-    public void ChangeView() {
+    public void ChangeView(String role) {
         if (prodsDownload == true && customersDownload == true && salesmanDownload == true) {
             utils.hideLoader();
             // Create login session
@@ -376,7 +384,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             startActivity(intent);
             finish();
         } else {
-            StartDownloading();
+            StartDownloading(role);
         }
     }
 
@@ -489,7 +497,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 sp.setrole(jsonObject.get("role").toString());
                                 sp.setbranch(jsonObject.get("branch").toString());
                                 sp.setUser_Category(jsonObject.get("User_Category").toString());
-                                ChangeView();
+                                ChangeView(jsonObject.get("role").toString());
                             } else {
                                 utils.hideLoader();
                                 Toast.makeText(LoginActivity.this, "Login Failed, Invalid username or password!", Toast.LENGTH_SHORT).show();
@@ -603,11 +611,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected List<JSONArray> doInBackground(String... strings) {
-            List<JSONArray> jsonArrays = new ArrayList<>();
-            jsonArrays.add(customer(customersUrl));
-            jsonArrays.add(products(productsUrl));
-            jsonArrays.add(salesman(salesmanUrl));
-            return jsonArrays;
+        /*    if (isSalesmansDonwloadOrNot) {
+                List<JSONArray> jsonArrays = new ArrayList<>();
+                jsonArrays.add(customer(customersUrl));
+                jsonArrays.add(products(productsUrl));
+                return jsonArrays;
+            } else if (isCustomersDonwloadOrNot) {
+                List<JSONArray> jsonArrays = new ArrayList<>();
+                jsonArrays.add(products(productsUrl));
+                jsonArrays.add(salesman(salesmanUrl));
+                return jsonArrays;
+            } else {*/
+                List<JSONArray> jsonArrays = new ArrayList<>();
+                jsonArrays.add(customer(customersUrl));
+                jsonArrays.add(products(productsUrl));
+                jsonArrays.add(salesman(salesmanUrl));
+                return jsonArrays;
+//            }
         }
 
         @Override

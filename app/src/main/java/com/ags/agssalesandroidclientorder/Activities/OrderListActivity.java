@@ -4,6 +4,7 @@ import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityOrder;
 import com.ags.agssalesandroidclientorder.Adapters.OrderListAdapter;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.Utils.Utils;
 import com.ags.agssalesandroidclientorder.Utils.myLogs;
 
 import android.content.DialogInterface;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ags.agssalesandroidclientorder.R;
+import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 
 public class OrderListActivity extends AppCompatActivity {
 
@@ -71,7 +73,7 @@ public class OrderListActivity extends AppCompatActivity {
             selectedItems = new ArrayList<Integer>();
             sp = new SharedPreferenceHandler(getApplicationContext());
         } catch (Exception e) {
-            myLogs.errorBox(this,e.getMessage());
+            myLogs.errorBox(this, e.getMessage());
         }
     }
 
@@ -156,33 +158,24 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     private void BindOrdersList() {
-
         listView = (ListView) findViewById(R.id.lstOrders);
         adapter = new OrderListAdapter(this, orderList);
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                EntityOrder entry = (EntityOrder) parent.getAdapter().getItem(position);
-
+                EntityOrder entry = orderList.get(position);
                 Integer orderId = Integer.parseInt(entry.getOrderId());
-
-                boolean isAlreadyAdded = selectedItems.contains(orderId);
-                if (isAlreadyAdded) {
-                    listView.getChildAt(position).setBackgroundColor(Color.TRANSPARENT);
+                if (selectedItems.contains(orderId)) {
+                    view.setBackgroundColor(Color.TRANSPARENT);
                     selectedItems.remove(orderId);
                 } else {
-                    listView.getChildAt(position).setBackgroundColor(Color.rgb(219, 250, 244));
+                    view.setBackgroundColor(Color.rgb(219, 250, 244));
                     selectedItems.add(orderId);
                 }
-
                 UpdateTotalCount();
-
             }
         });
-
         adapter.notifyDataSetChanged();
     }
 
@@ -295,7 +288,6 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     private void UpdateTotalCount() {
-
         TextView totalSelected = (TextView) findViewById(R.id.totalSelected);
         totalSelected.setText("Total Selected: " + selectedItems.size());
 

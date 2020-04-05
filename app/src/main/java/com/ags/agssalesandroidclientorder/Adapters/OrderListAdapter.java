@@ -13,9 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by Asad on 10/3/2016.
- */
+
 public class OrderListAdapter extends BaseAdapter {
 
     private Activity activity;
