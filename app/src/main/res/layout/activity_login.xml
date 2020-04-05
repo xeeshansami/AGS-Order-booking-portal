@@ -42,10 +42,11 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:layout_marginBottom="@dimen/unit_10"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo"></ImageView>
+                    android:src="@drawable/icon"></ImageView>
 
                 <TextView
                     android:layout_width="wrap_content"
