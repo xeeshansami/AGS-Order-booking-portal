@@ -277,7 +277,43 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         startActivity(intent);
     }
 
+
     public void UploadData(View v) {
+        if (utils.checkConnection(this)) {
+            if (utils.isPingAvailable("https://www.google.com/")) {
+                utils.alertBox(this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        uploadProductSyncData();
+                        view.dismiss();
+                    }
+                });
+            } else {
+                utils.alertBox(this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                    }
+                });
+            }
+        } else {
+            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    view.dismiss();
+                }
+            }, new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                    view.dismiss();
+                }
+            });
+        }
+    }
+
+    public void uploadProductSyncData(){
         progressDialog.setTitle("Sync in progress");
         progressDialog.setMessage("Please wait while we upload your data ...");
         progressDialog.show();
@@ -529,7 +565,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     }
 
-
     public PdfPCell headersCell(PdfPCell cell) {
         cell.setBorder(Rectangle.BOX);
         cell.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
@@ -636,8 +671,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         });
     }
 
-
-
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -646,7 +679,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             if (action.equals(Constant.SYNC_MASTER_DATA)) {
                 total_Products_Count.setText(String.valueOf(0));
                 total_Customer_Count.setText(String.valueOf(0));
-            } else if (action.equals(Constant.SYNC_ORDERS_DATA)) {
+            }
+            else if (action.equals(Constant.SYNC_ORDERS_DATA)) {
                 total_Orders_Count.setText(String.valueOf(0));
                 total_Amount.setText(String.valueOf(0.00+".Rs"));
                 if (db.getOrderCount() == 0) {
@@ -658,7 +692,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     syncBtn.setBackgroundResource(R.color.activeColor);
                     syncBtn.setText("Sync Now");
                 }
-            }else if(action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)){
+            }
+            else if(action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)){
                 total_Products_Count.setText(String.valueOf(db.getProductCount()));
                 total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
             }
