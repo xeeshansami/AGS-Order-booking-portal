@@ -21,6 +21,7 @@ import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorder.utils.Constant;
 import com.ags.agssalesandroidclientorder.utils.FontImprima;
+import com.ags.agssalesandroidclientorder.utils.OnConnectionCallback;
 import com.ags.agssalesandroidclientorder.utils.SharedPreferenceManager;
 import com.ags.agssalesandroidclientorder.utils.Utils;
 import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
@@ -143,19 +144,25 @@ public class SignupActivity extends AppCompatActivity {
 
     public void signupNetCheck() {
         if (utils.checkConnection(this)) {
-            if (utils.isConnectionSuccess()) {
-                if (validation()) {
-                    ShowRequestDialog();
-                    DoSignup();
-                }
-            } else {
-                utils.alertBox(this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        view.dismiss();
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    if (validation()) {
+                        ShowRequestDialog();
+                        DoSignup();
                     }
-                });
-            }
+                }
+
+                @Override
+                public void onConnectionFail(String errorMsg) {
+                    utils.alertBox(SignupActivity.this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
+            }).execute();
         } else {
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override

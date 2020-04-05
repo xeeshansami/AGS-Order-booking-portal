@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 public class Utils {
+
     setOnitemClickListner listener;
     setOnitemClickListner listener2;
     setOnitemClickListner listener3;
@@ -102,34 +103,17 @@ public class Utils {
         }
     }
 
-    private static class InternetConnectionTest extends AsyncTask {
-        Context context;
 
-        InternetConnectionTest(Context context) {
-            this.context = context;
-        }
-
-
-        @Override
-        protected Boolean doInBackground(Object[] objects) {
-
-            Boolean success = false;
-            try {
-                URL url = new URL("https://google.com");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setConnectTimeout(10000);
-                connection.connect();
-                success = connection.getResponseCode() == 200;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                return success;
-            }
-        }
-    }
-    static boolean checkNet=false;
-    public class isConnectionCheck extends AsyncTask<Void, Void, Boolean> {
+    public static class CheckNetworkConnection extends AsyncTask < Void, Void, Boolean > {
         boolean isAvailable = false;
+        private OnConnectionCallback onConnectionCallback;
+        private Context context;
+
+        public CheckNetworkConnection(Context con, OnConnectionCallback onConnectionCallback) {
+            super();
+            this.onConnectionCallback = onConnectionCallback;
+            this.context = con;
+        }
 
         @Override
         protected Boolean doInBackground(Void... strings) {
@@ -152,27 +136,14 @@ public class Utils {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            checkNet=aBoolean;
+            if (aBoolean) {
+                onConnectionCallback.onConnectionSuccess();
+            } else {
+                onConnectionCallback.onConnectionFail("error");
+            }
         }
     }
 
-    public boolean isConnectionSuccess() {
-        isConnectionCheck b = new isConnectionCheck();
-        b.execute();
-        return checkNet;
-    }
-
-    public static boolean isNetAvailable(final Context context) {
-
-        boolean isInternetWorking = false;
-        try {
-            isInternetWorking = (boolean) new InternetConnectionTest(context).execute().get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return isInternetWorking;
-        }
-    }
 
     public static boolean checkConnection(Context context) {
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -189,8 +160,4 @@ public class Utils {
         return false;
     }
 
-    public boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
 }

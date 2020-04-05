@@ -44,6 +44,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorder.utils.Constant;
 import com.ags.agssalesandroidclientorder.utils.FontImprima;
+import com.ags.agssalesandroidclientorder.utils.OnConnectionCallback;
 import com.ags.agssalesandroidclientorder.utils.SharedPreferenceManager;
 import com.ags.agssalesandroidclientorder.utils.Utils;
 import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
@@ -201,6 +202,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         long elapsedSeconds = different / secondsInMilli;
         System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
         if (elapsedDays > 0) {
+            SharedPreferenceManager.getInstance(LoginActivity.this).removeStringInSharedPreferences(Constant.signupTime, "remove");
             btnLogin2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -209,11 +211,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
         } else {
-            if (elapsedMinutes < 1) {
-                Snackbar.make(findViewById(android.R.id.content),
-                        "You request for Signup from this device already sent. Please wait for the confirmation or contact Admin. Request Re submission from this device will enable after 24 hours.",
-                        1500).show();
+            if (elapsedHours < 24) {
+                utils.alertBox(this, "Alert", "You request for sign up from this device already sent, please wait for the confirmation or contact Admin. Request Re submission from this device will enable after 24 hours." ,
+                        "Ok", new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                view.dismiss();
+                            }
+                        });
             } else {
+                SharedPreferenceManager.getInstance(LoginActivity.this).removeStringInSharedPreferences(Constant.signupTime, "remove");
                 btnLogin2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -239,21 +246,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void signUpBtnCheck() {
         btnLogin2 = findViewById(R.id.btnLogin2);
-        if (!TextUtils.isEmpty(SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime)) &&
-                SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime) != null) {
-            String previousTime = SharedPreferenceManager.getInstance(this).getStringFromSharedPreferences(Constant.signupTime);
-            Log.i("previousTime", " = " + previousTime);
-            date(previousTime);
-        } else {
-            SharedPreferenceManager.getInstance(this).removeStringInSharedPreferences(Constant.signupTime, "remove");
-            btnLogin2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                    startActivity(intent);
+        btnLogin2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(SharedPreferenceManager.getInstance(LoginActivity.this).getStringFromSharedPreferences(Constant.signupTime)) &&
+                        SharedPreferenceManager.getInstance(LoginActivity.this).getStringFromSharedPreferences(Constant.signupTime) != null) {
+                    String previousTime = SharedPreferenceManager.getInstance(LoginActivity.this).getStringFromSharedPreferences(Constant.signupTime);
+                    Log.i("previousTime", " = " + previousTime);
+                    date(previousTime);
+                } else {
+                    SharedPreferenceManager.getInstance(LoginActivity.this).removeStringInSharedPreferences(Constant.signupTime, "remove");
+                    btnLogin2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                            startActivity(intent);
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
     }
 
     public boolean validation() {
@@ -325,18 +337,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void downloadMasterData() {
         if (utils.checkConnection(this)) {
-            if (utils.isConnectionSuccess()) {
-                if (validation()) {
-                    DoLogin();
-                }
-            } else {
-                utils.alertBox(this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        view.dismiss();
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    if (validation()) {
+                        DoLogin();
                     }
-                });
-            }
+                }
+
+                @Override
+                public void onConnectionFail(String errorMsg) {
+                    utils.alertBox(LoginActivity.this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
+            }).execute();
         } else {
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override

@@ -50,6 +50,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.ags.agssalesandroidclientorder.utils.Constant;
 import com.ags.agssalesandroidclientorder.utils.FontImprima;
+import com.ags.agssalesandroidclientorder.utils.OnConnectionCallback;
 import com.ags.agssalesandroidclientorder.utils.Utils;
 import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
@@ -279,22 +280,28 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void UploadData(View v) {
         if (utils.checkConnection(this)) {
-            if (utils.isConnectionSuccess()) {
-                utils.alertBox(this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        uploadProductSyncData();
-                        view.dismiss();
-                    }
-                });
-            } else {
-                utils.alertBox(this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        view.dismiss();
-                    }
-                });
-            }
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    utils.alertBox(DashboardActivity.this, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            uploadProductSyncData();
+                            view.dismiss();
+                        }
+                    });
+                }
+
+                @Override
+                public void onConnectionFail(String errorMsg) {
+                    utils.alertBox(DashboardActivity.this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
+            }).execute();
         } else {
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
@@ -613,22 +620,28 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void downloadMasterData() {
         if (utils.checkConnection(this)) {
-            if (utils.isConnectionSuccess()) {
-                utils.alertBox(this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        StartDownloading();
-                        view.dismiss();
-                    }
-                });
-            } else {
-                utils.alertBox(this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        view.dismiss();
-                    }
-                });
-            }
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    utils.alertBox(DashboardActivity.this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            StartDownloading();
+                            view.dismiss();
+                        }
+                    });
+                }
+
+                @Override
+                public void onConnectionFail(String errorMsg) {
+                    utils.alertBox(DashboardActivity.this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
+            }).execute();
         } else {
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
