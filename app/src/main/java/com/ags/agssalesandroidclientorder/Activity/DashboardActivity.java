@@ -782,6 +782,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Intent intentUrl = new Intent(Intent.ACTION_VIEW);
             intentUrl.setDataAndType(uri, "application/pdf");
             intentUrl.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intentUrl.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intentUrl);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(DashboardActivity.this, "No PDF Viewer Installed", Toast.LENGTH_LONG).show();
