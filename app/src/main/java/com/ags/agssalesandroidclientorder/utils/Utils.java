@@ -100,46 +100,23 @@ public class Utils {
             mProgressDialog.cancel();
         }
     }
-
-    private static class InternetConnectionTest extends AsyncTask {
-        Context context;
-
-        InternetConnectionTest(Context context) {
-            this.context = context;
-        }
-
-
-        @Override
-        protected Boolean doInBackground(Object[] objects) {
-
-            Boolean success = false;
-            try {
-                URL url = new URL("https://google.com");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setConnectTimeout(10000);
-                connection.connect();
-                success = connection.getResponseCode() == 200;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                return success;
-            }
-        }
-    }
-
-    public static boolean isNetAvailable(final Context context) {
-
-        boolean isInternetWorking = false;
+    public static boolean isPingAvailable(String myUrl) {
+        boolean isAvailable = false;
         try {
-            isInternetWorking = (boolean) new InternetConnectionTest(context).execute().get();
+            URL url = new URL(myUrl);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            // 30 second time out.
+            httpURLConnection.setConnectTimeout(3000);
+            httpURLConnection.connect();
+            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                isAvailable = true;
+            }
         } catch (Exception e) {
+            isAvailable = false;
             e.printStackTrace();
         }
-        finally {
-            return isInternetWorking;
-        }
+        return isAvailable;
     }
-
     public static boolean checkConnection(Context context) {
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connMgr != null) {
@@ -153,10 +130,5 @@ public class Utils {
             }
         }
         return false;
-    }
-
-    public boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }

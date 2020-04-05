@@ -46,6 +46,7 @@ import com.ags.agssalesandroidclientorder.utils.Constant;
 import com.ags.agssalesandroidclientorder.utils.FontImprima;
 import com.ags.agssalesandroidclientorder.utils.SharedPreferenceManager;
 import com.ags.agssalesandroidclientorder.utils.Utils;
+import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -296,9 +297,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onGranted() {
                 // do your task.
-                if (validation()) {
-                    DoLogin();
-                }
+                downloadMasterData();
             }
 
             @Override
@@ -328,6 +327,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         } else {
             getAppVersion();
+        }
+    }
+
+       public void downloadMasterData() {
+        if (utils.checkConnection(this)) {
+            if (utils.isPingAvailable("https://www.google.com/")) {
+                if (validation()) {
+                    DoLogin();
+                }
+            } else {
+                utils.alertBox(this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                    }
+                });
+            }
+        } else {
+            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    view.dismiss();
+                }
+            }, new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                    view.dismiss();
+                }
+            });
         }
     }
 

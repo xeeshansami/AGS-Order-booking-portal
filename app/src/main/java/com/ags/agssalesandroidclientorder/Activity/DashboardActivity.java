@@ -579,7 +579,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void downloadMasterData() {
         if (utils.checkConnection(this)) {
-            if (utils.isNetAvailable(this)) {
+            if (utils.isPingAvailable("https://www.google.com/")) {
                 utils.alertBox(this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
                     @Override
                     public void onClick(DialogInterface view, int i) {
