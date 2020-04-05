@@ -24,11 +24,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -736,6 +739,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
         final EditText pdf_name = promptsView.findViewById(R.id.pdf_name);
+        new Handler().postDelayed(new Runnable() {
+
+            public void run() {
+                pdf_name.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+                pdf_name.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
+            }
+        }, 200);
+        pdf_name.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(pdf_name, InputMethodManager.SHOW_FORCED);
+        imm.showSoftInput(pdf_name, InputMethodManager.SHOW_IMPLICIT);
         location = promptsView.findViewById(R.id.location);
         location.setText("Folder: " + Environment.getExternalStorageDirectory() + File.separator + "AGS");
         Button pdf_name_btn = promptsView.findViewById(R.id.pdf_name_btn);
