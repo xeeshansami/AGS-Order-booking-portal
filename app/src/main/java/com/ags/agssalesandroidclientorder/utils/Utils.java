@@ -17,6 +17,7 @@ import com.ags.agssalesandroidclientorder.Activity.SessionManager;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class Utils {
     setOnitemClickListner listener;
@@ -100,23 +101,79 @@ public class Utils {
             mProgressDialog.cancel();
         }
     }
-    public static boolean isPingAvailable(String myUrl) {
-        boolean isAvailable = false;
-        try {
-            URL url = new URL(myUrl);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            // 30 second time out.
-            httpURLConnection.setConnectTimeout(3000);
-            httpURLConnection.connect();
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                isAvailable = true;
-            }
-        } catch (Exception e) {
-            isAvailable = false;
-            e.printStackTrace();
+
+    private static class InternetConnectionTest extends AsyncTask {
+        Context context;
+
+        InternetConnectionTest(Context context) {
+            this.context = context;
         }
-        return isAvailable;
+
+
+        @Override
+        protected Boolean doInBackground(Object[] objects) {
+
+            Boolean success = false;
+            try {
+                URL url = new URL("https://google.com");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(10000);
+                connection.connect();
+                success = connection.getResponseCode() == 200;
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                return success;
+            }
+        }
     }
+    static boolean checkNet=false;
+    public class isConnectionCheck extends AsyncTask<Void, Void, Boolean> {
+        boolean isAvailable = false;
+
+        @Override
+        protected Boolean doInBackground(Void... strings) {
+            try {
+                URL url = new URL("https://www.google.com/");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                // 30 second time out.
+                httpURLConnection.setConnectTimeout(30000);
+                httpURLConnection.connect();
+                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    isAvailable = true;
+                }
+            } catch (Exception e) {
+                isAvailable = false;
+                e.printStackTrace();
+            }
+            return isAvailable;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            checkNet=aBoolean;
+        }
+    }
+
+    public boolean isConnectionSuccess() {
+        isConnectionCheck b = new isConnectionCheck();
+        b.execute();
+        return checkNet;
+    }
+
+    public static boolean isNetAvailable(final Context context) {
+
+        boolean isInternetWorking = false;
+        try {
+            isInternetWorking = (boolean) new InternetConnectionTest(context).execute().get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return isInternetWorking;
+        }
+    }
+
     public static boolean checkConnection(Context context) {
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connMgr != null) {
@@ -130,5 +187,10 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }

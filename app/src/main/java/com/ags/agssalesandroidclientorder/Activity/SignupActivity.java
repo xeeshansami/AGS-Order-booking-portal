@@ -94,12 +94,12 @@ public class SignupActivity extends AppCompatActivity {
         txtNumber = (EditText) findViewById(R.id.txtNumber);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtRePassword = (EditText) findViewById(R.id.txtRePassword);
-        new FontImprima(this,txtFullName);
-        new FontImprima(this,txtEmail);
-        new FontImprima(this,txtUserID);
-        new FontImprima(this,txtNumber);
-        new FontImprima(this,txtPassword);
-        new FontImprima(this,txtRePassword);
+        new FontImprima(this, txtFullName);
+        new FontImprima(this, txtEmail);
+        new FontImprima(this, txtUserID);
+        new FontImprima(this, txtNumber);
+        new FontImprima(this, txtPassword);
+        new FontImprima(this, txtRePassword);
         hideImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,7 +112,7 @@ public class SignupActivity extends AppCompatActivity {
                     hideImage1.setImageResource(R.drawable.ic_hide);
                     showHide = true;
                 }
-                new FontImprima(SignupActivity.this,txtRePassword);
+                new FontImprima(SignupActivity.this, txtRePassword);
             }
         });
         hideimage2.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class SignupActivity extends AppCompatActivity {
                     hideimage2.setImageResource(R.drawable.ic_hide);
                     showHide2 = true;
                 }
-                new FontImprima(SignupActivity.this,txtPassword);
+                new FontImprima(SignupActivity.this, txtPassword);
             }
         });
 
@@ -136,8 +136,40 @@ public class SignupActivity extends AppCompatActivity {
 
     public void CreateAccount(View v) {
         if (validation()) {
-            ShowRequestDialog();
-            DoSignup();
+
+            signupNetCheck();
+        }
+    }
+
+    public void signupNetCheck() {
+        if (utils.checkConnection(this)) {
+            if (utils.isConnectionSuccess()) {
+                if (validation()) {
+                    ShowRequestDialog();
+                    DoSignup();
+                }
+            } else {
+                utils.alertBox(this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                    }
+                });
+            }
+        } else {
+            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    view.dismiss();
+                }
+            }, new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                    view.dismiss();
+                }
+            });
         }
     }
 

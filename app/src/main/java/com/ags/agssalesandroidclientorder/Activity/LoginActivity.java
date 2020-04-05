@@ -199,9 +199,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         long elapsedMinutes = different / minutesInMilli;
         different = different % minutesInMilli;
         long elapsedSeconds = different / secondsInMilli;
-        System.out.printf("%d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+        System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
         if (elapsedDays > 0) {
-            btnLogin2.setEnabled(true);
             btnLogin2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -210,12 +209,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
         } else {
-            if (elapsedHours < 24) {
-                btnLogin2.setTextColor(getResources().getColor(R.color.disableColor));
-                btnLogin2.setBackground(getResources().getDrawable(R.drawable.dashed_border_disabled));
-                btnLogin2.setEnabled(false);
+            if (elapsedMinutes < 1) {
+                Snackbar.make(findViewById(android.R.id.content),
+                        "You request for Signup from this device already sent. Please wait for the confirmation or contact Admin. Request Re submission from this device will enable after 24 hours.",
+                        1500).show();
             } else {
-                btnLogin2.setEnabled(true);
                 btnLogin2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -247,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.i("previousTime", " = " + previousTime);
             date(previousTime);
         } else {
-            btnLogin2.setEnabled(true);
+            SharedPreferenceManager.getInstance(this).removeStringInSharedPreferences(Constant.signupTime, "remove");
             btnLogin2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -327,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void downloadMasterData() {
         if (utils.checkConnection(this)) {
-            if (utils.isPingAvailable("https://www.google.com/")) {
+            if (utils.isConnectionSuccess()) {
                 if (validation()) {
                     DoLogin();
                 }
@@ -455,9 +453,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.dismiss();
     }
 
-    public void ShowLoginDownload() {
-        ShowDialog("Login", "Please wait while we are trying to authenticate you ...");
-    }
 
     public void ShowDownloadDialog() {
         ShowDialog("Download In Progress", "Authentication Successful. Downloading configuration data ...");
