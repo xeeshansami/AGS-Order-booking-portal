@@ -1,8 +1,9 @@
-package com.ags.agssalesandroidclientorder.classes;
+package com.ags.agssalesandroidclientorder.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ags.agssalesandroidclientorder.Models.Data;
 import com.google.gson.Gson;
 
 import java.util.List;

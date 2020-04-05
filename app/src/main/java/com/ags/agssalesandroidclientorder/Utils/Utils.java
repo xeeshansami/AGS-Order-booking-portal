@@ -1,23 +1,15 @@
-package com.ags.agssalesandroidclientorder.utils;
+package com.ags.agssalesandroidclientorder.Utils;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.telephony.TelephonyManager;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.ags.agssalesandroidclientorder.Activity.DashboardActivity;
-import com.ags.agssalesandroidclientorder.Activity.LoginActivity;
-import com.ags.agssalesandroidclientorder.Activity.SessionManager;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 public class Utils {
 

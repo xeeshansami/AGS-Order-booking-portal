@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.utils;
+package com.ags.agssalesandroidclientorder.Utils;
 
 import android.app.Activity;
 import android.content.Context;

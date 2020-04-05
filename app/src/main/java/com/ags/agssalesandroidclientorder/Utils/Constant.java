@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.utils;
+package com.ags.agssalesandroidclientorder.Utils;
 
 public class Constant {
    public static final String signupTime="signup_time";

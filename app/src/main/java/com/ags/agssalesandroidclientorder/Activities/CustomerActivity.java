@@ -1,11 +1,11 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
 
 import com.ags.agssalesandroidclientorder.R;
 import android.app.Activity;
-import com.ags.agssalesandroidclientorder.classes.CustomerListAdapter;
+import com.ags.agssalesandroidclientorder.Adapters.CustomerListAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -53,7 +53,7 @@ public class CustomerActivity extends AppCompatActivity {
         // Find the toolbar view inside the activity layout
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Sets the Toolbar to act as the ActionBar for this Activities window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
 

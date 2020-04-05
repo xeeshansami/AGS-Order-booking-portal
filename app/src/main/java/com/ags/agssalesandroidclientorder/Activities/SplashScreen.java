@@ -1,6 +1,6 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
-import com.ags.agssalesandroidclientorder.utils.*;
+import com.ags.agssalesandroidclientorder.Utils.*;
 
 import android.content.Intent;
 import android.os.Bundle;

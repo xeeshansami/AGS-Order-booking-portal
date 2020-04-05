@@ -15,8 +15,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.ags.agssalesandroidclientorder.Activity.DashboardActivity;
-import com.ags.agssalesandroidclientorder.Activity.SplashScreen;
+import com.ags.agssalesandroidclientorder.Activities.SplashScreen;
 import com.ags.agssalesandroidclientorder.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

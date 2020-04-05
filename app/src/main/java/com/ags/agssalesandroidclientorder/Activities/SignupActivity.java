@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,13 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
-import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
-import com.ags.agssalesandroidclientorder.utils.Constant;
-import com.ags.agssalesandroidclientorder.utils.FontImprima;
-import com.ags.agssalesandroidclientorder.utils.OnConnectionCallback;
-import com.ags.agssalesandroidclientorder.utils.SharedPreferenceManager;
-import com.ags.agssalesandroidclientorder.utils.Utils;
-import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.Utils.Constant;
+import com.ags.agssalesandroidclientorder.Utils.FontImprima;
+import com.ags.agssalesandroidclientorder.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceManager;
+import com.ags.agssalesandroidclientorder.Utils.Utils;
+import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,7 +41,6 @@ import com.google.android.material.snackbar.Snackbar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class SignupActivity extends AppCompatActivity {

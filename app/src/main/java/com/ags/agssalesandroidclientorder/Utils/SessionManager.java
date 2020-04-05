@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

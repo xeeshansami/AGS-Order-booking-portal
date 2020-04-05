@@ -1,17 +1,11 @@
-package com.ags.agssalesandroidclientorder.utils
+package com.ags.agssalesandroidclientorder.Utils
 
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.view.Gravity
-import android.widget.ImageView
-import android.widget.LinearLayout
 import com.ags.agssalesandroidclientorder.R
 
-
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.DrawableImageViewTarget
 //import com.tuyenmonkey.mkloader.MKLoader
 
 class TransparentProgressDialog(context: Context) : Dialog(context, R.style.Loader) {

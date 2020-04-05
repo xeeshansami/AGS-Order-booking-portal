@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.classes;
+package com.ags.agssalesandroidclientorder.Models;
 
 import java.util.List;
 

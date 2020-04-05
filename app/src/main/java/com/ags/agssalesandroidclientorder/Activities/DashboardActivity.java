@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
@@ -10,7 +10,8 @@ import com.ags.agssalesandroidclientorder.R;
 
 import android.app.ProgressDialog;
 
-import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.Utils.SessionManager;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -48,11 +49,11 @@ import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.ags.agssalesandroidclientorder.utils.Constant;
-import com.ags.agssalesandroidclientorder.utils.FontImprima;
-import com.ags.agssalesandroidclientorder.utils.OnConnectionCallback;
-import com.ags.agssalesandroidclientorder.utils.Utils;
-import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
+import com.ags.agssalesandroidclientorder.Utils.Constant;
+import com.ags.agssalesandroidclientorder.Utils.FontImprima;
+import com.ags.agssalesandroidclientorder.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorder.Utils.Utils;
+import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;

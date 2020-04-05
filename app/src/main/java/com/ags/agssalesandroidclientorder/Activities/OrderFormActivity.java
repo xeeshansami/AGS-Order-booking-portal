@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
@@ -13,10 +13,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 
 import com.ags.agssalesandroidclientorder.R;
-import com.ags.agssalesandroidclientorder.classes.ProductDetailsListAdapter;
-import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
-import com.ags.agssalesandroidclientorder.utils.Utils;
-import com.ags.agssalesandroidclientorder.utils.myLogs;
+import com.ags.agssalesandroidclientorder.Adapters.ProductDetailsListAdapter;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.Utils.Utils;
+import com.ags.agssalesandroidclientorder.Utils.myLogs;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -55,7 +55,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
-import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
+import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -179,7 +179,7 @@ public class OrderFormActivity extends AppCompatActivity {
             sp = new SharedPreferenceHandler(this);
             // Find the toolbar view inside the activity layout
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            // Sets the Toolbar to act as the ActionBar for this Activity window.
+            // Sets the Toolbar to act as the ActionBar for this Activities window.
             // Make sure the toolbar exists in the activity and is not null
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle("Order Form");

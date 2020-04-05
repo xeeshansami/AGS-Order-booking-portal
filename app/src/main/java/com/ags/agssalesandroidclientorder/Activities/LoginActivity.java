@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
@@ -9,10 +9,10 @@ import android.Manifest;
 
 import com.ags.agssalesandroidclientorder.BuildConfig;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 
-import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.Utils.SessionManager;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,16 +21,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,12 +38,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.ags.agssalesandroidclientorder.utils.Constant;
-import com.ags.agssalesandroidclientorder.utils.FontImprima;
-import com.ags.agssalesandroidclientorder.utils.OnConnectionCallback;
-import com.ags.agssalesandroidclientorder.utils.SharedPreferenceManager;
-import com.ags.agssalesandroidclientorder.utils.Utils;
-import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
+import com.ags.agssalesandroidclientorder.Utils.Constant;
+import com.ags.agssalesandroidclientorder.Utils.FontImprima;
+import com.ags.agssalesandroidclientorder.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceManager;
+import com.ags.agssalesandroidclientorder.Utils.Utils;
+import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -62,8 +58,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -78,15 +72,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import com.ags.agssalesandroidclientorder.R;
 

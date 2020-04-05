@@ -1,8 +1,8 @@
-package com.ags.agssalesandroidclientorder.Activity;
+package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
-import com.ags.agssalesandroidclientorder.classes.ProductDetailsListAdapter;
+import com.ags.agssalesandroidclientorder.Adapters.ProductDetailsListAdapter;
 
 import com.ags.agssalesandroidclientorder.R;
 import android.content.Intent;
@@ -30,7 +30,7 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Sets the Toolbar to act as the ActionBar for this Activities window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("View Order Details");

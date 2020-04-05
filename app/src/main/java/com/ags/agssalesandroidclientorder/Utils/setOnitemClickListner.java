@@ -1,7 +1,6 @@
-package com.ags.agssalesandroidclientorder.utils;
+package com.ags.agssalesandroidclientorder.Utils;
 
 import android.content.DialogInterface;
-import android.view.View;
 
 public interface setOnitemClickListner {
     public void onClick(DialogInterface view, int i);
