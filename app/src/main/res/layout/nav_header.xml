@@ -10,13 +10,14 @@
     <ImageView
         android:layout_marginTop="@dimen/unit_10"
         android:id="@+id/logo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/logo"></ImageView>
+        android:src="@drawable/icon"></ImageView>
 
 
     <TextView
+        android:layout_marginTop="@dimen/unit_10"
         android:id="@+id/header_userid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,5 +51,7 @@
         android:text="@string/app_name"
         android:textColor="@color/colorPrimary"
         android:textSize="15dp"
+        android:layout_marginTop="@dimen/unit_10"
+        android:layout_marginBottom="@dimen/unit_10"
         android:textStyle="bold" />
 </RelativeLayout>
