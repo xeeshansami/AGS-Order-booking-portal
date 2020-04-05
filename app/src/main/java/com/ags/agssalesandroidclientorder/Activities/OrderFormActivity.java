@@ -111,6 +111,7 @@ public class OrderFormActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         try {
             if (requestCode == 1) {
                 if (resultCode == Activity.RESULT_OK) {
@@ -181,15 +182,19 @@ public class OrderFormActivity extends AppCompatActivity {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             // Sets the Toolbar to act as the ActionBar for this Activities window.
             // Make sure the toolbar exists in the activity and is not null
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle("Order Form");
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+            toolbar.setSubtitle(sp.getrole()+": Timeline");
+            toolbar.setTitle("Order Form");
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+            toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
             dateSelected = Calendar.getInstance();
             datePicker = (TextView) findViewById(R.id.txtDatePicker);
-
             int mYear = dateSelected.get(Calendar.YEAR);
             int mMonth = dateSelected.get(Calendar.MONTH);
             int mDay = dateSelected.get(Calendar.DAY_OF_MONTH);

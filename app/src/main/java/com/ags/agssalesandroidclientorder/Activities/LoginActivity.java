@@ -365,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
                 public void onConnectionSuccess() {
-                        DoLogin();
+                    DoLogin();
                 }
 
                 @Override
@@ -451,7 +451,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception e) {
         }
     }
-
 
 
     public void ShowDialog(String title, String message) {
@@ -663,6 +662,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
+            failedDownload(e.getMessage(),true);
         } finally {
             return jsonArray;
         }
@@ -687,6 +687,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
+            failedDownload(e.getMessage(),true);
         } finally {
             return jsonArray;
         }
@@ -711,6 +712,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
+            failedDownload(e.getMessage(),true);
         } finally {
             return jsonArray;
         }
@@ -804,9 +806,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    failedDownload(e.getMessage(),true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                failedDownload(e.getMessage(),true);
             }
             return null;
         }
@@ -853,7 +857,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
     }
-}
 
-;
+    public void failedDownload(String errror, boolean isOccured) {
+        if (isOccured) {
+            utils.alertBox(this, "Download failed", "Something went wrong, please try again to login", "Again", "No", "later", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    utils.showLoader(LoginActivity.this);
+                    db.deleteTable();
+                    downloadMasterData();
+                }
+            }, new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                }
+            });
+        }
+    }
+}
 

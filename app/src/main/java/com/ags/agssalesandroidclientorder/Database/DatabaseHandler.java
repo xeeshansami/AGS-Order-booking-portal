@@ -186,7 +186,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void clearAll() {
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.execSQL("delete from " + TABLE_ORDER_LIST);
         db.execSQL("delete from " + TABLE_ORDER_LIST_DETAIL);
     }
