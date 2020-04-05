@@ -277,7 +277,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         startActivity(intent);
     }
 
-
     public void UploadData(View v) {
         if (utils.checkConnection(this)) {
             if (utils.isPingAvailable("https://www.google.com/")) {

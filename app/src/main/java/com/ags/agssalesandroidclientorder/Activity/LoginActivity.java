@@ -136,12 +136,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceHandler(this);
         setContentView(R.layout.activity_login);
-        setDownloadLayout();
-        signUpBtnCheck();
-
-        utils = new Utils();
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         getAppVersion();
+        setDownloadLayout();
+        signUpBtnCheck();
+        utils = new Utils();
         // Session manager
         session = new SessionManager(getApplicationContext());
         // Check if user is already logged in or not
@@ -311,26 +310,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void Login(View v) {
 
-        if (isCheckUpdate) {
-            if (validation()) {
-                if (sp.getusername() != null && sp.getusername().equals(txtUsername.getText().toString().trim()) && sp.getpassword() != null && sp.getpassword().equals(txtPassword.getText().toString().trim())) {
-                    HideDialog();
-                    // Create login session
-                    session.setLogin(true);
-                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // Makes volley request and get response from server. Set shared preference as well
-                    checkForPermissions();
-                }
+        if (validation()) {
+            if (sp.getusername() != null && sp.getusername().equals(txtUsername.getText().toString().trim()) && sp.getpassword() != null && sp.getpassword().equals(txtPassword.getText().toString().trim())) {
+                HideDialog();
+                // Create login session
+                session.setLogin(true);
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                // Makes volley request and get response from server. Set shared preference as well
+                checkForPermissions();
             }
-        } else {
-            getAppVersion();
         }
     }
 
-       public void downloadMasterData() {
+    public void downloadMasterData() {
         if (utils.checkConnection(this)) {
             if (utils.isPingAvailable("https://www.google.com/")) {
                 if (validation()) {
@@ -530,7 +525,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
         alertDialog = alertDialogBuilder.create();
-        Toolbar  toolbar=promptsView.findViewById(R.id.toolbar);
+        Toolbar toolbar = promptsView.findViewById(R.id.toolbar);
         toolbar.setSubtitle("Master data");
         toolbar.setTitle("Downloading...");
         toolbar.setNavigationIcon(R.drawable.ic_download);
