@@ -179,22 +179,23 @@ public class OrderFormActivity extends AppCompatActivity {
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
             // Find the toolbar view inside the activity layout
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            // Sets the Toolbar to act as the ActionBar for this Activities window.
-            // Make sure the toolbar exists in the activity and is not null
-            toolbar.setSubtitle(sp.getrole()+": Timeline");
-            toolbar.setTitle("Order Form");
-            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-            toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
-            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+            myToolbar.setTitle("Order Form");
+            myToolbar.setSubtitle(sp.getrole()+": Timeline");
+            myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+            myToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+            myToolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+            setSupportActionBar(myToolbar);
+            myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     onBackPressed();
                 }
             });
+
             dateSelected = Calendar.getInstance();
             datePicker = (TextView) findViewById(R.id.txtDatePicker);
+
             int mYear = dateSelected.get(Calendar.YEAR);
             int mMonth = dateSelected.get(Calendar.MONTH);
             int mDay = dateSelected.get(Calendar.DAY_OF_MONTH);
@@ -275,6 +276,22 @@ public class OrderFormActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.saveOrder:
+                SaveOrder(item);
+                break;
+            case R.id.resetOrder:
+                ResetOrder(item);
+                break;
+            case R.id.home:
+                onBackPressed();
+            default:
+                break;
+        }
+        return true;
+    }
 
     public void SaveOrder(MenuItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

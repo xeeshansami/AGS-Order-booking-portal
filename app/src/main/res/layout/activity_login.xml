@@ -83,7 +83,6 @@
                     android:drawableTint="@color/colorPrimary"
                     android:hint="Username"
                     android:singleLine="true"
-                    android:text="rite.haris"
                     android:textColor="#575656"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
