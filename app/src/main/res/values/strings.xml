@@ -23,7 +23,7 @@
     <string name="exit">exit</string>
     <string name="add">Add Order</string>
     <string name="download">Sync MasterData</string>
-    <string name="update">Update AllOrders</string>
+    <string name="update">List Of AllOrders</string>
     <string name="logout">Logout</string>
     <string name="orderForm">Order Form</string>
     <string name="navigation_drawer_open">Open drawer</string>
@@ -39,4 +39,8 @@
     <string name="exportPDF">Export PDF</string>
     <string name="clearMasterData">Clear MasterData</string>
     <string name="clearOrders">Clear AllOrders</string>
+    <string name="updateProfile">Update profile</string>
+    <string name="sendFeedback">Send Feedback</string>
+    <string name="productOffer">Products Offer</string>
+    <string name="orderStatistics">Order Statistics</string>
 </resources>
