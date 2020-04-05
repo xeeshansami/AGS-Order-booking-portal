@@ -15,6 +15,7 @@ import android.app.DatePickerDialog;
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.classes.ProductDetailsListAdapter;
 import com.ags.agssalesandroidclientorder.classes.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.utils.Utils;
 import com.ags.agssalesandroidclientorder.utils.myLogs;
 
 import android.content.Context;
@@ -54,6 +55,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
+import com.ags.agssalesandroidclientorder.utils.setOnitemClickListner;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -73,7 +75,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 
 
 public class OrderFormActivity extends AppCompatActivity {
@@ -151,7 +152,7 @@ public class OrderFormActivity extends AppCompatActivity {
             if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_CANCELED)
                 Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            myLogs.errorBox(this,"GPS enabling please restart the application");
+            myLogs.errorBox(this, "GPS enabling please restart the application");
         }
     }
 
@@ -164,6 +165,7 @@ public class OrderFormActivity extends AppCompatActivity {
         }
     }
 
+    Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +173,7 @@ public class OrderFormActivity extends AppCompatActivity {
         try {
             setContentView(R.layout.activity_order_form);
             mContext = this;
+            utils = new Utils();
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(OrderFormActivity.this);
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
@@ -219,7 +222,7 @@ public class OrderFormActivity extends AppCompatActivity {
             BindSalesManSpinner();
             BindCustomer();
         } catch (Exception e) {
-            myLogs.errorBox(this,e.getMessage());
+            myLogs.errorBox(this, e.getMessage());
         }
     }
 
@@ -242,8 +245,6 @@ public class OrderFormActivity extends AppCompatActivity {
 
         alertDialog.show();
     }
-
-
 
 
     protected void BindListViewForEdit() {
@@ -279,7 +280,6 @@ public class OrderFormActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 /*Save data in db*/
                 dialog.dismiss();
-
                 createLocationRequest();
                 settingsCheck();
                 if (ActivityCompat.checkSelfPermission(OrderFormActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -314,7 +314,7 @@ public class OrderFormActivity extends AppCompatActivity {
             locationRequest.setFastestInterval(5000);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         } catch (Exception e1) {
-            myLogs.errorBox(this,e1.getMessage());
+            myLogs.errorBox(this, e1.getMessage());
         }
     }
 
@@ -333,7 +333,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 try {
                     getCurrentLocation();
                 } catch (Exception e1) {
-                    myLogs.errorBox(OrderFormActivity.this,e1.getMessage());
+                    myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
                 }
             }
         });
@@ -355,11 +355,11 @@ public class OrderFormActivity extends AppCompatActivity {
                         } catch (IntentSender.SendIntentException sendEx) {
                             // Ignore the error.
                         } catch (Exception e1) {
-                            myLogs.errorBox(OrderFormActivity.this,e1.getMessage());
+                            myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
                         }
                     }
                 } catch (Exception e1) {
-                    myLogs.errorBox(OrderFormActivity.this,e1.getMessage());
+                    myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
                 }
             }
         });
@@ -380,7 +380,7 @@ public class OrderFormActivity extends AppCompatActivity {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
                                 currentLocation = location;
-                                Snackbar.make(findViewById(android.R.id.content),"andress="+location.getLatitude()+","+location.getLongitude(),5000).show();
+                                Snackbar.make(findViewById(android.R.id.content), "andress=" + location.getLatitude() + "," + location.getLongitude(), 5000).show();
                                 saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
                                 Log.d("TAG", "onSuccess:latitude " + location.getLatitude());
                                 Log.d("TAG", "onSuccess:longitude " + location.getLongitude());
@@ -391,7 +391,7 @@ public class OrderFormActivity extends AppCompatActivity {
                         }
                     });
         } catch (Exception e) {
-            myLogs.errorBox(this,e.getMessage());
+            myLogs.errorBox(this, e.getMessage());
         }
     }
 
@@ -411,14 +411,14 @@ public class OrderFormActivity extends AppCompatActivity {
                             Log.d("TAG", "onLocationResult: " + currentLocation.getLatitude());
                         }
                     } catch (Exception e1) {
-                        myLogs.errorBox(OrderFormActivity.this,e1.getMessage());
+                        myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
                     }
                 }
 
                 ;
             };
         } catch (Exception e) {
-            myLogs.errorBox(this,e.getMessage());
+            myLogs.errorBox(this, e.getMessage());
         }
     }
 
@@ -446,9 +446,7 @@ public class OrderFormActivity extends AppCompatActivity {
             order.setorderCreatedOn(DateFormat.getDateTimeInstance().format(new Date()));
             order.setAllProducts(productsList);
             db.CreateOrder(order);
-
             Toast.makeText(OrderFormActivity.this, "Order created Successfully", Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent(OrderFormActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
@@ -867,5 +865,19 @@ public class OrderFormActivity extends AppCompatActivity {
 
         return sum;
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (productsList.size() > 0) {
+            utils.alertBox(this, "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                }
+            });
+        } else {
+            finish();
+        }
     }
 }
