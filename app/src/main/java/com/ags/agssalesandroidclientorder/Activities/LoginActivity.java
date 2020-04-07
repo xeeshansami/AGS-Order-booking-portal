@@ -17,7 +17,6 @@ import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -120,23 +119,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ProgressDialog progressDialog;
 
     boolean prodsDownload = false, customersDownload = false, salesmanDownload = false;
-    Button btnLogin2;
+    Button btnSignup, btnLogin;
     ImageView hideImage1;
     boolean showHide = true;
+    Toolbar myToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceHandler(this);
         setContentView(R.layout.activity_login);
+        utils = new Utils();
+        Log.i("packageNameCheck", " = " + getApplicationContext().getPackageName());
+        myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        txtUsername = (EditText) findViewById(R.id.txtUserName);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
+        hideImage1 = findViewById(R.id.hideshow_img);
+        btnLogin = findViewById(R.id.btnLogin);
+        btnSignup = findViewById(R.id.btnLogin2);
+        btnLogin.setOnClickListener(this);
+        btnSignup.setOnClickListener(this);
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         getAppVersion();
     }
 
+
     public void init() {
         setDownloadLayout();
         signUpBtnCheck();
-        utils = new Utils();
+
         // Session manager
         session = new SessionManager(getApplicationContext());
         // Check if user is already logged in or not
@@ -147,18 +158,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
         }
         db = new DatabaseHandler(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setSubtitle("Sign in");
         myToolbar.setNavigationIcon(R.drawable.ic_login);
         myToolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
         myToolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
-        txtUsername = (EditText) findViewById(R.id.txtUserName);
-        txtPassword = (EditText) findViewById(R.id.txtPassword);
+
         new FontImprima(this, txtUsername);
         new FontImprima(this, txtPassword);
-        hideImage1 = findViewById(R.id.hideshow_img);
+
         hideImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
         if (elapsedDays > 0) {
             SharedPreferenceManager.getInstance(LoginActivity.this).removeStringInSharedPreferences(Constant.signupTime, "remove");
-            btnLogin2.setOnClickListener(new View.OnClickListener() {
+            btnSignup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
@@ -216,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         });
             } else {
                 SharedPreferenceManager.getInstance(LoginActivity.this).removeStringInSharedPreferences(Constant.signupTime, "remove");
-                btnLogin2.setOnClickListener(new View.OnClickListener() {
+                btnSignup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
@@ -240,8 +249,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void signUpBtnCheck() {
-        btnLogin2 = findViewById(R.id.btnLogin2);
-        btnLogin2.setOnClickListener(new View.OnClickListener() {
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(SharedPreferenceManager.getInstance(LoginActivity.this).getStringFromSharedPreferences(Constant.signupTime)) &&
@@ -251,7 +260,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     date(previousTime);
                 } else {
                     SharedPreferenceManager.getInstance(LoginActivity.this).removeStringInSharedPreferences(Constant.signupTime, "remove");
-                    btnLogin2.setOnClickListener(new View.OnClickListener() {
+                    btnSignup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
@@ -293,6 +302,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void onResume() {
         super.onResume();
+        getAppVersion();
         if (db != null) {
             db.deleteOrdersOlderThenSevenDays();
         }
@@ -330,6 +340,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     });
                 } catch (Exception e) {
+                    utils.myLogs(LoginActivity.this,e.getMessage(),true);
                 }
 
             }
@@ -343,7 +354,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void Login(View v) {
+    public void Login() {
 
         if (validation()) {
             if (sp.getusername() != null && sp.getusername().equals(txtUsername.getText().toString().trim()) && sp.getpassword() != null && sp.getpassword().equals(txtPassword.getText().toString().trim())) {
@@ -371,6 +382,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onConnectionFail(String errorMsg) {
                     utils.hideLoader();
+                    btnLogin.setEnabled(true);
+                    btnLogin.setClickable(true);
                     utils.alertBox(LoginActivity.this, "Internet Connections", "Poor connection, check your internet connection is working or not!", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -381,6 +394,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }).execute();
         } else {
             utils.hideLoader();
+            btnLogin.setEnabled(true);
+            btnLogin.setClickable(true);
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
@@ -470,7 +485,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // endregion
     // region volley request methods
     public void DoLogin() {
-
+        btnLogin.setEnabled(false);
+        btnLogin.setClickable(false);
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = url_Login + "?uname=" + txtUsername.getText().toString().trim() + "&pwd=" + txtPassword.getText().toString().trim();
@@ -492,10 +508,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 ChangeView(jsonObject.get("role").toString());
                             } else {
                                 utils.hideLoader();
+                                btnLogin.setEnabled(true);
+                                btnLogin.setClickable(true);
                                 Toast.makeText(LoginActivity.this, "Login Failed, Invalid username or password!", Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {
+                            btnLogin.setEnabled(true);
+                            btnLogin.setClickable(true);
                             utils.hideLoader();
                             e.printStackTrace();
                         }
@@ -507,6 +527,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onErrorResponse(VolleyError error) {
                 utils.hideLoader();
+                btnLogin.setEnabled(true);
+                btnLogin.setClickable(true);
                 Log.d("New Error", error.toString());
                 Toast.makeText(LoginActivity.this, "Some error occured in authentication. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
                 //Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
@@ -549,6 +571,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 alertDialog.dismiss();
                 // Create login session
                 session.setLogin(true);
+                btnLogin.setEnabled(true);
+                btnLogin.setClickable(true);
                 Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                 startActivity(intent);
                 finish();
@@ -662,7 +686,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-            failedDownload(e.getMessage(),true);
+            failedDownload(e.getMessage(), true);
         } finally {
             return jsonArray;
         }
@@ -687,7 +711,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-            failedDownload(e.getMessage(),true);
+            failedDownload(e.getMessage(), true);
         } finally {
             return jsonArray;
         }
@@ -712,7 +736,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-            failedDownload(e.getMessage(),true);
+            failedDownload(e.getMessage(), true);
         } finally {
             return jsonArray;
         }
@@ -806,11 +830,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    failedDownload(e.getMessage(),true);
+                    failedDownload(e.getMessage(), true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                failedDownload(e.getMessage(),true);
+                failedDownload(e.getMessage(), true);
             }
             return null;
         }
@@ -837,6 +861,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     alertDialog.dismiss();
                     // Create login session
                     session.setLogin(true);
+                    btnLogin.setEnabled(true);
+                    btnLogin.setClickable(true);
                     Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                     startActivity(intent);
                     finish();
@@ -853,8 +879,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 // TODO Auto-generated method stub
-        if (v.getId() == R.id.btnLogin2) {
-
+        if (v.getId() == R.id.btnLogin) {
+            Login();
         }
     }
 
@@ -870,6 +896,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }, new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
+                    btnLogin.setEnabled(true);
+                    btnLogin.setClickable(true);
                     finish();
                 }
             });

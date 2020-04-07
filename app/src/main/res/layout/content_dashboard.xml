@@ -34,7 +34,6 @@
             android:background="#FFD10000"
             android:fontFamily="sans-serif-smallcaps"
             android:gravity="center_horizontal"
-            android:onClick="UploadData"
             android:padding="10dp"
             android:text="Sync Now"
             android:textColor="#fff"

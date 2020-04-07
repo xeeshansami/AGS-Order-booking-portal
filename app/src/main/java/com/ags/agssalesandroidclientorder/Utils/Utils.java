@@ -8,6 +8,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -24,6 +27,28 @@ public class Utils {
     setOnitemClickListner listener3;
     public TransparentProgressDialog mProgressDialog;
 
+    public void myLogs(Context context, String message) {
+        errorBox(context, message);
+    }
+
+
+    public static void myLogs(Context context, String message, boolean isPrintLog) {
+        Log.i(context.getClass().getSimpleName(), message);
+    }
+
+    public static void errorBox(final Context context, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle("SOMETHING WENT WRONG");
+        alertDialog.setMessage(context.getClass().getSimpleName() + " class error \n" + message);
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity) context).finish();
+            }
+        });
+        alertDialog.show();
+    }
+
     public void alertBox(Context context, String title, String msg, String btn1, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -39,7 +64,6 @@ public class Utils {
         AlertDialog alert = builder.create();
         alert.show();
     }
-
     public void alertBox(Context context, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -54,13 +78,59 @@ public class Utils {
         });
         builder.setNegativeButton(btn2, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                hideLoader();
                 dialog.dismiss();
             }
         });
         AlertDialog alert = builder.create();
         alert.show();
     }
-
+    public void alertBox(Context context, final Button button, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener) {
+        listener = OnClickListener;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton(btn1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                listener.onClick(dialogInterface, i);
+            }
+        });
+        builder.setNegativeButton(btn2, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                hideLoader();
+                button.setClickable(true);
+                button.setEnabled(true);
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    public void alertBox(Context context, final TextView button, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener) {
+        listener = OnClickListener;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton(btn1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                listener.onClick(dialogInterface, i);
+            }
+        });
+        builder.setNegativeButton(btn2, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                hideLoader();
+                button.setClickable(true);
+                button.setEnabled(true);
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
     public void alertBox(Context context, String title, String msg, String btn1, String btn2, String btn3, setOnitemClickListner btn1ClickListner, setOnitemClickListner btn2ClickListner) {
         listener = btn1ClickListner;
         listener3 = btn2ClickListner;
@@ -88,7 +158,6 @@ public class Utils {
         AlertDialog alert = builder.create();
         alert.show();
     }
-
     public void showLoader(Context context) {
         mProgressDialog = new TransparentProgressDialog(context);
         mProgressDialog.setCancelable(false);
@@ -166,7 +235,7 @@ public class Utils {
         builder.setPositiveButton(context.getString(R.string.up), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((Activity) context).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=agnsons.agssalesandroidclient")));
+                ((Activity) context).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + context.getApplicationContext().getApplicationContext().getPackageName())));
             }
         });
         builder.setNegativeButton(context.getString(R.string.exit), new DialogInterface.OnClickListener() {

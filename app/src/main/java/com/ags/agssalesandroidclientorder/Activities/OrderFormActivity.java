@@ -89,7 +89,7 @@ public class OrderFormActivity extends AppCompatActivity {
     Calendar dateSelected;
     TextView datePicker;
     Spinner spinnerSalesMan;
-    TextView textViewCustomer;
+    TextView textViewCustomer,customer_selection_lbl;
     TextView textViewCustomerTown;
     Button btnSelectCustomer;
     TextView txtNetTotal;
@@ -153,7 +153,7 @@ public class OrderFormActivity extends AppCompatActivity {
             if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_CANCELED)
                 Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            myLogs.errorBox(this, "GPS enabling please restart the application");
+            utils.errorBox(this, "GPS enabling please restart the application");
         }
     }
 
@@ -181,7 +181,6 @@ public class OrderFormActivity extends AppCompatActivity {
             // Find the toolbar view inside the activity layout
             Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
             myToolbar.setTitle("Order Form");
-            myToolbar.setSubtitle(sp.getrole()+": Timeline");
             myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
             myToolbar.setTitleTextColor(getResources().getColor(R.color.white));
             myToolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
@@ -199,13 +198,15 @@ public class OrderFormActivity extends AppCompatActivity {
             int mYear = dateSelected.get(Calendar.YEAR);
             int mMonth = dateSelected.get(Calendar.MONTH);
             int mDay = dateSelected.get(Calendar.DAY_OF_MONTH);
-
             datePicker.setText(mMonth + 1 + "/" + mDay + "/" + mYear);
-
-
+            customer_selection_lbl = (TextView) findViewById(R.id.customer_selection_lbl);
+            if(sp.getrole().equalsIgnoreCase("Customer")){
+                customer_selection_lbl.setText("Customer");
+            }else{
+                customer_selection_lbl.setText("Select Customer");
+            }
             textViewCustomer = (TextView) findViewById(R.id.txtSelectCustomer);
             textViewCustomerTown = (TextView) findViewById(R.id.txtSelectCustomerTown);
-
             btnSelectCustomer = (Button) findViewById(R.id.btnSelectCustomer);
             txtNetTotal = (TextView) findViewById(R.id.txtNetTotal);
 
@@ -228,7 +229,7 @@ public class OrderFormActivity extends AppCompatActivity {
             BindSalesManSpinner();
             BindCustomer();
         } catch (Exception e) {
-            myLogs.errorBox(this, e.getMessage());
+            utils.errorBox(this, e.getMessage());
         }
     }
 
@@ -336,7 +337,7 @@ public class OrderFormActivity extends AppCompatActivity {
             locationRequest.setFastestInterval(5000);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         } catch (Exception e1) {
-            myLogs.errorBox(this, e1.getMessage());
+            utils.errorBox(this, e1.getMessage());
         }
     }
 
@@ -355,7 +356,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 try {
                     getCurrentLocation();
                 } catch (Exception e1) {
-                    myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
+                    utils.errorBox(OrderFormActivity.this, e1.getMessage());
                 }
             }
         });
@@ -377,11 +378,11 @@ public class OrderFormActivity extends AppCompatActivity {
                         } catch (IntentSender.SendIntentException sendEx) {
                             // Ignore the error.
                         } catch (Exception e1) {
-                            myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
+                            utils.errorBox(OrderFormActivity.this, e1.getMessage());
                         }
                     }
                 } catch (Exception e1) {
-                    myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
+                    utils.errorBox(OrderFormActivity.this, e1.getMessage());
                 }
             }
         });
@@ -413,7 +414,7 @@ public class OrderFormActivity extends AppCompatActivity {
                         }
                     });
         } catch (Exception e) {
-            myLogs.errorBox(this, e.getMessage());
+            utils.errorBox(this, e.getMessage());
         }
     }
 
@@ -433,14 +434,14 @@ public class OrderFormActivity extends AppCompatActivity {
                             Log.d("TAG", "onLocationResult: " + currentLocation.getLatitude());
                         }
                     } catch (Exception e1) {
-                        myLogs.errorBox(OrderFormActivity.this, e1.getMessage());
+                        utils.errorBox(OrderFormActivity.this, e1.getMessage());
                     }
                 }
 
                 ;
             };
         } catch (Exception e) {
-            myLogs.errorBox(this, e.getMessage());
+            utils.errorBox(this, e.getMessage());
         }
     }
 
@@ -554,7 +555,8 @@ public class OrderFormActivity extends AppCompatActivity {
     protected void BindSalesManSpinner() {
         try {
             spinnerSalesMan = (Spinner) findViewById(R.id.spinnerSelectSalesMan);
-
+            spinnerSalesMan.setEnabled(false);
+            spinnerSalesMan.setClickable(false);
             List<EntitySalesman> salesman;
 
             if (sp.getrole().equals("Saleman")) {

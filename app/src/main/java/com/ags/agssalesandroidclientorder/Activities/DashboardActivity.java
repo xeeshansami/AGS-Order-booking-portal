@@ -107,7 +107,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     DatabaseHandler db;
     SharedPreferenceHandler sp;
@@ -118,8 +118,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     File file;
     TextView total_Products_Count;
     TextView total_Customer_Count;
-
-
     ProgressDialog progressDialog;
     DrawerLayout drawer;
     JSONArray jsonArrayForCustomers, jsonArrayForProducts, jsonArrayForSalesman;
@@ -133,7 +131,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     int i = 0;
     double percent = 0.0;
 
-
     public double div(Double x, Double y) {
         Log.i("beforePercentage", "" + (int) (x / y));
         return (x / y) * 100;
@@ -146,6 +143,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
+        syncBtn = (TextView) findViewById(R.id.syncNowBtn);
+        syncBtn.setOnClickListener(this);
         utils = new Utils();
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         setDownloadLayout();
@@ -160,7 +159,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         user_title.setText(sp.getrole() + ": " + sp.getUser_Category());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -176,12 +174,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         usertitle.setText("UserID: " + sp.getusername());
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(DashboardActivity.this, OrderFormActivity.class);
                 startActivity(intent);
 
@@ -287,7 +283,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         startActivity(intent);
     }
 
-    public void UploadData(View v) {
+    public void UploadData() {
         if (utils.checkConnection(this)) {
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
@@ -300,7 +296,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                 try {
                                     String version = dataSnapshot.child("latestverion").getValue().toString();
                                     if (BuildConfig.VERSION_NAME.equals(version)) {
-                                        utils.alertBox(DashboardActivity.this, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
+                                        utils.alertBox(DashboardActivity.this,syncBtn, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
@@ -309,21 +305,28 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             }
                                         });
                                     } else {
+                                        syncBtn.setEnabled(true);
+                                        syncBtn.setClickable(true);
                                         utils.hideLoader();
                                         utils.update(DashboardActivity.this);
                                     }
                                 } catch (Exception e) {
+                                    syncBtn.setEnabled(true);
+                                    syncBtn.setClickable(true);
                                 }
 
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
+                                syncBtn.setEnabled(true);
+                                syncBtn.setClickable(true);
                             }
 
                         });
                     } catch (Exception e) {
+                        syncBtn.setEnabled(true);
+                        syncBtn.setClickable(true);
                     }
 
 
@@ -331,6 +334,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
                 @Override
                 public void onConnectionFail(String errorMsg) {
+                    syncBtn.setEnabled(true);
+                    syncBtn.setClickable(true);
                     utils.alertBox(DashboardActivity.this, "Internet Connections", "Poor connection", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -340,6 +345,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 }
             }).execute();
         } else {
+            syncBtn.setEnabled(true);
+            syncBtn.setClickable(true);
             utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
@@ -371,30 +378,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             StringRequest sr = new StringRequest(Request.Method.POST, "http://mobile.agssukkur.com/agssalesclient.asmx/createOrder", new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-
+                    syncBtn.setEnabled(true);
+                    syncBtn.setClickable(true);
                     try {
-
                         String responseData = URLDecoder.decode(response, "UTF-8");
                         try {
-
                             JSONObject jObj = new JSONObject(responseData.substring(response.indexOf("{"), response.indexOf("}") + 1));
-
                             if (Integer.parseInt(jObj.get("status").toString()) == 1) {
-
                                 db.ChangeStatusToPosted();
                                 ChangeSyncButtonState();
                                 populateDashboard();
-
                                 progressDialog.dismiss();
                                 Toast.makeText(DashboardActivity.this, "Sync Successful", Toast.LENGTH_SHORT).show();
-
                             } else {
-
                                 progressDialog.dismiss();
                                 Toast.makeText(DashboardActivity.this, "Sync Failed" + response, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-
                             progressDialog.dismiss();
                             e.printStackTrace();
                         }
@@ -408,6 +408,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    syncBtn.setEnabled(true);
+                    syncBtn.setClickable(true);
                     progressDialog.dismiss();
                     utils.alertBox(DashboardActivity.this, "Sync Failed", "Do you want to share with pdf?", "Yes", "No", new setOnitemClickListner() {
                         @Override
@@ -434,6 +436,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             sr.setShouldCache(false);
             queue.add(sr);
         } else {
+            syncBtn.setEnabled(true);
+            syncBtn.setClickable(true);
             Toast.makeText(DashboardActivity.this, "All data is already uploaded.", Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
         }
@@ -594,7 +598,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void ChangeSyncButtonState() {
 
-        syncBtn = (TextView) findViewById(R.id.syncNowBtn);
 
         if (db.getOrderCount() == 0) {
             syncBtn.setTextColor(Color.BLACK);
@@ -925,6 +928,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void StartDownloading() {
         new LoadUrls().execute();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.syncNowBtn) {
+            syncBtn.setEnabled(false);
+            syncBtn.setClickable(false);
+            UploadData();
+        }
     }
 
     public class LoadUrls extends AsyncTask<String, Integer, List<JSONArray>> {

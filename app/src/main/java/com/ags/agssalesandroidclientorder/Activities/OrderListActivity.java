@@ -73,7 +73,7 @@ public class OrderListActivity extends AppCompatActivity {
             selectedItems = new ArrayList<Integer>();
             sp = new SharedPreferenceHandler(getApplicationContext());
         } catch (Exception e) {
-            myLogs.errorBox(this, e.getMessage());
+            Utils.errorBox(this, e.getMessage());
         }
     }
 

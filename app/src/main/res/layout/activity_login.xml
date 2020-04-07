@@ -75,7 +75,6 @@
                 android:padding="10dp">
 
                 <EditText
-                    android:importantForAutofill="yesExcludeDescendants"
                     android:id="@+id/txtUserName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -138,7 +137,6 @@
                         android:layout_marginRight="40dp"
                         android:background="@drawable/bg_changes"
                         android:fontFamily="sans-serif-smallcaps"
-                        android:onClick="Login"
                         android:singleLine="false"
                         android:text="Sign In"
                         android:textColor="@color/white" />
