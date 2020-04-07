@@ -23,6 +23,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -37,6 +38,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -168,8 +170,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
+        TextView footar_version = navigationView.findViewById(R.id.footar_version);
         TextView userid = hView.findViewById(R.id.header_userid);
         TextView usertitle = hView.findViewById(R.id.header_username);
+        footar_version.setText(BuildConfig.VERSION_NAME);
         userid.setText("As Role : " + sp.getrole());
         usertitle.setText("UserID: " + sp.getusername());
         progressDialog = new ProgressDialog(this);
@@ -221,6 +225,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -296,7 +301,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                 try {
                                     String version = dataSnapshot.child("latestverion").getValue().toString();
                                     if (BuildConfig.VERSION_NAME.equals(version)) {
-                                        utils.alertBox(DashboardActivity.this,syncBtn, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
+                                        utils.alertBox(DashboardActivity.this, syncBtn, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();

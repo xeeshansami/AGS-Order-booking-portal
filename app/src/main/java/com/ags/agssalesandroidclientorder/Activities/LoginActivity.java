@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
     View promptsView;
-    TextView category_label, progress_lbl, progress_percentage;
+    TextView category_label, progress_lbl, progress_percentage, version_name_lbl;
     Button cancel_action;
     ProgressBar mainProgress;
     ProgressBar subProgress;
@@ -135,10 +135,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         txtUsername = (EditText) findViewById(R.id.txtUserName);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         hideImage1 = findViewById(R.id.hideshow_img);
+        version_name_lbl = findViewById(R.id.version_name_lbl);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignup = findViewById(R.id.btnLogin2);
         btnLogin.setOnClickListener(this);
         btnSignup.setOnClickListener(this);
+        version_name_lbl.setText("Version: "+BuildConfig.VERSION_NAME);
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         getAppVersion();
     }
@@ -340,7 +342,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     });
                 } catch (Exception e) {
-                    utils.myLogs(LoginActivity.this,e.getMessage(),true);
+                    utils.myLogs(LoginActivity.this, e.getMessage(), true);
                 }
 
             }
