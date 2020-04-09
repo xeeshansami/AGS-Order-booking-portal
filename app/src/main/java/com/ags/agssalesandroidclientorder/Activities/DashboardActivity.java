@@ -256,12 +256,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                sp.clearAll();
-                //db.clearAll();
+//                sp.clearAll();
+//                db.clearAll();
                 // Session manager
-                session = new SessionManager(getApplicationContext());
+//                session = new SessionManager(getApplicationContext());
                 // Create login session
-                session.setLogin(false);
+//                session.setLogin(false);
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

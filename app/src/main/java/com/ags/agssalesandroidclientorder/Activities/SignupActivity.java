@@ -275,6 +275,7 @@ public class SignupActivity extends AppCompatActivity {
                                 ShowDialog("Signup", "your account successfully created!!!");
                                 DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss"); // Format time
                                 String currentTime = df.format(Calendar.getInstance().getTime());
+//                                String temptime="09/4/2020 04:40:00";
                                 SharedPreferenceManager.getInstance(SignupActivity.this).storeStringInSharedPreferences(Constant.signupTime, currentTime);
                                 utils.alertBox(SignupActivity.this, "Congratulation", "Signup Successfully, Kinldy contact your administrator", "OK", new setOnitemClickListner() {
                                     @Override
