@@ -211,8 +211,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
             startActivity(intent);
         } else {
-            if (elapsedMinutes < 5) {
-                utils.alertBox(this, "Alert", "You request for sign up from this device already sent, please wait for the confirmation or contact Admin. Request Re submission from this device will enable after 24 hours.",
+            if (elapsedMinutes < 24) {
+                long remHr=24-elapsedHours;
+                utils.alertBox(this, "Alert", "Your request for the sign up from this device have already sent, please wait more "+remHr+" hr(s) & for the confirmation contact Admin. " +
+                                "Request re-submission from this device will enable after 24 hours.",
                         "Ok", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
