@@ -2,10 +2,8 @@ package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityOrder;
-import com.ags.agssalesandroidclientorder.Adapters.OrderListAdapter;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorder.Utils.Utils;
-import com.ags.agssalesandroidclientorder.Utils.myLogs;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,30 +11,33 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ags.agssalesandroidclientorder.R;
-import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
+import com.ags.agssalesandroidclientorder.network.MultiAdapter;
 
 public class OrderListActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
 
-    private List<EntityOrder> orderList = new ArrayList<EntityOrder>();
-    private ListView listView;
-    private OrderListAdapter adapter;
+    private ArrayList<EntityOrder> orderList = new ArrayList<EntityOrder>();
+    private RecyclerView recyclerView;
+    private MultiAdapter adapter;
     private EditText txtProductSearch;
 
     private Button btnAllOrders;
@@ -56,7 +57,7 @@ public class OrderListActivity extends AppCompatActivity {
         try {
             db = new DatabaseHandler(this);
             orderList = db.getAllOrders();
-
+            selectedItems = new ArrayList<Integer>();
             // Find the toolbar view inside the activity layout
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             // Sets the Toolbar to act as the ActionBar for this Activities window.
@@ -70,7 +71,7 @@ public class OrderListActivity extends AppCompatActivity {
             // BindSearchProductTextBox();
             // BindOrdersList();
 
-            selectedItems = new ArrayList<Integer>();
+
             sp = new SharedPreferenceHandler(getApplicationContext());
         } catch (Exception e) {
             Utils.errorBox(this, e.getMessage());
@@ -158,24 +159,26 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     private void BindOrdersList() {
-        listView = (ListView) findViewById(R.id.lstOrders);
-        adapter = new OrderListAdapter(this, orderList);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView = (RecyclerView) findViewById(R.id.lstOrders);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MultiAdapter(this, orderList, new onItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(View view, int position, EntityOrder order, ImageView imageView) {
+                order.setChecked(!order.isChecked());
                 EntityOrder entry = orderList.get(position);
                 Integer orderId = Integer.parseInt(entry.getOrderId());
-                if (selectedItems.contains(orderId)) {
-                    view.setBackgroundColor(Color.TRANSPARENT);
-                    selectedItems.remove(orderId);
-                } else {
-                    view.setBackgroundColor(Color.rgb(219, 250, 244));
+                if (order.isChecked()) {
+                    imageView.setVisibility(View.VISIBLE);
                     selectedItems.add(orderId);
+                } else {
+                    selectedItems.remove(orderId);
+                    imageView.setVisibility(View.GONE);
                 }
                 UpdateTotalCount();
             }
         });
+        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
@@ -290,6 +293,5 @@ public class OrderListActivity extends AppCompatActivity {
     private void UpdateTotalCount() {
         TextView totalSelected = (TextView) findViewById(R.id.totalSelected);
         totalSelected.setText("Total Selected: " + selectedItems.size());
-
     }
 }

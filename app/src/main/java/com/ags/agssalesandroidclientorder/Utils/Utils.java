@@ -211,6 +211,12 @@ public class Utils {
         }
     }
 
+    public String[] dateTimeSplitter(String time) {
+        String[] dateTime = new String[2];
+        dateTime[0] = time.split(" ")[0]; // date
+        dateTime[1] = time.split(" ")[1]; // time
+        return dateTime;
+    }
 
     public static boolean checkConnection(Context context) {
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

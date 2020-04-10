@@ -6,6 +6,15 @@ import java.util.List;
  * Created by Asad on 10/8/2016.
  */
 public class EntityOrder {
+    private boolean isChecked = false;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 
     private String orderId;
     private String orderDate;

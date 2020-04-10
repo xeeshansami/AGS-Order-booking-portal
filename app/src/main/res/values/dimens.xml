@@ -6,4 +6,5 @@
     <dimen name="heading3">20dp</dimen>
     <dimen name="heading4">15dp</dimen>
     <dimen name="unit_10">10dp</dimen>
+    <dimen name="unit_5">5dp</dimen>
 </resources>

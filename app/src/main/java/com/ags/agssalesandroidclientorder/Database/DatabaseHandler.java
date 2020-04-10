@@ -485,10 +485,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public List<EntityOrder> getAllOrders() {
+    public ArrayList<EntityOrder> getAllOrders() {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        List<EntityOrder> order = new ArrayList<EntityOrder>();
+        ArrayList<EntityOrder> order = new ArrayList<EntityOrder>();
 
         String helloWorld = "SELECT " +
                 "ol.orderListId, " +
@@ -535,10 +535,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public List<EntityOrder> getAllOrders(String OrderStatus) {
+    public ArrayList<EntityOrder> getAllOrders(String OrderStatus) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        List<EntityOrder> order = new ArrayList<EntityOrder>();
+        ArrayList<EntityOrder> order = new ArrayList<EntityOrder>();
 
         String helloWorld = "SELECT " +
                 "ol.orderListId, " +
