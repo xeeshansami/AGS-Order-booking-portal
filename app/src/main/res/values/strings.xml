@@ -22,8 +22,8 @@
     <string name="up">update</string>
     <string name="exit">exit</string>
     <string name="add">Add Order</string>
-    <string name="download">Sync MasterData</string>
-    <string name="update">List Of AllOrders</string>
+    <string name="download">Download Products</string>
+    <string name="update">List Of All Orders</string>
     <string name="logout">Logout</string>
     <string name="orderForm">Order Form</string>
     <string name="navigation_drawer_open">Open drawer</string>

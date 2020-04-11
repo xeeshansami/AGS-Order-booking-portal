@@ -14,7 +14,7 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@drawable/bg_app"
@@ -29,8 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/version_lbl"
@@ -46,13 +46,14 @@
                 android:textSize="12dp"
                 android:textStyle="bold" />
 
-            <TextView android:layout_toRightOf="@+id/version_lbl"
+            <TextView
                 android:id="@+id/footar_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/unit_10"
                 android:layout_marginBottom="@dimen/unit_10"
+                android:layout_toRightOf="@+id/version_lbl"
                 android:text="1.5"
                 android:textColor="@color/white"
                 android:textSize="12dp"

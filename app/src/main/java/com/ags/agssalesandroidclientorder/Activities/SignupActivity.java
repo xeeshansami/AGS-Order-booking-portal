@@ -134,7 +134,6 @@ public class SignupActivity extends AppCompatActivity {
 
     public void CreateAccount(View v) {
         if (validation()) {
-
             signupNetCheck();
         }
     }
@@ -216,6 +215,16 @@ public class SignupActivity extends AppCompatActivity {
             txtNumber.setError("Contact should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Contact should not be empty", 1000).show();
             return false;
+        } else if (contact.length() < 11) {
+            txtNumber.setFocusable(true);
+            txtNumber.setError("Contact number should be at least 11 numbers");
+            Snackbar.make(findViewById(android.R.id.content), "Contact number should be at least 11 numbers", 1000).show();
+            return false;
+        } else if (!contact.startsWith("92")) {
+            txtNumber.setFocusable(true);
+            txtNumber.setError("Contact number starts with 92 format like this 923412030258");
+            Snackbar.make(findViewById(android.R.id.content), "Contact number starts with 92 format like this 923412030258", 1000).show();
+            return false;
         } else if (TextUtils.isEmpty(uid)) {
             txtUserID.setFocusable(true);
             txtUserID.setError("Username should not be empty");
@@ -248,7 +257,6 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void DoSignup() {
-
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = url_Signup
@@ -257,8 +265,6 @@ public class SignupActivity extends AppCompatActivity {
                 + "&contact=" + txtNumber.getText().toString().trim()
                 + "&uid=" + txtUserID.getText().toString().trim()
                 + "&pwd=" + txtPassword.getText().toString().trim();
-
-
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -289,24 +295,21 @@ public class SignupActivity extends AppCompatActivity {
                             }
                         } catch (JSONException e) {
                             HideDialog();
-                            Toast.makeText(SignupActivity.this, "Some error occured. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, "Some error occurred. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 HideDialog();
-                Toast.makeText(SignupActivity.this, "Some error occured. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "Some error occurred. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
             }
         });
-
         int socketTimeout = 30000;//30 seconds - change to what you want
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         stringRequest.setRetryPolicy(policy);
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
     }
 }

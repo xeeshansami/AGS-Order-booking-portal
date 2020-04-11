@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -182,8 +183,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this, OrderFormActivity.class);
-                startActivity(intent);
+                if (utils.isGPSEnabled(DashboardActivity.this)) {
+                    startActivity(new Intent(DashboardActivity.this, OrderFormActivity.class));
+                } else {
+                    utils.alertBox(DashboardActivity.this, "Alert", "For create an order, Kindly first enable your gps locations ", "Enabled", "Later", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                            view.dismiss();
+                        }
+                    });
+                }
 
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
@@ -194,11 +205,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     @Override
     public void onResume() {
         super.onResume();
-
-
         populateDashboard();
         ChangeSyncButtonState();
     }
+
 
     private void populateDashboard() {
         total_Orders_Count = (TextView) findViewById(R.id.total_Orders_Count);
@@ -607,11 +617,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         if (db.getOrderCount() == 0) {
             syncBtn.setTextColor(Color.BLACK);
             syncBtn.setBackgroundResource(R.color.disableColor);
-            syncBtn.setText("Nothing to sync");
+            syncBtn.setText("No Pending Orders");
         } else {
             syncBtn.setTextColor(Color.WHITE);
             syncBtn.setBackgroundResource(R.color.activeColor);
-            syncBtn.setText("Sync Now");
+            syncBtn.setText("Send Order Now");
         }
 
     }
@@ -626,7 +636,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.add:
-                startActivity(new Intent(DashboardActivity.this, OrderFormActivity.class));
+                if (utils.isGPSEnabled(DashboardActivity.this)) {
+                    startActivity(new Intent(DashboardActivity.this, OrderFormActivity.class));
+                } else {
+                    utils.alertBox(DashboardActivity.this, "Alert", "For create an order, \nKindly first enable your gps locations ", "Enabled", "Later", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                            view.dismiss();
+                        }
+                    });
+                }
                 drawer.closeDrawers();
                 break;
             case R.id.orderPdf:
@@ -780,11 +801,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 if (db.getOrderCount() == 0) {
                     syncBtn.setTextColor(Color.BLACK);
                     syncBtn.setBackgroundResource(R.color.disableColor);
-                    syncBtn.setText("Nothing to sync");
+                    syncBtn.setText("No Pending Orders");
                 } else {
                     syncBtn.setTextColor(Color.WHITE);
                     syncBtn.setBackgroundResource(R.color.activeColor);
-                    syncBtn.setText("Sync Now");
+                    syncBtn.setText("Send Order Now");
                 }
             } else if (action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)) {
                 total_Products_Count.setText(String.valueOf(db.getProductCount()));

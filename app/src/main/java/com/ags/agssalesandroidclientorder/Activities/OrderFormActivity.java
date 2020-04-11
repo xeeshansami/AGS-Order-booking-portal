@@ -89,7 +89,7 @@ public class OrderFormActivity extends AppCompatActivity {
     Calendar dateSelected;
     TextView datePicker;
     Spinner spinnerSalesMan;
-    TextView textViewCustomer,customer_selection_lbl;
+    TextView textViewCustomer, customer_selection_lbl;
     TextView textViewCustomerTown;
     Button btnSelectCustomer;
     TextView txtNetTotal;
@@ -115,44 +115,34 @@ public class OrderFormActivity extends AppCompatActivity {
         try {
             if (requestCode == 1) {
                 if (resultCode == Activity.RESULT_OK) {
-
                     int customerId = Integer.parseInt(data.getStringExtra("customerId"));
-
                     selectedCustomer = db.getCustomer(customerId);
-
                     textViewCustomer.setText(selectedCustomer.getCustomerName());
                     textViewCustomer.setVisibility(View.VISIBLE);
-
                     textViewCustomerTown.setText(selectedCustomer.getCustomerBranch());
                     textViewCustomerTown.setVisibility(View.VISIBLE);
-
                     btnSelectCustomer.setText("Change Customer");
-
-
                 }
                 if (resultCode == Activity.RESULT_CANCELED) {
+                    utils.hideLoader();
                     Toast.makeText(this, "i am called in canncelled", Toast.LENGTH_SHORT).show();
                 }
             }
             if (requestCode == 2) {
-
                 if (resultCode == Activity.RESULT_OK) {
-
                     final int productId = Integer.parseInt(data.getStringExtra("productId"));
                     final EntityProduct product = db.getProduct(productId);
-
                     ShowDialogForDetails(product);
-
-
                 }
                 if (resultCode == Activity.RESULT_CANCELED) {
-
                 }
             } else if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK)
                 getCurrentLocation();
             if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_CANCELED)
-                Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
+                utils.hideLoader();
+//                Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
+            utils.hideLoader();
             utils.errorBox(this, "GPS enabling please restart the application");
         }
     }
@@ -200,9 +190,9 @@ public class OrderFormActivity extends AppCompatActivity {
             int mDay = dateSelected.get(Calendar.DAY_OF_MONTH);
             datePicker.setText(mMonth + 1 + "/" + mDay + "/" + mYear);
             customer_selection_lbl = (TextView) findViewById(R.id.customer_selection_lbl);
-            if(sp.getrole().equalsIgnoreCase("Customer")){
+            if (sp.getrole().equalsIgnoreCase("Customer")) {
                 customer_selection_lbl.setText("Customer");
-            }else{
+            } else {
                 customer_selection_lbl.setText("Select Customer");
             }
             textViewCustomer = (TextView) findViewById(R.id.txtSelectCustomer);
@@ -303,10 +293,12 @@ public class OrderFormActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 /*Save data in db*/
                 dialog.dismiss();
+                utils.showLoader(OrderFormActivity.this);
                 createLocationRequest();
                 settingsCheck();
                 if (ActivityCompat.checkSelfPermission(OrderFormActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(OrderFormActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GRANT_PERMISSION);
+                    utils.hideLoader();
                     return;
                 }
                 if (locationCallback == null)
@@ -320,7 +312,7 @@ public class OrderFormActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                utils.hideLoader();
                 // Do nothing
                 dialog.dismiss();
             }
@@ -356,6 +348,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 try {
                     getCurrentLocation();
                 } catch (Exception e1) {
+                    utils.hideLoader();
                     utils.errorBox(OrderFormActivity.this, e1.getMessage());
                 }
             }
@@ -372,16 +365,20 @@ public class OrderFormActivity extends AppCompatActivity {
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
+                            utils.hideLoader();
                             ResolvableApiException resolvable = (ResolvableApiException) e;
-                            resolvable.startResolutionForResult(OrderFormActivity.this,
-                                    REQUEST_CHECK_SETTINGS);
+                            resolvable.startResolutionForResult(OrderFormActivity.this, REQUEST_CHECK_SETTINGS);
+                            utils.showLoader(OrderFormActivity.this);
                         } catch (IntentSender.SendIntentException sendEx) {
+                            utils.hideLoader();
                             // Ignore the error.
                         } catch (Exception e1) {
+                            utils.hideLoader();
                             utils.errorBox(OrderFormActivity.this, e1.getMessage());
                         }
                     }
                 } catch (Exception e1) {
+                    utils.hideLoader();
                     utils.errorBox(OrderFormActivity.this, e1.getMessage());
                 }
             }
@@ -389,33 +386,41 @@ public class OrderFormActivity extends AppCompatActivity {
     }
 
     public void getCurrentLocation() {
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                return;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (ActivityCompat.checkSelfPermission(OrderFormActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(OrderFormActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(OrderFormActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        utils.hideLoader();
+                        return;
+                    }
+                    fusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(OrderFormActivity.this, new OnSuccessListener<Location>() {
+                                @SuppressLint("WrongConstant")
+                                @Override
+                                public void onSuccess(Location location) {
+                                    Log.d("TAG", "onSuccess: getLastLocation");
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        currentLocation = location;
+//                                        Snackbar.make(findViewById(android.R.id.content), "andress=" + location.getLatitude() + "," + location.getLongitude(), 5000).show();
+                                        saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
+                                        Log.d("TAG", "onSuccess:latitude " + location.getLatitude());
+                                        Log.d("TAG", "onSuccess:longitude " + location.getLongitude());
+                                    } else {
+                                        utils.hideLoader();
+                                        Log.d("TAG", "location is null");
+                                        buildLocationCallback();
+                                    }
+                                }
+                            });
+                } catch (Exception e) {
+                    utils.hideLoader();
+                    utils.errorBox(OrderFormActivity.this, e.getMessage());
+                }
             }
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @SuppressLint("WrongConstant")
-                        @Override
-                        public void onSuccess(Location location) {
-                            Log.d("TAG", "onSuccess: getLastLocation");
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                currentLocation = location;
-                                Snackbar.make(findViewById(android.R.id.content), "andress=" + location.getLatitude() + "," + location.getLongitude(), 5000).show();
-                                saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
-                                Log.d("TAG", "onSuccess:latitude " + location.getLatitude());
-                                Log.d("TAG", "onSuccess:longitude " + location.getLongitude());
-                            } else {
-                                Log.d("TAG", "location is null");
-                                buildLocationCallback();
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            utils.errorBox(this, e.getMessage());
-        }
+        }, 3000);
     }
 
     private void buildLocationCallback() {
@@ -425,6 +430,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 public void onLocationResult(LocationResult locationResult) {
                     try {
                         if (locationResult == null) {
+                            utils.hideLoader();
                             return;
                         }
                         for (Location location : locationResult.getLocations()) {
@@ -434,6 +440,7 @@ public class OrderFormActivity extends AppCompatActivity {
                             Log.d("TAG", "onLocationResult: " + currentLocation.getLatitude());
                         }
                     } catch (Exception e1) {
+                        utils.hideLoader();
                         utils.errorBox(OrderFormActivity.this, e1.getMessage());
                     }
                 }
@@ -441,6 +448,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 ;
             };
         } catch (Exception e) {
+            utils.hideLoader();
             utils.errorBox(this, e.getMessage());
         }
     }
@@ -472,8 +480,10 @@ public class OrderFormActivity extends AppCompatActivity {
             Toast.makeText(OrderFormActivity.this, "Order created Successfully", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(OrderFormActivity.this, DashboardActivity.class);
             startActivity(intent);
+            utils.hideLoader();
             finish();
         } else {
+            utils.hideLoader();
             Toast.makeText(OrderFormActivity.this, "Select customer or add atleast 1 product", Toast.LENGTH_SHORT).show();
         }
     }

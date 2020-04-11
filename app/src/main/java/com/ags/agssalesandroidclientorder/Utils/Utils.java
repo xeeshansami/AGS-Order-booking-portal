@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -21,21 +22,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Utils {
-
     setOnitemClickListner listener;
     setOnitemClickListner listener2;
     setOnitemClickListner listener3;
     public TransparentProgressDialog mProgressDialog;
-
     public void myLogs(Context context, String message) {
         errorBox(context, message);
     }
-
-
     public static void myLogs(Context context, String message, boolean isPrintLog) {
         Log.i(context.getClass().getSimpleName(), message);
     }
-
     public static void errorBox(final Context context, String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("SOMETHING WENT WRONG");
@@ -48,7 +44,6 @@ public class Utils {
         });
         alertDialog.show();
     }
-
     public void alertBox(Context context, String title, String msg, String btn1, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -163,14 +158,11 @@ public class Utils {
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
     }
-
     public void hideLoader() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.cancel();
         }
     }
-
-
     public static class CheckNetworkConnection extends AsyncTask<Void, Void, Boolean> {
         boolean isAvailable = false;
         private OnConnectionCallback onConnectionCallback;
@@ -210,14 +202,12 @@ public class Utils {
             }
         }
     }
-
     public String[] dateTimeSplitter(String time) {
         String[] dateTime = new String[2];
         dateTime[0] = time.split(" ")[0]; // date
         dateTime[1] = time.split(" ")[1]; // time
         return dateTime;
     }
-
     public static boolean checkConnection(Context context) {
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connMgr != null) {
@@ -232,7 +222,6 @@ public class Utils {
         }
         return false;
     }
-
     public void update(final Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.up_title));
@@ -251,5 +240,10 @@ public class Utils {
             }
         });
         builder.create().show();
+    }
+    public boolean isGPSEnabled (Context mContext){
+        LocationManager locationManager = (LocationManager)
+                mContext.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 }

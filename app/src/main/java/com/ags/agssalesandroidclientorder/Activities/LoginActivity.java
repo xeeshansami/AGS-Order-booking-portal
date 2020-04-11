@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String url_download_salesman = url_Base + "salesman";
     EditText txtUsername;
     EditText txtPassword;
-    boolean prodsDownload = false, customersDownload = false, salesmanDownload = false;
     Button btnSignup, btnLogin;
     ImageView hideImage1;
     boolean showHide = true;
@@ -181,10 +180,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
             startActivity(intent);
         } else {
-            if (elapsedMinutes < 24) {
-                long remHr = 24 - elapsedHours;
-                utils.alertBox(this, "Alert", "Your request for the sign up from this device have already sent, please wait more " + remHr + " hr(s) & for the confirmation contact Admin. " +
-                                "Request re-submission from this device will enable after 24 hours.",
+            if (elapsedHours < 24) {
+                long remHrs = 23 - elapsedHours;
+                long remMins = 60 - elapsedMinutes;
+                utils.alertBox(this, "Alert", "Your request for sign up has been already submitted from this device. Please contact Admin for quick approval. Re-submission sign up from this device will be enabled after "+remHrs + " hr(s) & "+remMins +" min(s)",
                         "Ok", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
@@ -504,7 +503,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 btnLogin.setEnabled(true);
                 btnLogin.setClickable(true);
                 utils.hideLoader();
-                Toast.makeText(LoginActivity.this, "Some error occured in authentication. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Some error occurred in authentication. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
             }
         });
 

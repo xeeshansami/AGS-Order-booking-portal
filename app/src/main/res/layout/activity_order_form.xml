@@ -87,7 +87,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Select Salesmen"
+                        android:text="Salesmen"
                         android:textColor="@color/colorPrimary" />
 
                     <Spinner
@@ -117,7 +117,7 @@
                         android:id="@+id/customer_selection_lbl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Select Customer"
+                        android:text="Customer"
                         android:textColor="@color/colorPrimary" />
 
                     <TextView
