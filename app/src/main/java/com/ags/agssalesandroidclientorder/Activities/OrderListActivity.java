@@ -7,7 +7,6 @@ import com.ags.agssalesandroidclientorder.Utils.Utils;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,7 +27,7 @@ import java.util.List;
 
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
-import com.ags.agssalesandroidclientorder.network.MultiAdapter;
+import com.ags.agssalesandroidclientorder.Adapters.OrderListAdapter;
 
 public class OrderListActivity extends AppCompatActivity {
 
@@ -37,7 +35,7 @@ public class OrderListActivity extends AppCompatActivity {
 
     private ArrayList<EntityOrder> orderList = new ArrayList<EntityOrder>();
     private RecyclerView recyclerView;
-    private MultiAdapter adapter;
+    private OrderListAdapter adapter;
     private EditText txtProductSearch;
 
     private Button btnAllOrders;
@@ -162,7 +160,7 @@ public class OrderListActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.lstOrders);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MultiAdapter(this, orderList, new onItemClickListener() {
+        adapter = new OrderListAdapter(this, orderList, new onItemClickListener() {
             @Override
             public void onItemClick(View view, int position, EntityOrder order, ImageView imageView) {
                 order.setChecked(!order.isChecked());

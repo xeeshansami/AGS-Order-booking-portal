@@ -1,9 +1,11 @@
 package com.ags.agssalesandroidclientorder.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Asad on 10/3/2016.
  */
-public class EntityProductDetails {
+public class EntityProductDetails implements Serializable {
 
     private int productId;
     private String productName;
@@ -14,7 +16,15 @@ public class EntityProductDetails {
     private int productDiscount = 0;
     private String productEnrtyFromAddress;
     private String latitude;
+    private boolean isChecked = false;
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
     public String getProductEnrtyFromAddress() {
         return productEnrtyFromAddress;
     }

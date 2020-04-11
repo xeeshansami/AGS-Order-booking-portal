@@ -6,6 +6,6 @@ import android.widget.ImageView;
 import com.ags.agssalesandroidclientorder.Models.EntityOrder;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
 
-public interface onItemClickListener {
-   void onItemClick(View view, int position, EntityOrder order, ImageView imageView);
+public interface onItemClickListener2 {
+   void onItemClick(View view, int position, EntityProductDetails order);
 }

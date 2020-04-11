@@ -23,7 +23,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -40,7 +39,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -317,7 +315,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
-                                                checkUserActiveOrNote(false);
+                                                checkUserActiveOrNot(false);
                                                 view.dismiss();
                                             }
                                         });
@@ -380,7 +378,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     }
 
-    public void checkUserActiveOrNote(final boolean isMasterData) {
+    public void checkUserActiveOrNot(final boolean isMasterData) {
         if (sp.getusername() != null && sp.getpassword() != null && !TextUtils.isEmpty(sp.getusername()) && !TextUtils.isEmpty(sp.getpassword())) {
             utils.showLoader(this);
             // Instantiate the RequestQueue.
@@ -776,7 +774,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
-                                                checkUserActiveOrNote(true);
+                                                checkUserActiveOrNot(true);
                                                 view.dismiss();
                                             }
                                         });

@@ -1,25 +1,30 @@
 package com.ags.agssalesandroidclientorder.Activities;
 
+import com.ags.agssalesandroidclientorder.Adapters.SelectOrderListAdapter;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
-import com.ags.agssalesandroidclientorder.Adapters.ProductDetailsListAdapter;
 
 import com.ags.agssalesandroidclientorder.R;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListener2;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ActivityOrderProductsDetail extends AppCompatActivity {
 
-    private List<EntityProductDetails> productsList = new ArrayList<EntityProductDetails>();
-    private ListView listView;
-    private ProductDetailsListAdapter adapter;
+    private ArrayList<EntityProductDetails> productsList = new ArrayList<EntityProductDetails>();
+    private RecyclerView recycler;
+    private SelectOrderListAdapter adapter;
 
     DatabaseHandler db;
 
@@ -35,17 +40,22 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("View Order Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        listView = (ListView) findViewById(R.id.lstOrderProducts);
-        adapter = new ProductDetailsListAdapter(this, productsList);
-        listView.setAdapter(adapter);
-
+        recycler = (RecyclerView) findViewById(R.id.lstOrderProducts);
+        recycler.setHasFixedSize(true);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new SelectOrderListAdapter(this, productsList, new onItemClickListener2() {
+            @Override
+            public void onItemClick(View view, int position, EntityProductDetails order) {
+                Intent intent = new Intent(ActivityOrderProductsDetail.this, EditSingleProduct.class);
+                intent.putExtra("order",  order);
+                startActivity(intent);
+            }
+        });
+        recycler.setAdapter(adapter);
         Intent intent = getIntent();
         Integer orderId = intent.getIntExtra("OrderId", 0);
-
         db = new DatabaseHandler(this);
         productsList.addAll(db.GetOrderDetails(orderId));
-
         adapter.notifyDataSetChanged();
     }
 }

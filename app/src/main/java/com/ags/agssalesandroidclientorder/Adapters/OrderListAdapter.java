@@ -1,70 +1,103 @@
 package com.ags.agssalesandroidclientorder.Adapters;
 
-import com.ags.agssalesandroidclientorder.Models.EntityOrder;
-
-import com.ags.agssalesandroidclientorder.R;
-import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
-
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.List;
 
 
-public class OrderListAdapter extends BaseAdapter {
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-    private Activity activity;
-    private LayoutInflater inflater;
-    private List<EntityOrder> orderItems;
+import com.ags.agssalesandroidclientorder.Models.EntityOrder;
+import com.ags.agssalesandroidclientorder.R;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
 
-    public OrderListAdapter(Activity activity, List<EntityOrder> orderItems) {
-        this.activity = activity;
-        this.orderItems = orderItems;
+import java.util.ArrayList;
 
+public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MultiViewHolder> {
+
+    private Context context;
+    private ArrayList<EntityOrder> arrayList;
+    onItemClickListener onItemClickListener;
+    public OrderListAdapter(Context context, ArrayList<EntityOrder> list, onItemClickListener onItemClickListener) {
+        this.context = context;
+        this.arrayList = list;
+        this.onItemClickListener=onItemClickListener;
+    }
+
+    public void setArrayList(ArrayList<EntityOrder> arrayList) {
+        this.arrayList = new ArrayList<>();
+        this.arrayList = arrayList;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public MultiViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_order_row, viewGroup, false);
+        return new MultiViewHolder(view);
     }
 
     @Override
-    public int getCount() {
-        return orderItems.size();
+    public void onBindViewHolder(@NonNull MultiViewHolder multiViewHolder, int position) {
+        multiViewHolder.bind(arrayList.get(position), multiViewHolder.itemView);
     }
 
     @Override
-    public Object getItem(int position) {
-        return orderItems.get(position);
+    public int getItemCount() {
+        return arrayList.size();
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
+    class MultiViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView textView;
+        private ImageView imageView;
+        TextView orderId, customerName, Saleman, OrderStatus, TotalPrice, CreatedOn, TotalUniqueProducts;
+
+        MultiViewHolder(@NonNull View convertView) {
+            super(convertView);
+            imageView = convertView.findViewById(R.id.imageView);
+            orderId = (TextView) convertView.findViewById(R.id.orderId);
+            customerName = (TextView) convertView.findViewById(R.id.Customer);
+            Saleman = (TextView) convertView.findViewById(R.id.Saleman);
+            OrderStatus = (TextView) convertView.findViewById(R.id.OrderStatus);
+            TotalPrice = (TextView) convertView.findViewById(R.id.TotalPrice);
+            CreatedOn = (TextView) convertView.findViewById(R.id.CreatedOn);
+            TotalUniqueProducts = (TextView) convertView.findViewById(R.id.TotalUniqueProducts);
+        }
+
+        void bind(final EntityOrder order, final View multiViewHolder) {
+            imageView.setVisibility(order.isChecked() ? View.VISIBLE : View.GONE);
+            orderId.setText(String.valueOf(order.getOrderId()));
+            customerName.setText(order.getOrderCustName());
+            Saleman.setText(order.getOrderSalName());
+            OrderStatus.setText(String.valueOf(order.getOrderStatus()));
+            TotalPrice.setText("Rs." + order.getNetTotal());
+            CreatedOn.setText(order.getorderCreatedOn());
+            TotalUniqueProducts.setText(order.getTotalUniqueProducts() + " Unique Products");
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(view,getLayoutPosition(),order,imageView);
+                }
+            });
+        }
     }
 
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        if (inflater == null) inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null) convertView = inflater.inflate(R.layout.layout_order_row, null);
-        TextView orderId = (TextView) convertView.findViewById(R.id.orderId);
-        TextView customerName = (TextView) convertView.findViewById(R.id.Customer);
-        TextView Saleman = (TextView) convertView.findViewById(R.id.Saleman);
-        TextView OrderStatus = (TextView) convertView.findViewById(R.id.OrderStatus);
-        TextView TotalPrice = (TextView) convertView.findViewById(R.id.TotalPrice);
-        TextView CreatedOn = (TextView) convertView.findViewById(R.id.CreatedOn);
-        TextView TotalUniqueProducts = (TextView) convertView.findViewById(R.id.TotalUniqueProducts);
-
-        EntityOrder order = orderItems.get(position);
-        orderId.setText(String.valueOf(order.getOrderId()));
-        customerName.setText(order.getOrderCustName());
-        Saleman.setText("Saleman: " + order.getOrderSalName());
-        OrderStatus.setText(String.valueOf(order.getOrderStatus()));
-        TotalPrice.setText(order.getNetTotal() + " Rs");
-        CreatedOn.setText("Created On: " + order.getorderCreatedOn());
-        TotalUniqueProducts.setText(order.getTotalUniqueProducts() + " Unique Products");
-        return convertView;
+    public ArrayList<EntityOrder> getAll() {
+        return arrayList;
     }
 
+    public ArrayList<EntityOrder> getSelected() {
+        ArrayList<EntityOrder> selected = new ArrayList<>();
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i).isChecked()) {
+                selected.add(arrayList.get(i));
+            }
+        }
+        return selected;
+    }
 }
