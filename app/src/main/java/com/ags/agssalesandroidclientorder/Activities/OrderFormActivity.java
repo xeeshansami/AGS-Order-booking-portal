@@ -108,7 +108,7 @@ public class OrderFormActivity extends AppCompatActivity {
     private LocationCallback locationCallback;
     EntityCustomer selectedCustomer;
     EntitySalesman selectedSalesMan;
-
+    Utils utils;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -125,7 +125,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 }
                 if (resultCode == Activity.RESULT_CANCELED) {
                     utils.hideLoader();
-                    Toast.makeText(this, "i am called in canncelled", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "i am called in canncelled", Toast.LENGTH_SHORT).show();
                 }
             }
             if (requestCode == 2) {
@@ -156,7 +156,6 @@ public class OrderFormActivity extends AppCompatActivity {
         }
     }
 
-    Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,11 +210,8 @@ public class OrderFormActivity extends AppCompatActivity {
             listView = (ListView) findViewById(R.id.lstViewSelectedProducts);
             adapter = new ProductDetailsListAdapter(this, productsList);
             listView.setAdapter(adapter);
-
             BindListViewForEdit();
-
             txtRemarks = (EditText) findViewById(R.id.editTextRemarks);
-
             BindSalesManSpinner();
             BindCustomer();
         } catch (Exception e) {

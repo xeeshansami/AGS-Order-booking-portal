@@ -29,6 +29,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -111,7 +112,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
+    private String url_Base = "http://mobile.agssukkur.com/agssalesclient.asmx/";
+    private String url_Login = url_Base + "Login";
     DatabaseHandler db;
     SharedPreferenceHandler sp;
     SessionManager session;
@@ -315,7 +317,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
-                                                uploadProductSyncData();
+                                                checkUserActiveOrNote(false);
                                                 view.dismiss();
                                             }
                                         });
@@ -378,6 +380,68 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     }
 
+    public void checkUserActiveOrNote(final boolean isMasterData) {
+        if (sp.getusername() != null && sp.getpassword() != null && !TextUtils.isEmpty(sp.getusername()) && !TextUtils.isEmpty(sp.getpassword())) {
+            utils.showLoader(this);
+            // Instantiate the RequestQueue.
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = url_Login + "?uname=" + sp.getusername() + "&pwd=" + sp.getpassword();
+            // Request a string response from the provided URL.
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
+                                if (Integer.parseInt(jsonObject.get("userid").toString()) > 0) {
+                                    if (isMasterData) {
+                                        StartDownloading();
+                                    } else {
+                                        utils.hideLoader();
+                                        uploadProductSyncData();
+                                    }
+                                } else {
+                                    utils.hideLoader();
+                                    utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
+                                        @Override
+                                        public void onClick(DialogInterface view, int i) {
+                                            view.dismiss();
+                                        }
+                                    });
+                                }
+
+                            } catch (JSONException e) {
+                                utils.hideLoader();
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    utils.hideLoader();
+                    Toast.makeText(DashboardActivity.this, "Some error occurred in authentication. Kindly inform your administrator.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            int socketTimeout = 30000;//30 seconds - change to what you want
+            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            stringRequest.setRetryPolicy(policy);
+            // Add the request to the RequestQueue.
+            queue.add(stringRequest);
+        } else {
+            utils.hideLoader();
+            utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    view.dismiss();
+                }
+            });
+        }
+    }
+
     public void uploadProductSyncData() {
         progressDialog.setTitle("Sync in progress");
         progressDialog.setMessage("Please wait while we upload your data ...");
@@ -415,7 +479,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         }
 
                     } catch (UnsupportedEncodingException e) {
-
                         progressDialog.dismiss();
                         e.printStackTrace();
                     }
@@ -713,7 +776,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
-                                                StartDownloading();
+                                                checkUserActiveOrNote(true);
                                                 view.dismiss();
                                             }
                                         });
@@ -972,7 +1035,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            utils.showLoader(DashboardActivity.this);
             customersUrl = "http://mobile.agssukkur.com/agssalesclient.asmx/customers?branch=" + sp.getbranch();
             productsUrl = "http://mobile.agssukkur.com/agssalesclient.asmx/products?branch=" + sp.getbranch();
             salesmanUrl = "http://mobile.agssukkur.com/agssalesclient.asmx/salesman?branch=" + sp.getbranch();

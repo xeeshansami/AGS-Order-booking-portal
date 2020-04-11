@@ -479,7 +479,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 utils.hideLoader();
                                 btnLogin.setEnabled(true);
                                 btnLogin.setClickable(true);
-                                utils.alertBox(LoginActivity.this, "Alert", "Login Failed, Invalid username or password!", "ok", new setOnitemClickListner() {
+                                utils.alertBox(LoginActivity.this, "Alert", "username or password is invalid, or account is blocked!", "ok", new setOnitemClickListner() {
                                     @Override
                                     public void onClick(DialogInterface view, int i) {
                                         view.dismiss();
