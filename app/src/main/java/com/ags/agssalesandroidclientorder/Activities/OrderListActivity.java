@@ -128,18 +128,13 @@ public class OrderListActivity extends AppCompatActivity {
     public void ViewDetailsOfOrder(View v) {
 
         if (selectedItems.size() > 0) {
-
             if (selectedItems.size() > 1) {
                 Toast.makeText(this, "Select only 1 item to view details.", Toast.LENGTH_SHORT).show();
             } else {
-
                 Intent i = new Intent(this, ActivityOrderProductsDetail.class);
                 i.putExtra("OrderId", selectedItems.get(0));
                 startActivity(i);
-
             }
-
-
         } else {
             Toast.makeText(this, "0 items selcted", Toast.LENGTH_SHORT).show();
         }
@@ -154,6 +149,11 @@ public class OrderListActivity extends AppCompatActivity {
         btnAllOrders.setText("All (" + db.getAllOrdersCount() + ")");
         btnAllPostedOrders.setText("Posted (" + db.getAllPostedOrdersCount() + ")");
         btnAllUnPostedOrders.setText("Un Posted (" + db.getAllUnPostedOrdersCount() + ")");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void BindOrdersList() {

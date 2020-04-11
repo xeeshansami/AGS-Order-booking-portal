@@ -7,6 +7,7 @@ import com.ags.agssalesandroidclientorder.Models.EntityProduct;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
 import com.ags.agssalesandroidclientorder.Models.EntitySalesman;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -197,6 +198,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // region Customer
+    public boolean updateSingleOrder(String orderID, String qty, String bonus, String discount) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        String sql = "update " + TABLE_ORDER_LIST_DETAIL + " set orderListDetailProdQty = " + qty + "," +
+                "orderListDetailProdBonus = " + bonus + ",orderListDetailProdDiscount  = " + discount + " where orderListDetailId = " + orderID + ";";
+        database.execSQL(sql);
+        return true;
+    }
 
     public void addAllCustomers(EntityCustomer allCustomers) {
 
@@ -380,7 +388,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // region Products
 
-    public void deleteTable(){
+    public void deleteTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from " + TABLE_PRODUCT);
         db.execSQL("delete from " + TABLE_SALEMAN);
@@ -828,7 +836,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<EntityProductDetails> orderAndDetailsList = new ArrayList<EntityProductDetails>();
 
-        String helloWorld = "select orderListDetailProdName, orderListDetailProdSize, orderListDetailProdRate, orderListDetailProdQty, orderListDetailProdBonus, orderListDetailProdDiscount, orderListDetailProdAmount from order_list_detail where orderListId = " + orderId;
+        String helloWorld = "select orderListDetailProdName, orderListDetailProdSize, orderListDetailProdRate, orderListDetailProdQty, orderListDetailProdBonus, orderListDetailProdDiscount, orderListDetailProdAmount,orderListDetailId from order_list_detail where orderListId = " + orderId;
         Cursor cursor = db.rawQuery(helloWorld, null);
 
         if (cursor != null) {
@@ -836,7 +844,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     EntityProductDetails orderAndDetails = new EntityProductDetails();
-
+                    orderAndDetails.setProductId(Integer.parseInt(cursor.getString(7)));
                     orderAndDetails.setProductName(cursor.getString(0));
                     orderAndDetails.setProductSize(cursor.getString(1));
                     orderAndDetails.setProductPrice(Float.valueOf(cursor.getString(2)));

@@ -32,14 +32,20 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_order_products_detail);
-
-        // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activities window.
-        // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("View Order Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getData();
+    }
+
+    public void getData(){
+        productsList.clear();
+        if(getIntent().hasExtra("OrderId")) {
+            Integer orderId = getIntent().getIntExtra("OrderId", 0);
+            db = new DatabaseHandler(this);
+            productsList.addAll(db.GetOrderDetails(orderId));
+        }
         recycler = (RecyclerView) findViewById(R.id.lstOrderProducts);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -52,10 +58,12 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
             }
         });
         recycler.setAdapter(adapter);
-        Intent intent = getIntent();
-        Integer orderId = intent.getIntExtra("OrderId", 0);
-        db = new DatabaseHandler(this);
-        productsList.addAll(db.GetOrderDetails(orderId));
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getData();
     }
 }
