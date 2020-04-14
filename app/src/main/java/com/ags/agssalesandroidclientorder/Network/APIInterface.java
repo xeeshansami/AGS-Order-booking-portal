@@ -14,6 +14,10 @@ public interface APIInterface {
     @GET("products?")
     Call<String> getProducts(@Query("branch") String branch);
 
+
+    @GET("products2?")
+    Call<String> getProductsForSPO(@Query("compid") String branch);
+
     @GET("salesman?")
     Call<String> getSalesman(@Query("branch") String branch);
 

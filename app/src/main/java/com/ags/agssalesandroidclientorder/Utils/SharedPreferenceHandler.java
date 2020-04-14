@@ -118,12 +118,12 @@ public class SharedPreferenceHandler {
         set("branch", branch);
     }
 
-    public String getSingleData(){
-        return get("singleData");
+    public String getCompID(){
+        return get("CompID");
     }
 
-    public void setSingleData(String branch){
-        set("singleData", branch);
+    public void setCompID(String branch){
+        set("CompID", branch);
     }
     public void clearAll(){
         pref.edit().clear().commit();

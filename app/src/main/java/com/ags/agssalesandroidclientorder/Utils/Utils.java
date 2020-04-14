@@ -361,6 +361,7 @@ public class Utils implements IOnConnectionTimeoutListener {
         } else if (role.equalsIgnoreCase("Saleman")) {
             getProducts(button, role);
         } else if (role.equalsIgnoreCase("SPO")) {
+            getProductsForSPO(button, role);
         }
     }
 
@@ -410,7 +411,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                         sp.setrole(jsonObject.get("role").toString());
                         sp.setbranch(jsonObject.get("branch").toString());
                         sp.setUser_Category(jsonObject.get("User_Category").toString());
-                        sp.setSingleData("[" + response + "]");
+                        if (jsonObject.get("User_comp").toString() != null) {
+                            sp.setCompID(jsonObject.get("User_comp").toString());
+                        }
                         ChangeView(jsonObject.get("role").toString(), button, username, password);
                     } else {
                         hideLoader();
@@ -443,6 +446,27 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
+    public void getProductsForSPO(final Button button, final String role) {
+        AGSStore.getInstance().getProductsForSPO(sp.getCompID(), new callback() {
+            @Override
+            public void Success(String response) {
+                try {
+                    JSONArray jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
+                    jsonMainArrays.add(jsonArray);
+                    getCustomer(button, role);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) {
+                Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
+                hideLoader();
+            }
+        });
+    }
+
     public void getProducts(final Button button, final String role) {
         AGSStore.getInstance().getProducts(sp.getbranch(), new callback() {
             @Override
@@ -451,9 +475,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                     JSONArray jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
                     jsonMainArrays.add(jsonArray);
                     if (role.equalsIgnoreCase("Customer")) {
-                        getCustomerSelfData(button);
+                        getCustomerSelfData(button, role);
                     } else {
-                        getSalesmanSelfData(button);
+                        getSalesmanSelfData(button, role);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -468,7 +492,8 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
-    public void getCustomerSelfData(final Button button) {
+
+    public void getCustomerSelfData(final Button button, final String role) {
         AGSStore.getInstance().getSelfCustomer(sp.getbranch(), sp.getcategory(), new callback() {
             @Override
             public void Success(String response) {
@@ -479,7 +504,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                     e.printStackTrace();
                 }
                 jsonMainArrays.add(jsonArray);
-                getSalesmanForCustomer(button);
+                getSalesmanForCustomer(button, role);
             }
 
             @Override
@@ -490,7 +515,7 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
-    public void getSalesmanForCustomer(final Button button) {
+    public void getSalesmanForCustomer(final Button button, final String role) {
         AGSStore.getInstance().getSalesmanForCustomer(new callback() {
             @Override
             public void Success(String response) {
@@ -499,7 +524,11 @@ public class Utils implements IOnConnectionTimeoutListener {
                     jsonMainArrays.add(jsonArray);
                     if (jsonMainArrays.size() != 0) {
                         hideLoader();
-                        new Downloading(button, 0).execute();
+                        if (role.equalsIgnoreCase("Customer")) {
+                            new Downloading(button, 0).execute();
+                        } else {
+                            new Downloading(button, 2).execute();
+                        }
                     } else {
                         hideLoader();
                         Intent intent = new Intent(context, DashboardActivity.class);
@@ -519,7 +548,7 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
-    public void getSalesmanSelfData(final Button button) {
+    public void getSalesmanSelfData(final Button button, final String role) {
         AGSStore.getInstance().getSelfSalesman(sp.getcategory(), new callback() {
             @Override
             public void Success(String response) {
@@ -530,7 +559,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                     e.printStackTrace();
                 }
                 jsonMainArrays.add(jsonArray);
-                getCustomer(button);
+                getCustomer(button, role);
             }
 
             @Override
@@ -541,21 +570,25 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
-    public void getCustomer(final Button button) {
+    public void getCustomer(final Button button, final String role) {
         AGSStore.getInstance().getCustomer(sp.getbranch(), new callback() {
             @Override
             public void Success(String response) {
                 try {
                     JSONArray jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
                     jsonMainArrays.add(jsonArray);
-                    if (jsonMainArrays.size() != 0) {
-                        hideLoader();
-                        new Downloading(button, 1).execute();
+                    if (role.equalsIgnoreCase("Saleman")) {
+                        if (jsonMainArrays.size() != 0) {
+                            hideLoader();
+                            new Downloading(button, 1).execute();
+                        } else {
+                            hideLoader();
+                            Intent intent = new Intent(context, DashboardActivity.class);
+                            context.startActivity(intent);
+                            ((Activity) context).finish();
+                        }
                     } else {
-                        hideLoader();
-                        Intent intent = new Intent(context, DashboardActivity.class);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
+                        getSalesmanForCustomer(button, role);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -570,26 +603,6 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
-    public void getCustomerForSPO(final Button button) {
-        AGSStore.getInstance().getCustomer(sp.getbranch(), new callback() {
-            @Override
-            public void Success(String response) {
-                try {
-                    JSONArray jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
-                    jsonMainArrays.add(jsonArray);
-//                    getSalesManOrCustomerItSelfData();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void Failure(ErrorResponse response) {
-                Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
-                hideLoader();
-            }
-        });
-    }
 
     public void setUpDownloadAlertBox(final Button button) {
         LayoutInflater li = LayoutInflater.from(context);
@@ -661,52 +674,106 @@ public class Utils implements IOnConnectionTimeoutListener {
         protected String doInBackground(Void... params) {
             try {
                 db.deleteTable();
-                if (inWhich == 0) {
+                if (inWhich == 2) {
                     products = jsonMainArrays.get(0);
                     customers = jsonMainArrays.get(1);
                     salesman = jsonMainArrays.get(2);
-                } else if (inWhich == 1) {
-                    products = jsonMainArrays.get(0);
-                    salesman = jsonMainArrays.get(1);
-                    customers = jsonMainArrays.get(2);
+
+                    JSONObject jObjectsalesman = salesman.getJSONObject(0);
+                    EntitySalesman sman = new EntitySalesman();
+                    sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
+                    sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
+                    db.addAllSalesMan(sman);
+
+                    //TODO: CUSTOMERS
+                    for (i = 0; i < customers.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
+                        publishProgress((int) percent);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Customers....");
+                                progress_lbl.setText(i + "/" + customers.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = customers.getJSONObject(i);
+                        EntityCustomer customer = new EntityCustomer();
+                        customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
+                        customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
+                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        db.addAllCustomers(customer);
+                    }
+                    //TODO: PRODUCTS
+                    for (i = 0; i < products.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
+                        publishProgress((int) percent);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Products....");
+                                progress_lbl.setText(i + "/" + products.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = products.getJSONObject(i);
+                        EntityProduct product = new EntityProduct();
+                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
+                        product.setProductName(jObject.get("prod_name").toString());
+                        product.setProductSize(jObject.get("prod_size").toString());
+                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProductCompany(jObject.get("prod_company").toString());
+                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
+                        db.addAllProducts(product);
+                    }
+
                 }
-                JSONObject jObjectsalesman = salesman.getJSONObject(0);
-                EntitySalesman sman = new EntitySalesman();
-                sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
-                sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
-                db.addAllSalesMan(sman);
+                else {
+                    if (inWhich == 0) {
+                        products = jsonMainArrays.get(0);
+                        customers = jsonMainArrays.get(1);
+                        salesman = jsonMainArrays.get(2);
+                    } else if (inWhich == 1) {
+                        products = jsonMainArrays.get(0);
+                        salesman = jsonMainArrays.get(1);
+                        customers = jsonMainArrays.get(2);
+                    }
+                    JSONObject jObjectsalesman = salesman.getJSONObject(0);
+                    EntitySalesman sman = new EntitySalesman();
+                    sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
+                    sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
+                    db.addAllSalesMan(sman);
 
+                    JSONObject jObjectcustomers = customers.getJSONObject(0);
+                    EntityCustomer customer = new EntityCustomer();
+                    customer.setCustomerId(Integer.parseInt(jObjectcustomers.get("ACCOUNT_CODE").toString()));
+                    customer.setCustomerName(jObjectcustomers.get("ACCOUNT_NAME").toString());
+                    customer.setCustomerBranch(jObjectcustomers.get("ACCOUNT_TOWN_NAME").toString() + " " + jObjectcustomers.get("Account_Address").toString());
+                    db.addAllCustomers(customer);
 
-                JSONObject jObjectcustomers = customers.getJSONObject(0);
-                EntityCustomer customer = new EntityCustomer();
-                customer.setCustomerId(Integer.parseInt(jObjectcustomers.get("ACCOUNT_CODE").toString()));
-                customer.setCustomerName(jObjectcustomers.get("ACCOUNT_NAME").toString());
-                customer.setCustomerBranch(jObjectcustomers.get("ACCOUNT_TOWN_NAME").toString() + " " + jObjectcustomers.get("Account_Address").toString());
-                db.addAllCustomers(customer);
-
-                //TODO: PRODUCTS
-                for (i = 0; i < products.length(); i++) {
-                    percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
-                    publishProgress((int) percent);
-                    ((Activity) context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            category_label.setText("Importing Products....");
-                            progress_lbl.setText(i + "/" + products.length());
-                            progress_percentage.setText(Math.floor(percent) + "%");
-                        }
-                    });
-                    JSONObject jObject = products.getJSONObject(i);
-                    EntityProduct product = new EntityProduct();
-                    product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
-                    product.setProductName(jObject.get("prod_name").toString());
-                    product.setProductSize(jObject.get("prod_size").toString());
-                    product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
-                    product.setProductCompany(jObject.get("prod_company").toString());
-                    product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
-                    db.addAllProducts(product);
+                    //TODO: PRODUCTS
+                    for (i = 0; i < products.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
+                        publishProgress((int) percent);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Products....");
+                                progress_lbl.setText(i + "/" + products.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = products.getJSONObject(i);
+                        EntityProduct product = new EntityProduct();
+                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
+                        product.setProductName(jObject.get("prod_name").toString());
+                        product.setProductSize(jObject.get("prod_size").toString());
+                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProductCompany(jObject.get("prod_company").toString());
+                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
+                        db.addAllProducts(product);
+                    }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 failedDownload(e.getMessage(), true, button);
