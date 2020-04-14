@@ -16,4 +16,13 @@ public interface APIInterface {
 
     @GET("salesman?")
     Call<String> getSalesman(@Query("branch") String branch);
+
+    @GET("salesman2")
+    Call<String> getSalesmanForCustomer();
+
+    @GET("customers2")
+    Call<String> getSelfCustomer(@Query("branch") String branch,@Query("AccountID") String AccountID);
+
+    @GET("salesmanItSelf")
+    Call<String> getSelfSalesman(@Query("smid") String id);
 }

@@ -262,19 +262,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void logout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-
         builder.setTitle("Confirm");
         builder.setMessage("Logout? Make sure that you have uploaded your data.");
-
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
             public void onClick(DialogInterface dialog, int which) {
-//                sp.clearAll();
-//                db.clearAll();
-                // Session manager
-//                session = new SessionManager(getApplicationContext());
-                // Create login session
-//                session.setLogin(false);
+                sp.clearAll();
+                db.clearAll();
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -656,8 +649,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void ChangeSyncButtonState() {
-
-
         if (db.getOrderCount() == 0) {
             syncBtn.setTextColor(Color.BLACK);
             syncBtn.setBackgroundResource(R.color.disableColor);

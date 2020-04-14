@@ -6,6 +6,7 @@ import com.ags.agssalesandroidclientorder.Models.EntityOrderAndDetails;
 import com.ags.agssalesandroidclientorder.Models.EntityProduct;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
 import com.ags.agssalesandroidclientorder.Models.EntitySalesman;
+import com.ags.agssalesandroidclientorder.Models.User;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -66,6 +67,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // endregion
 
     // region order list
+
+    private static final String TABLE_USER_INFO = "user_info";
+    // Customer table column names
+    private static final String user_ID = "user_id";
+    private static final String user_Name = "user_name";
+    private static final String user_Role = "user_";
+
 
     private static final String TABLE_ORDER_LIST = "order_list";
 
@@ -170,30 +178,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + orderListDetailProdAmount + " text" + ")";
 
         db.execSQL(CREATE_TABLE_ORDER_LIST_DETAIL);
+
+        String CREATE_USER_INFO = "create table " + TABLE_USER_INFO + "(" + user_ID + " integer primary key, " + user_Name + " text," + user_Role + "text)";
+        db.execSQL(CREATE_USER_INFO);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
         db.execSQL("DROP" + " TABLE IF EXISTS " + TABLE_SALEMAN);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_LIST);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_LIST_DETAIL);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_INFO);
         onCreate(db);
-
     }
 
     public void clearAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from " + TABLE_ORDER_LIST);
         db.execSQL("delete from " + TABLE_ORDER_LIST_DETAIL);
+        db.execSQL("delete from " + TABLE_CUSTOMER);
+        db.execSQL("delete from " + TABLE_SALEMAN);
+        db.execSQL("delete from " + TABLE_PRODUCT);
+        db.execSQL("delete from " + TABLE_USER_INFO);
     }
 
     public void ChangeStatusToPosted() {
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
     }
 
@@ -207,29 +219,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void addAllCustomers(EntityCustomer allCustomers) {
-
         SQLiteDatabase db = this.getWritableDatabase();
-/*
-        db.execSQL("delete from " + TABLE_CUSTOMER);*/
-
-//        for (EntityCustomer customer : allCustomers) {
-
         String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" + allCustomers.getCustomerBranch() + "');";
         db.execSQL(sql);
+    }
 
-//        }
-
+    public void addUserInfo(int userid, String username, String userRole) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sql = "insert into " + TABLE_USER_INFO + " values (" + userid + ", '" + username + "','" + userRole + "');";
+        db.execSQL(sql);
     }
 
     public EntityCustomer getCustomer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-
         String sql = "SELECT * FROM " + TABLE_CUSTOMER + " where " + customerId + " = " + id + " LIMIT 1;";
         Cursor cursor = db.rawQuery(sql, null);
-
         if (cursor != null)
             cursor.moveToFirst();
-
         EntityCustomer customer = new EntityCustomer();
         customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
         customer.setCustomerName(cursor.getString(1));
@@ -237,8 +243,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // return contact
         return customer;
-
     }
+
 
     public List<EntityCustomer> getAllCustomers() {
 
@@ -265,6 +271,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         return customerList;
+
+    }
+
+    public List<User> getUser() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<User> userList = new ArrayList<User>();
+
+        // Select all query
+        String selectQuery = "select * from " + TABLE_USER_INFO;
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                User user = new User();
+                user.setUserid(Integer.parseInt(cursor.getString(0)));
+                user.setUsername(cursor.getString(1));
+                user.setUserrole(cursor.getString(2));
+                // Adding contact to list
+                userList.add(user);
+            } while (cursor.moveToNext());
+        }
+
+        return userList;
 
     }
 
@@ -393,6 +425,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("delete from " + TABLE_PRODUCT);
         db.execSQL("delete from " + TABLE_SALEMAN);
         db.execSQL("delete from " + TABLE_CUSTOMER);
+    }
+    public void deleteUser() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_USER_INFO);
     }
 
     public void addAllProducts(EntityProduct product) {
@@ -877,6 +913,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL(customers);
             db.execSQL(products);
             db.execSQL(salesman);
+            return true;
+        } else if (value == 2) {
+            String users = "delete from " + TABLE_USER_INFO;
+            db.execSQL(users);
             return true;
         } else {
             return false;

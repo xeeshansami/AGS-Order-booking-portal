@@ -13,19 +13,23 @@ import retrofit2.Response;
 
 public abstract class RH<T> implements Callback<T> {
     IOnConnectionTimeoutListener iOnConnectionTimeoutListener;
+
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         if (response.isSuccessful())
             onSuccess(response);
     }
+
     @Override
     public void onFailure(Call<T> call, Throwable t) {
         if (t instanceof SocketTimeoutException) {
-            iOnConnectionTimeoutListener.onConnectionTimeout();
+            onFailure(new ErrorResponse("error", false, "Connection timeout, Please check your internet connection is working poor"));
         } else {
             onFailure(new ErrorResponse("error", false, t.getMessage()));
         }
     }
+
     protected abstract void onSuccess(Response<T> response);
+
     public abstract void onFailure(ErrorResponse response);
 }

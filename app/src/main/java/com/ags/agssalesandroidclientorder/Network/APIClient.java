@@ -38,7 +38,7 @@ public class APIClient {
             builder.readTimeout(APIConstants.READ_TIMEOUT, TimeUnit.SECONDS);
             builder.writeTimeout(APIConstants.WRITE_TIMEOUT, TimeUnit.SECONDS);
             builder.connectTimeout(APIConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
-            builder.callTimeout(10,TimeUnit.SECONDS);
+            builder.callTimeout(30,TimeUnit.SECONDS);
             if (BuildConfig.DEBUG) {
 //                if (MyApplication.getConsumerApplication() != null) {
 //                    builder.addInterceptor(new ChuckInterceptor(MyApplication.getConsumerApplication()));

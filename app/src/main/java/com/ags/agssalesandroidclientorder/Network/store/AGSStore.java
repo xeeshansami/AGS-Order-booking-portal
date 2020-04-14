@@ -36,8 +36,20 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
         consumerAPI.getSalesman(branch).enqueue(new BaseHR(callback));
     }
 
+    public void getSalesmanForCustomer(callback callback) {
+        consumerAPI.getSalesmanForCustomer().enqueue(new BaseHR(callback));
+    }
+
     public void getProducts(String branch, callback callback) {
         consumerAPI.getProducts(branch).enqueue(new BaseHR(callback));
+    }
+
+    public void getSelfCustomer(String branch,String AccountID, callback callback) {
+        consumerAPI.getSelfCustomer(branch,AccountID).enqueue(new BaseHR(callback));
+    }
+
+    public void getSelfSalesman(String id, callback callback) {
+        consumerAPI.getSelfSalesman(id).enqueue(new BaseHR(callback));
     }
 
     @Override
