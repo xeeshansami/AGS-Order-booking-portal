@@ -126,7 +126,6 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     public void ViewDetailsOfOrder(View v) {
-
         if (selectedItems.size() > 0) {
             if (selectedItems.size() > 1) {
                 Toast.makeText(this, "Select only 1 item to view details.", Toast.LENGTH_SHORT).show();
@@ -237,8 +236,7 @@ public class OrderListActivity extends AppCompatActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
 
-                                    if (password.getText().toString().equals("654321")) {
-
+                                    if (password.getText().toString().equals(sp.getpassword())) {
                                         if (db.unPostOrders(selectedItems)) {
                                             Toast.makeText(getApplicationContext(), "Orders un posted successfully.", Toast.LENGTH_SHORT).show();
                                         } else {
@@ -266,7 +264,7 @@ public class OrderListActivity extends AppCompatActivity {
                                         BindButtonCount();
 
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Password is wrong. Try again.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Your current password is wrong. please try again.", Toast.LENGTH_SHORT).show();
                                     }
 
                                 }

@@ -2,6 +2,7 @@ package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.Adapters.SelectOrderListAdapter;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
+import com.ags.agssalesandroidclientorder.Models.EntityOrder;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
 
 import com.ags.agssalesandroidclientorder.R;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,8 +27,9 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
     private ArrayList<EntityProductDetails> productsList = new ArrayList<EntityProductDetails>();
     private RecyclerView recycler;
     private SelectOrderListAdapter adapter;
-
+    private ArrayList<EntityOrder> orderList;
     DatabaseHandler db;
+    Integer orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +39,16 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("View Order Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        db = new DatabaseHandler(this);
+        orderList = new ArrayList<EntityOrder>();
         getData();
     }
 
-    public void getData(){
+    public void getData() {
         productsList.clear();
-        if(getIntent().hasExtra("OrderId")) {
-            Integer orderId = getIntent().getIntExtra("OrderId", 0);
-            db = new DatabaseHandler(this);
+        if (getIntent().hasExtra("OrderId")) {
+            orderId = getIntent().getIntExtra("OrderId", 0);
+            orderList = db.getAllOrders("0");
             productsList.addAll(db.GetOrderDetails(orderId));
         }
         recycler = (RecyclerView) findViewById(R.id.lstOrderProducts);
@@ -52,9 +57,21 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
         adapter = new SelectOrderListAdapter(this, productsList, new onItemClickListener2() {
             @Override
             public void onItemClick(View view, int position, EntityProductDetails order) {
-                Intent intent = new Intent(ActivityOrderProductsDetail.this, EditSingleProduct.class);
-                intent.putExtra("order",  order);
-                startActivity(intent);
+                if (orderList.size() > 0) {
+                    for (EntityOrder entityOrder : orderList) {
+                        if (entityOrder.getOrderId().equalsIgnoreCase(String.valueOf(orderId))) {
+                            Intent intent = new Intent(ActivityOrderProductsDetail.this, EditSingleProduct.class);
+                            intent.putExtra("order", order);
+                            startActivity(intent);
+                            break;
+                        } else {
+                            Toast.makeText(ActivityOrderProductsDetail.this, "This order has posted it cannot be edited. please select another one thanks!.", Toast.LENGTH_LONG).show();
+                            break;
+                        }
+                    }
+                } else {
+                    Toast.makeText(ActivityOrderProductsDetail.this, "This order has posted it cannot be edited. please select another one thanks!.", Toast.LENGTH_LONG).show();
+                }
             }
         });
         recycler.setAdapter(adapter);
