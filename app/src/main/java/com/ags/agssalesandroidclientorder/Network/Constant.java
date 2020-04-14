@@ -1,11 +1,11 @@
-package com.ags.agssalesandroidclientorder.network;
+package com.ags.agssalesandroidclientorder.Network;
 
 import org.jetbrains.annotations.NotNull;
 
 //import okhttp3.logging.HttpLoggingInterceptor;
 
 public class Constant {
-    final public static String baseUrl="";
+    final public static String baseUrl="http://mobile.agssukkur.com/agssalesclient.asmx/";
     public static final String BASE_URL_MAP = "";
     @NotNull
     public static final  String HEADER_TAG = "@";

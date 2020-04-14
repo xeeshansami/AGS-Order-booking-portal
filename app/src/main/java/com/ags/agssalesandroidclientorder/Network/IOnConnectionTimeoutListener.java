@@ -1,4 +1,4 @@
-package com.ags.agssalesandroidclientorder.network;
+package com.ags.agssalesandroidclientorder.Network;
 
 /**
  */

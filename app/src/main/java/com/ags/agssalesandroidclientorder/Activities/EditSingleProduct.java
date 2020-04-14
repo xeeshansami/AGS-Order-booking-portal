@@ -32,7 +32,7 @@ public class EditSingleProduct extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_single_product);
         db = new DatabaseHandler(this);
-        utils = new Utils();
+        utils = new Utils(this);
         findViewByID();
         myToolbar.setSubtitle("Update");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_primary_color_24dp);

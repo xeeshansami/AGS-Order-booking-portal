@@ -7,6 +7,9 @@ import com.ags.agssalesandroidclientorder.Models.EntityOrderAndDetails;
 
 import com.ags.agssalesandroidclientorder.Models.EntityProduct;
 import com.ags.agssalesandroidclientorder.Models.EntitySalesman;
+import com.ags.agssalesandroidclientorder.Network.model.response.ErrorResponse;
+import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
+import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorder.R;
 
 import android.app.ProgressDialog;
@@ -148,12 +151,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         setContentView(R.layout.dashboard);
         syncBtn = (TextView) findViewById(R.id.syncNowBtn);
         syncBtn.setOnClickListener(this);
-        utils = new Utils();
+        utils = new Utils(this);
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
-        setDownloadLayout();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED));
         db = new DatabaseHandler(this);
         sp = new SharedPreferenceHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -315,7 +318,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
-                                                checkUserActiveOrNot(false);
+                                                checkUserActiveOrNot();
                                                 view.dismiss();
                                             }
                                         });
@@ -362,7 +365,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else {
             syncBtn.setEnabled(true);
             syncBtn.setClickable(true);
-            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+            utils.alertBox(this, "Internet Connections", "Network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
@@ -378,57 +381,37 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     }
 
-    public void checkUserActiveOrNot(final boolean isMasterData) {
+    public void checkUserActiveOrNot() {
         if (sp.getusername() != null && sp.getpassword() != null && !TextUtils.isEmpty(sp.getusername()) && !TextUtils.isEmpty(sp.getpassword())) {
             utils.showLoader(this);
-            // Instantiate the RequestQueue.
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String url = url_Login + "?uname=" + sp.getusername() + "&pwd=" + sp.getpassword();
-            // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
-                                if (Integer.parseInt(jsonObject.get("userid").toString()) > 0) {
-                                    if (isMasterData) {
-                                        StartDownloading();
-                                    } else {
-                                        utils.hideLoader();
-                                        uploadProductSyncData();
-                                    }
-                                } else {
-                                    utils.hideLoader();
-                                    utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
-                                        @Override
-                                        public void onClick(DialogInterface view, int i) {
-                                            view.dismiss();
-                                        }
-                                    });
-                                }
-
-                            } catch (JSONException e) {
-                                utils.hideLoader();
-                                e.printStackTrace();
-                            }
-
-
-                        }
-                    }, new Response.ErrorListener() {
-
+            AGSStore.getInstance().getLogin(sp.getusername(), sp.getpassword(), new callback() {
                 @Override
-                public void onErrorResponse(VolleyError error) {
+                public void Success(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
+                        if (Integer.parseInt(jsonObject.get("userid").toString()) > 0) {
+                            utils.hideLoader();
+                            uploadProductSyncData();
+                        } else {
+                            utils.hideLoader();
+                            utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
+                                @Override
+                                public void onClick(DialogInterface view, int i) {
+                                    view.dismiss();
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        utils.hideLoader();
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void Failure(ErrorResponse response) {
                     utils.hideLoader();
                     Toast.makeText(DashboardActivity.this, "Some error occurred in authentication. Kindly inform your administrator.", Toast.LENGTH_SHORT).show();
                 }
             });
-
-            int socketTimeout = 30000;//30 seconds - change to what you want
-            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-            stringRequest.setRetryPolicy(policy);
-            // Add the request to the RequestQueue.
-            queue.add(stringRequest);
         } else {
             utils.hideLoader();
             utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
@@ -774,7 +757,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
-                                                checkUserActiveOrNot(true);
+                                                if (sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
+                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword());
+                                                }
                                                 view.dismiss();
                                             }
                                         });
@@ -808,7 +793,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 }
             }).execute();
         } else {
-            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+            utils.alertBox(this, "Internet Connections", "Network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
@@ -868,7 +853,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     syncBtn.setBackgroundResource(R.color.activeColor);
                     syncBtn.setText("Send Order Now");
                 }
-            } else if (action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES)) {
+            } else if (action.equals(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES) || action.equals(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED)) {
                 total_Products_Count.setText(String.valueOf(db.getProductCount()));
                 total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
             }
@@ -895,46 +880,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     Snackbar.make(findViewById(android.R.id.content), "Something wend wrong, please try again later", 1000).show();
                 }
                 view.dismiss();
-            }
-        });
-    }
-
-    public boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            //You can replace it with your name
-            return !ipAddr.equals("");
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public void setDownloadLayout() {
-        LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
-        promptsView = li.inflate(R.layout.customer_downloader, null);
-        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
-        // set prompts.xml to alertdialog builder
-        alertDialogBuilder.setView(promptsView);
-        // create alert dialog
-        alertDialog = alertDialogBuilder.create();
-        Toolbar toolbar = promptsView.findViewById(R.id.toolbar);
-        toolbar.setSubtitle("Master data");
-        toolbar.setTitle("Downloading...");
-        toolbar.setNavigationIcon(R.drawable.ic_download);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
-        mainProgress = promptsView.findViewById(R.id.progress_bar1);
-        subProgress = promptsView.findViewById(R.id.progress_bar2);
-        category_label = promptsView.findViewById(R.id.category_label);
-        progress_lbl = promptsView.findViewById(R.id.progress_lbl);
-        cancel_action = promptsView.findViewById(R.id.cancel_action);
-        progress_percentage = promptsView.findViewById(R.id.progress_percentage);
-        cancel_action.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(findViewById(android.R.id.content), "Importing cancelled", 1500).show();
-                alertDialog.dismiss();
             }
         });
     }
@@ -981,7 +926,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
     }
-
     private Intent shareFile(File file, String filename) {
         Uri uri = FileProvider.getUriForFile(
                 this,
@@ -996,7 +940,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //        share.setPackage("com.whatsapp");
         return share;
     }
-
     public void openFile(File file, String filename) {
         Uri uri = FileProvider.getUriForFile(
                 this,
@@ -1012,256 +955,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Toast.makeText(DashboardActivity.this, "No PDF Viewer Installed", Toast.LENGTH_LONG).show();
         }
     }
-
-    public void StartDownloading() {
-        new LoadUrls().execute();
-    }
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.syncNowBtn) {
             syncBtn.setEnabled(false);
             syncBtn.setClickable(false);
             UploadData();
-        }
-    }
-
-    public class LoadUrls extends AsyncTask<String, Integer, List<JSONArray>> {
-        String customersUrl, productsUrl, salesmanUrl;
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            customersUrl = "http://mobile.agssukkur.com/agssalesclient.asmx/customers?branch=" + sp.getbranch();
-            productsUrl = "http://mobile.agssukkur.com/agssalesclient.asmx/products?branch=" + sp.getbranch();
-            salesmanUrl = "http://mobile.agssukkur.com/agssalesclient.asmx/salesman?branch=" + sp.getbranch();
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected List<JSONArray> doInBackground(String... strings) {
-            List<JSONArray> jsonArrays = new ArrayList<>();
-            jsonArrays.add(customer(customersUrl));
-            jsonArrays.add(products(productsUrl));
-            jsonArrays.add(salesman(salesmanUrl));
-            return jsonArrays;
-        }
-
-        @Override
-        protected void onPostExecute(List<JSONArray> jsonArrays) {
-            super.onPostExecute(jsonArrays);
-            jsonArrayForCustomers = jsonArrays.get(0);
-            jsonArrayForProducts = jsonArrays.get(1);
-            jsonArrayForSalesman = jsonArrays.get(2);
-            utils.hideLoader();
-            new Downloading().execute();
-        }
-    }
-
-    public JSONArray customer(String customerUrl) {
-        JSONArray jsonArray = null;
-        try {
-            URL url = new URL(customerUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder builder = new StringBuilder();
-
-            String inputString;
-            while ((inputString = bufferedReader.readLine()) != null) {
-                builder.append(inputString);
-            }
-            String response = new String(builder.toString());
-            jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
-            urlConnection.disconnect();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        } finally {
-            return jsonArray;
-        }
-    }
-
-    public JSONArray products(String productsUrl) {
-        JSONArray jsonArray = null;
-        try {
-            URL url = new URL(productsUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder builder = new StringBuilder();
-
-            String inputString;
-            while ((inputString = bufferedReader.readLine()) != null) {
-                builder.append(inputString);
-            }
-            String response = new String(builder.toString());
-            jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
-            urlConnection.disconnect();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        } finally {
-            return jsonArray;
-        }
-    }
-
-    public JSONArray salesman(String salesmanUrl) {
-        JSONArray jsonArray = null;
-        try {
-            URL url = new URL(salesmanUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder builder = new StringBuilder();
-
-            String inputString;
-            while ((inputString = bufferedReader.readLine()) != null) {
-                builder.append(inputString);
-            }
-            String response = new String(builder.toString());
-            jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
-            urlConnection.disconnect();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        } finally {
-            return jsonArray;
-        }
-    }
-
-    public class Downloading extends AsyncTask<Void, Integer, String> {
-        int maxValue = jsonArrayForCustomers.length() + jsonArrayForProducts.length() + jsonArrayForSalesman.length();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            alertDialog.show();
-            alertDialog.setCancelable(false);
-            subProgress.setMax(100);
-            subProgress.setProgress(0);
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            subProgress.setProgress(values[0]);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                final JSONArray salesman = jsonArrayForSalesman;
-                final JSONArray customers = jsonArrayForCustomers;
-                final JSONArray products = jsonArrayForProducts;
-                db.deleteTable();
-                try {
-                    //TODO: PRODUCTS
-                    for (i = 0; i < products.length(); i++) {
-                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(maxValue)));
-                        publishProgress((int) percent);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                category_label.setText("Importing Products....");
-                                progress_lbl.setText(i + "/" + products.length());
-                                progress_percentage.setText(Math.floor(percent) + "%");
-                            }
-                        });
-                        JSONObject jObject = products.getJSONObject(i);
-                        EntityProduct product = new EntityProduct();
-                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
-                        product.setProductName(jObject.get("prod_name").toString());
-                        product.setProductSize(jObject.get("prod_size").toString());
-                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
-                        product.setProductCompany(jObject.get("prod_company").toString());
-                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
-                        db.addAllProducts(product);
-                    }
-                    //TODO: SALESMAN
-                    for (i = 0; i < salesman.length(); i++) {
-                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
-                        publishProgress((int) percent);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                category_label.setText("Importing Salesmans....");
-                                progress_lbl.setText(i + "/" + salesman.length());
-                                progress_percentage.setText(Math.floor(percent) + "%");
-                            }
-                        });
-                        JSONObject jObject = salesman.getJSONObject(i);
-                        EntitySalesman sman = new EntitySalesman();
-                        sman.setSalesman_Id(Integer.parseInt(jObject.get("Salesmen_Code").toString()));
-                        sman.setSalesman_Name(jObject.get("Salesmen_Name").toString());
-                        db.addAllSalesMan(sman);
-                    }
-                    //TODO: CUSTOMERS
-                    for (i = 0; i < customers.length(); i++) {
-                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
-                        publishProgress((int) percent);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                category_label.setText("Importing Customers....");
-                                progress_lbl.setText(i + "/" + customers.length());
-                                progress_percentage.setText(Math.floor(percent) + "%");
-                            }
-                        });
-                        JSONObject jObject = customers.getJSONObject(i);
-                        EntityCustomer customer = new EntityCustomer();
-                        customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
-                        customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
-                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
-                        db.addAllCustomers(customer);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            subProgress.setProgress(100);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    category_label.setText("Please wait...");
-                }
-            }, 500);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    category_label.setText("Importing Completed");
-                }
-            }, 500);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    utils.hideLoader();
-                    alertDialog.dismiss();
-                    // Create login session
-                    alertDialog.dismiss();
-                    Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES);
-                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                    utils.alertBox(DashboardActivity.this, "", "Master data've download completed", "Done", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            view.dismiss();
-                        }
-                    });
-                }
-            }, 2000);
         }
     }
 }

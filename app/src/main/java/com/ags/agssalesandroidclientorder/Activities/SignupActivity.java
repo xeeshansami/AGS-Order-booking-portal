@@ -70,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceHandler(this);
-        utils = new Utils();
+        utils = new Utils(this);
 
         setContentView(R.layout.activity_signup);
 
@@ -160,7 +160,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }).execute();
         } else {
-            utils.alertBox(this, "Internet Connections", "network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+            utils.alertBox(this, "Internet Connections", "Network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);

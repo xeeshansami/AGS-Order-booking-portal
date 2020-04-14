@@ -163,7 +163,7 @@ public class OrderFormActivity extends AppCompatActivity {
         try {
             setContentView(R.layout.activity_order_form);
             mContext = this;
-            utils = new Utils();
+            utils = new Utils(this);
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(OrderFormActivity.this);
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
@@ -215,29 +215,15 @@ public class OrderFormActivity extends AppCompatActivity {
             BindSalesManSpinner();
             BindCustomer();
         } catch (Exception e) {
-            utils.errorBox(this, e.getMessage());
+            utils.alertBox(this, "Alert", "Master data have not download properly, Please download it from side bar menu \n => \"Download Products\"  ", "Ok", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                }
+            });
         }
     }
 
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("GPS is not Enabled!");
-        alertDialog.setMessage("Do you want to turn on GPS?");
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        });
-
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        alertDialog.show();
-    }
 
 
     protected void BindListViewForEdit() {
