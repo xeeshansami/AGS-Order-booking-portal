@@ -461,6 +461,9 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
+                button.setEnabled(true);
+                button.setClickable(true);
+                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -486,6 +489,9 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
+                button.setEnabled(true);
+                button.setClickable(true);
+                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -509,6 +515,9 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
+                button.setEnabled(true);
+                button.setClickable(true);
+                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -542,6 +551,9 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
+                button.setEnabled(true);
+                button.setClickable(true);
+                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -564,6 +576,9 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
+                button.setEnabled(true);
+                button.setClickable(true);
+                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -597,6 +612,9 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
+                button.setEnabled(true);
+                button.setClickable(true);
+                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -898,8 +916,8 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void ChangeView(String role, final Button button, String username, String password) {
         if (checkActivity(context, "LoginActivity")) {
-            if (db.getUser().size() > 0) {
-                if (db.getUser().get(0).getUserrole().equalsIgnoreCase(sp.getrole())) {
+  /*          if (db.getUser().size() > 0) {*/
+               /* if (db.getUser().get(0).getUserrole().equalsIgnoreCase(sp.getrole())) {*/
                     if (db.getAllCustomers().size() > 0 && db.getAllProducts().size() > 0 && db.getAllSalesman().size() > 0) {
                         /*Downloading when user same and have data in local database*/
                         hideLoader();
@@ -909,16 +927,16 @@ public class Utils implements IOnConnectionTimeoutListener {
                         /*Downloading when user same but there is not downloading in local database*/
                         StartDownloading(role, button);
                     }
-                } else {
-                    /*Downloading when user change*/
+             /*   } else {
+                    *//*Downloading when user change*//*
                     StartDownloading(role, button);
-                }
-            } else {
-                /*When new user is comming so previous order is also clear and also clear the master data*/
+                }*/
+           /* } else {
+                *//*When new user is comming so previous order is also clear and also clear the master data*//*
                 db.clearAll();
-                /*Downloading when user change*/
+                *//*Downloading when user change*//*
                 StartDownloading(role, button);
-            }
+            }*/
         } else {
             /*Downloading from dashboard*/
             downloadMasterData(button);

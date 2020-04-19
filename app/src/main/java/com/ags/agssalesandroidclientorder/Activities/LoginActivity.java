@@ -102,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     public void printDifference(Date startDate, Date endDate) {
         //milliseconds
         long different = startDate.getTime() - endDate.getTime();
@@ -143,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
     public void date(String perviousDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
         try {
@@ -155,6 +157,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     public void signUpBtnCheck() {
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     public boolean validation() {
         String email = txtUsername.getText().toString().trim();
         String pwd = txtPassword.getText().toString().trim();
@@ -192,17 +196,20 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
         checkForPermissions();
     }
+
     public void onResume() {
         super.onResume();
         if (db != null) {
             db.deleteOrdersOlderThenSevenDays();
         }
     }
+
     public void isOnlineOffline() {
         if (utils.checkConnection(this)) {
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
@@ -213,6 +220,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onConnectionFail(String errorMsg) {
+                    btnLogin.setEnabled(true);
+                    btnLogin.setClickable(true);
                     utils.hideLoader();
                     utils.myLogs(LoginActivity.this, errorMsg, true);
 
@@ -220,6 +229,7 @@ public class LoginActivity extends AppCompatActivity {
             }).execute();
         }
     }
+
     private void checkForPermissions() {
         Permissions.check(this/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
             @Override
@@ -247,11 +257,30 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
     public void online(Button button) {
         String username = txtUsername.getText().toString().trim();
         String userpassword = txtPassword.getText().toString().trim();
-        utils.loginOrActiveCheck(false, true, false, button, username, userpassword);
+        if (sp.getusername() != null) {
+            if (sp.getusername().equals(username) && sp.getpassword() != null && sp.getpassword().equals(userpassword)) {
+                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                finish();
+            } else {
+                utils.hideLoader();
+                button.setEnabled(true);
+                button.setClickable(true);
+                utils.alertBox(LoginActivity.this, "Alert", "Username or password is invalid please login again.", "ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                    }
+                });
+            }
+        } else {
+            utils.loginOrActiveCheck(false, true, false, button, username, userpassword);
+        }
     }
+
     public void offline(Button button) {
         if (sp.getusername() != null && sp.getusername().equals(txtUsername.getText().toString().trim()) && sp.getpassword() != null && sp.getpassword().equals(txtPassword.getText().toString().trim())) {
             startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
@@ -268,6 +297,7 @@ public class LoginActivity extends AppCompatActivity {
         button.setEnabled(true);
         button.setClickable(true);
     }
+
     public void Login(final Button btnLogin) {
         if (validation()) {
             if (utils.checkConnection(this)) {

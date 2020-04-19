@@ -55,6 +55,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListener2;
 import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -208,7 +209,13 @@ public class OrderFormActivity extends AppCompatActivity {
             CardViewNetTotal.setVisibility(View.GONE);
 
             listView = (ListView) findViewById(R.id.lstViewSelectedProducts);
-            adapter = new ProductDetailsListAdapter(this, productsList);
+            adapter = new ProductDetailsListAdapter(this, productsList, new onItemClickListener2() {
+                @Override
+                public void onItemClick(View view, int position, EntityProductDetails order) {
+                    EntityProductDetails entry = productsList.get(position);
+                    ShowDialogForDetails(entry, position);
+                }
+            });
             listView.setAdapter(adapter);
             BindListViewForEdit();
             txtRemarks = (EditText) findViewById(R.id.editTextRemarks);
@@ -227,13 +234,17 @@ public class OrderFormActivity extends AppCompatActivity {
 
 
     protected void BindListViewForEdit() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+/*        listView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EntityProductDetails entry = (EntityProductDetails) parent.getAdapter().getItem(position);
-                ShowDialogForDetails(entry, position);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+
             }
-        });
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });*/
     }
 
     @Override

@@ -3,11 +3,15 @@ package com.ags.agssalesandroidclientorder.Adapters;
 import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
 
 import com.ags.agssalesandroidclientorder.R;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListener2;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -17,16 +21,15 @@ import java.util.List;
  * Created by Asad on 10/3/2016.
  */
 public class ProductDetailsListAdapter extends BaseAdapter {
-
+    onItemClickListener2 onItemClickListener;
     private Activity activity;
     private LayoutInflater inflater;
     private List<EntityProductDetails> productDetailItems;
 
-    public ProductDetailsListAdapter(Activity activity, List<EntityProductDetails> productDetailItems){
-
+    public ProductDetailsListAdapter(Activity activity, List<EntityProductDetails> productDetailItems,  onItemClickListener2 onItemClickListener){
         this.activity = activity;
         this.productDetailItems = productDetailItems;
-
+        this.onItemClickListener=onItemClickListener;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class ProductDetailsListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         if (inflater == null)
             inflater = (LayoutInflater) activity
@@ -62,7 +65,7 @@ public class ProductDetailsListAdapter extends BaseAdapter {
         TextView Discount = (TextView) convertView.findViewById(R.id.Discount);
         TextView Total = (TextView) convertView.findViewById(R.id.Total);
 
-        EntityProductDetails product = productDetailItems.get(position);
+        final EntityProductDetails product = productDetailItems.get(position);
 
         Id.setText(String.valueOf(product.getProductId()));
         Name.setText(String.valueOf(product.getProductName()));
@@ -72,7 +75,12 @@ public class ProductDetailsListAdapter extends BaseAdapter {
         Bonus.setText(String.valueOf(product.getProductBonus()));
         Discount.setText(String.valueOf(product.getProductDiscount()));
         Total.setText(String.valueOf(product.getItemValue()));
-
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(view,position,product);
+            }
+        });
         return convertView;
     }
 }
