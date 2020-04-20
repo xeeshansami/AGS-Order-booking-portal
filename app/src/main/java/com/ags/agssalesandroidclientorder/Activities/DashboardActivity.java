@@ -86,6 +86,7 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -399,6 +400,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         e.printStackTrace();
                     }
                 }
+
                 @Override
                 public void Failure(ErrorResponse response) {
                     utils.hideLoader();
@@ -540,41 +542,99 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             document.add(p1);
             document.add(p2);
             document.add(p3);
-
             PdfPTable table = new PdfPTable(14);
             table.setWidthPercentage(100);
             table.setHorizontalAlignment(1);
 
+            BaseFont bf = null;
+            try {
+                bf = BaseFont.createFont(
+                        BaseFont.COURIER,
+                        BaseFont.CP1252,
+                        BaseFont.EMBEDDED);
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Font font = new Font(bf, 6);
 
-            PdfPCell InvoiceNo = new PdfPCell(new Phrase("InvoiceNo"));
-            PdfPCell Date = new PdfPCell(new Phrase("Date"));
-            PdfPCell Sal_Code = new PdfPCell(new Phrase("Sal_Code"));
-            PdfPCell Sal_Name = new PdfPCell(new Phrase("Sal_Name"));
-            PdfPCell Cust_Code = new PdfPCell(new Phrase("Cust_Code"));
-            PdfPCell Cust_Name = new PdfPCell(new Phrase("Cust_Name"));
-            PdfPCell Town_Name = new PdfPCell(new Phrase("Town_Name"));
-            PdfPCell Prod_Code = new PdfPCell(new Phrase("Prod_Code"));
-            PdfPCell Prod_Name = new PdfPCell(new Phrase("Prod_Name"));
-            PdfPCell Size = new PdfPCell(new Phrase("Size"));
-            PdfPCell Rate = new PdfPCell(new Phrase("Rate"));
-            PdfPCell Qty = new PdfPCell(new Phrase("Qty"));
-            PdfPCell Bonus = new PdfPCell(new Phrase("Bonus"));
-            PdfPCell Discount = new PdfPCell(new Phrase("Discount"));
 
-            InvoiceNo = headersCell(InvoiceNo);
-            Date = headersCell(Date);
-            Sal_Code = headersCell(Sal_Code);
-            Sal_Name = headersCell(Sal_Name);
-            Cust_Code = headersCell(Cust_Code);
-            Cust_Name = headersCell(Cust_Name);
-            Town_Name = headersCell(Town_Name);
-            Prod_Code = headersCell(Prod_Code);
-            Prod_Name = headersCell(Prod_Name);
-            Size = headersCell(Size);
-            Rate = headersCell(Rate);
-            Qty = headersCell(Qty);
-            Bonus = headersCell(Bonus);
-            Discount = headersCell(Discount);
+
+
+            PdfPCell InvoiceNo = new PdfPCell(new Phrase("InvoiceNo",font));
+            PdfPCell Date = new PdfPCell(new Phrase("Date",font));
+            PdfPCell Sal_Code = new PdfPCell(new Phrase("Sal Code",font));
+            PdfPCell Sal_Name = new PdfPCell(new Phrase("Sal Name",font));
+            PdfPCell Cust_Code = new PdfPCell(new Phrase("Cust Code",font));
+            PdfPCell Cust_Name = new PdfPCell(new Phrase("Cust Name",font));
+            PdfPCell Town_Name = new PdfPCell(new Phrase("Town Name",font));
+            PdfPCell Prod_Code = new PdfPCell(new Phrase("Prod Code",font));
+            PdfPCell Prod_Name = new PdfPCell(new Phrase("Prod Name",font));
+            PdfPCell Size = new PdfPCell(new Phrase("Size",font));
+            PdfPCell Rate = new PdfPCell(new Phrase("Rate",font));
+            PdfPCell Qty = new PdfPCell(new Phrase("Qty",font));
+            PdfPCell Bonus = new PdfPCell(new Phrase("Bonus",font));
+            PdfPCell Discount = new PdfPCell(new Phrase("Discount",font));
+
+
+            InvoiceNo.setBorder(Rectangle.BOX);
+            InvoiceNo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            InvoiceNo.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Date .setBorder(Rectangle.BOX);
+            Date .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Date .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Sal_Code.setBorder(Rectangle.BOX);
+            Sal_Code.setHorizontalAlignment(Element.ALIGN_LEFT);
+            Sal_Code.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Sal_Name.setBorder(Rectangle.BOX);
+            Sal_Name.setHorizontalAlignment(Element.ALIGN_LEFT);
+            Sal_Name.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Cust_Code.setBorder(Rectangle.BOX);
+            Cust_Code.setHorizontalAlignment(Element.ALIGN_LEFT);
+            Cust_Code.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Cust_Name.setBorder(Rectangle.BOX);
+            Cust_Name.setHorizontalAlignment(Element.ALIGN_LEFT);
+            Cust_Name.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Town_Name .setBorder(Rectangle.BOX);
+            Town_Name .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Town_Name .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Prod_Code.setBorder(Rectangle.BOX);
+            Prod_Code.setHorizontalAlignment(Element.ALIGN_LEFT);
+            Prod_Code.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Prod_Name.setBorder(Rectangle.BOX);
+            Prod_Name.setHorizontalAlignment(Element.ALIGN_LEFT);
+            Prod_Name.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Size .setBorder(Rectangle.BOX);
+            Size .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Size .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Rate  .setBorder(Rectangle.BOX);
+            Rate .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Rate .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Qty .setBorder(Rectangle.BOX);
+            Qty .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Qty .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Bonus .setBorder(Rectangle.BOX);
+            Bonus .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Bonus .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+            Discount .setBorder(Rectangle.BOX);
+            Discount .setHorizontalAlignment(Element.ALIGN_LEFT);
+            Discount .setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
+
 
 
             table.addCell(InvoiceNo);
@@ -593,20 +653,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             table.addCell(Discount);
 
             for (EntityOrderAndDetails details : allProdsAndDetails) {
-                table.addCell(details.getOrderInvoiceNo());
-                table.addCell(details.getOrderListDate());
-                table.addCell(details.getOrderSalCode());
-                table.addCell(details.getOrderSalName());
-                table.addCell(details.getOrderCustCode());
-                table.addCell(details.getOrderCustName());
-                table.addCell(details.getOrderTownId());
-                table.addCell(details.getOrderListDetailProdCode());
-                table.addCell(details.getOrderListDetailProdName());
-                table.addCell(details.getOrderListDetailProdSize());
-                table.addCell(details.getOrderListDetailProdRate());
-                table.addCell(details.getOrderListDetailProdQty());
-                table.addCell(details.getOrderListDetailProdBonus());
-                table.addCell(details.getOrderListDetailProdDiscount());
+                table.addCell(new PdfPCell(new Phrase(details.getOrderInvoiceNo(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDate(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderSalCode(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderSalName(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderCustCode(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderCustName(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderTownId(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdCode(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdName(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdSize(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdRate(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdQty(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdBonus(),font)));
+                table.addCell(new PdfPCell(new Phrase(details.getOrderListDetailProdDiscount(),font)));
             }
             document.add(table);
             document.addCreationDate();
@@ -662,8 +722,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public PdfPCell headersCell(PdfPCell cell) {
-        cell.setBorder(Rectangle.BOX);
-        cell.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorPrimary)));
+
         return cell;
     }
 
@@ -917,6 +976,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
     }
+
     private Intent shareFile(File file, String filename) {
         Uri uri = FileProvider.getUriForFile(
                 this,
@@ -931,6 +991,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //        share.setPackage("com.whatsapp");
         return share;
     }
+
     public void openFile(File file, String filename) {
         Uri uri = FileProvider.getUriForFile(
                 this,
@@ -946,6 +1007,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Toast.makeText(DashboardActivity.this, "No PDF Viewer Installed", Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.syncNowBtn) {
