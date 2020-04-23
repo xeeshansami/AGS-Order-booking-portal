@@ -88,7 +88,7 @@ public class OrderFormActivity extends AppCompatActivity {
     double latitude, longitude;
     Context mContext;
     Calendar dateSelected;
-    TextView datePicker;
+    TextView datePicker, txtSelectSalesman;
     Spinner spinnerSalesMan;
     TextView textViewCustomer, customer_selection_lbl;
     TextView textViewCustomerTown;
@@ -110,6 +110,7 @@ public class OrderFormActivity extends AppCompatActivity {
     EntityCustomer selectedCustomer;
     EntitySalesman selectedSalesMan;
     Utils utils;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -170,6 +171,7 @@ public class OrderFormActivity extends AppCompatActivity {
             sp = new SharedPreferenceHandler(this);
             // Find the toolbar view inside the activity layout
             Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+            txtSelectSalesman = findViewById(R.id.txtSelectSalesman);
             myToolbar.setTitle("Order Form");
             myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
             myToolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -230,7 +232,6 @@ public class OrderFormActivity extends AppCompatActivity {
             });
         }
     }
-
 
 
     protected void BindListViewForEdit() {
@@ -451,7 +452,11 @@ public class OrderFormActivity extends AppCompatActivity {
             EntityOrder order = new EntityOrder();
             order.setOrderDate(datePicker.getText().toString());
             order.setCustomerCode(String.valueOf(selectedCustomer.getCustomerId()));
-            order.setSaleMenCode(spinnerSalesMan.getSelectedItem().toString().substring(1, spinnerSalesMan.getSelectedItem().toString().indexOf("]")));
+            if (db.getAllSalesman().size() == 1) {
+                order.setSaleMenCode(String.valueOf(db.getAllSalesman().get(0).getSalesman_Id()));
+            } else {
+                order.setSaleMenCode(spinnerSalesMan.getSelectedItem().toString().substring(1, spinnerSalesMan.getSelectedItem().toString().indexOf("]")));
+            }
             order.setNetTotal(txtNetTotal.getText().toString());
             order.setBranch(sp.getbranch());
             order.setRemarks(txtRemarks.getText().toString());
@@ -571,31 +576,37 @@ public class OrderFormActivity extends AppCompatActivity {
                 EntitySalesman saleman1 = new EntitySalesman();
                 saleman1.setSalesman_Id(Integer.parseInt(sp.getcategory()));
                 saleman1.setSalesman_Name(sp.getusername());
-
                 salesman.add(saleman1);
             } else {
                 salesman = db.getAllSalesman();
             }
 
-            // Spinner Drop down elements
+            if (salesman.size() == 1) {
+                spinnerSalesMan.setVisibility(View.GONE);
+                txtSelectSalesman.setVisibility(View.VISIBLE);
+                txtSelectSalesman.setText(salesman.get(0).getSalesman_Name());
+            } else {
+                spinnerSalesMan.setVisibility(View.VISIBLE);
+                txtSelectSalesman.setVisibility(View.GONE);
+                // Spinner Drop down elements
+                List<String> allSalesMan = new ArrayList<String>();
 
-            List<String> allSalesMan = new ArrayList<String>();
 
+                for (EntitySalesman eachSaleMan : salesman) {
 
-            for (EntitySalesman eachSaleMan : salesman) {
+                    allSalesMan.add("[" + eachSaleMan.getSalesman_Id() + "] " + eachSaleMan.getSalesman_Name());
 
-                allSalesMan.add("[" + eachSaleMan.getSalesman_Id() + "] " + eachSaleMan.getSalesman_Name());
+                }
 
+                // Creating adapter for spinner
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, allSalesMan);
+
+                // Drop down layout style - list view with radio button
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                // attaching data adapter to spinner
+                spinnerSalesMan.setAdapter(dataAdapter);
             }
-
-            // Creating adapter for spinner
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, allSalesMan);
-
-            // Drop down layout style - list view with radio button
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            // attaching data adapter to spinner
-            spinnerSalesMan.setAdapter(dataAdapter);
         } catch (Exception e) {
         }
     }

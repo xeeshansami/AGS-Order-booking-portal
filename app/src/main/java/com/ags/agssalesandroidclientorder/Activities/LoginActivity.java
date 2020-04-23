@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void autoDownload(Date endDate , Date startDate) {
         //milliseconds
-        long different =  startDate.getTime()-endDate.getTime();
+        long different =  endDate.getTime()-startDate.getTime();
 
         System.out.println("startDate : " + startDate);
         System.out.println("endDate : " + endDate);
@@ -395,6 +395,10 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 offline(btnLogin);
             }
+        }else{
+            utils.hideLoader();
+            btnLogin.setEnabled(true);
+            btnLogin.setClickable(true);
         }
     }
 }
