@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,10 +47,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Utils implements IOnConnectionTimeoutListener {
     AlertDialog.Builder alertDialogBuilder;
@@ -491,7 +498,6 @@ public class Utils implements IOnConnectionTimeoutListener {
             public void Failure(ErrorResponse response) {
                 button.setEnabled(true);
                 button.setClickable(true);
-                hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -697,11 +703,29 @@ public class Utils implements IOnConnectionTimeoutListener {
                     customers = jsonMainArrays.get(1);
                     salesman = jsonMainArrays.get(2);
 
-                    JSONObject jObjectsalesman = salesman.getJSONObject(0);
-                    EntitySalesman sman = new EntitySalesman();
-                    sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
-                    sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
-                    db.addAllSalesMan(sman);
+
+
+
+
+                    //TODO: Salesman
+                    for (i = 0; i < salesman.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
+                        publishProgress((int) percent);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Salesman....");
+                                progress_lbl.setText(i + "/" + salesman.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObjectsalesman = salesman.getJSONObject(0);
+                        EntitySalesman sman = new EntitySalesman();
+                        sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
+                        sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
+                        db.addAllSalesMan(sman);
+                    }
+
 
                     //TODO: CUSTOMERS
                     for (i = 0; i < customers.length(); i++) {
@@ -756,18 +780,45 @@ public class Utils implements IOnConnectionTimeoutListener {
                         salesman = jsonMainArrays.get(1);
                         customers = jsonMainArrays.get(2);
                     }
-                    JSONObject jObjectsalesman = salesman.getJSONObject(0);
-                    EntitySalesman sman = new EntitySalesman();
-                    sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
-                    sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
-                    db.addAllSalesMan(sman);
 
-                    JSONObject jObjectcustomers = customers.getJSONObject(0);
-                    EntityCustomer customer = new EntityCustomer();
-                    customer.setCustomerId(Integer.parseInt(jObjectcustomers.get("ACCOUNT_CODE").toString()));
-                    customer.setCustomerName(jObjectcustomers.get("ACCOUNT_NAME").toString());
-                    customer.setCustomerBranch(jObjectcustomers.get("ACCOUNT_TOWN_NAME").toString() + " " + jObjectcustomers.get("Account_Address").toString());
-                    db.addAllCustomers(customer);
+                    //TODO: Salesman
+                    for (i = 0; i < salesman.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
+                        publishProgress((int) percent);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Salesman....");
+                                progress_lbl.setText(i + "/" + salesman.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObjectsalesman = salesman.getJSONObject(0);
+                        EntitySalesman sman = new EntitySalesman();
+                        sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
+                        sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
+                        db.addAllSalesMan(sman);
+                    }
+
+                    //TODO: CUSTOMERS
+                    for (i = 0; i < customers.length(); i++) {
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
+                        publishProgress((int) percent);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                category_label.setText("Importing Customers....");
+                                progress_lbl.setText(i + "/" + customers.length());
+                                progress_percentage.setText(Math.floor(percent) + "%");
+                            }
+                        });
+                        JSONObject jObject = customers.getJSONObject(i);
+                        EntityCustomer customer = new EntityCustomer();
+                        customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
+                        customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
+                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        db.addAllCustomers(customer);
+                    }
 
                     //TODO: PRODUCTS
                     for (i = 0; i < products.length(); i++) {
@@ -1131,4 +1182,22 @@ public class Utils implements IOnConnectionTimeoutListener {
         }
 
     }*/
+   public String convertDate(String dateString) throws Exception {
+       String dateInputPattern = "yyyy-MM-dd";
+       String dateTargetPattern = "dd-MMM-yyyy";
+       SimpleDateFormat sdf = new SimpleDateFormat(dateInputPattern);
+       Date date = sdf.parse(dateString);
+       sdf.applyPattern(dateTargetPattern);
+       System.out.println("Target Pattern: " + dateTargetPattern);
+       System.out.println("Converted Date " + sdf.format(date));
+       return sdf.format(date);
+   }
+    public String getURLForResource (int resourceId) {
+        return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
+    }
+    public String getURLForResource2 (int resourceId) {
+        Uri path = Uri.parse("android.resource:// com.ags.agssalesandroidclientorder/" + R.drawable.icon);
+        String path2 = path.toString();
+        return path2;
+    }
 }

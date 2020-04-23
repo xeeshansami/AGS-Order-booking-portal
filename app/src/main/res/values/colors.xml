@@ -6,9 +6,12 @@
     <color name="colorAccentLight">#FF9800</color>
     <color name="colorGray">#eeeeee</color>
     <color name="colorBlack">#333333</color>
-    <color name="bgColor">#0D5173E5</color>
-    <color name="disableColor">#ACACAC</color>
+    <color name="bgzColor">#0D5173E5</color>
+    <color name="disableColor">#4040AC</color>
     <color name="activeColor">#FFD10000</color>
     <color name="white">#FFFFFF</color>
     <color name="activieColorBg">#FFB2B2</color>
+    <color name="table_header_bg">#4C68A2</color>
+    <color name="table_left_column_bg">#9EB6E4</color>
+    <color name="grey">#B6B6B6</color>
 </resources>

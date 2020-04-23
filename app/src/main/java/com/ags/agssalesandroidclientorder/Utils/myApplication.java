@@ -19,7 +19,6 @@ public class myApplication extends Application {
     public void onCreate() {
         super.onCreate();
         consumerApplication = this;
-
         FirebaseMessaging.getInstance().subscribeToTopic("general")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

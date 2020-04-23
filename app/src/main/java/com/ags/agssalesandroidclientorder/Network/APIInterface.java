@@ -14,7 +14,6 @@ public interface APIInterface {
     @GET("products?")
     Call<String> getProducts(@Query("branch") String branch);
 
-
     @GET("products2?")
     Call<String> getProductsForSPO(@Query("compid") String branch);
 
