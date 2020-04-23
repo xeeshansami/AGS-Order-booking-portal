@@ -15,17 +15,17 @@ public interface APIInterface {
     Call<String> getProducts(@Query("branch") String branch);
 
     @GET("products2?")
-    Call<String> getProductsForSPO(@Query("compid") String branch);
+    Call<String> getProductsForSPO(@Query("compid") String compid,@Query("branch") String branch);
 
     @GET("salesman?")
     Call<String> getSalesman(@Query("branch") String branch);
 
     @GET("salesman2")
-    Call<String> getSalesmanForCustomer();
+    Call<String> getSalesmanForCustomer(@Query("branch") String branch);
 
     @GET("customers2")
     Call<String> getSelfCustomer(@Query("branch") String branch,@Query("AccountID") String AccountID);
 
     @GET("salesmanItSelf")
-    Call<String> getSelfSalesman(@Query("smid") String id);
+    Call<String> getSelfSalesman(@Query("smid") String id,@Query("branch") String branch);
 }

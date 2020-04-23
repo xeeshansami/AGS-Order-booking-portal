@@ -6,8 +6,11 @@ import android.Manifest;
 
 import com.ags.agssalesandroidclientorder.BuildConfig;
 
+import com.ags.agssalesandroidclientorder.Utils.SessionManager;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +38,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +48,7 @@ import java.util.Date;
 import com.ags.agssalesandroidclientorder.R;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "testter";
     Utils utils;
     String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private DatabaseHandler db;
@@ -63,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
+        AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         txtUsername = (EditText) findViewById(R.id.txtUserName);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
@@ -101,6 +107,25 @@ public class LoginActivity extends AppCompatActivity {
                 new FontImprima(LoginActivity.this, txtPassword);
             }
         });
+    }
+
+    private void AutostartDownload() {
+        if (utils.checkConnection(this)) {
+            utils.showLoader(this);
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    if (sp.getpassword() != null && sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
+                        date2(SharedPreferenceManager.getInstance(LoginActivity.this).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME));
+                    }
+                }
+
+                @Override
+                public void onConnectionFail(String errorMsg) {
+
+                }
+            }).execute();
+        }
     }
 
     public void printDifference(Date startDate, Date endDate) {
@@ -153,6 +178,50 @@ public class LoginActivity extends AppCompatActivity {
             Date date2 = simpleDateFormat.parse(perviousDate);
             Log.i("currentTime", " = " + date1);
             printDifference(date1, date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void autoDownload(Date startDate, Date endDate) {
+        //milliseconds
+        long different = startDate.getTime() - endDate.getTime();
+
+        System.out.println("startDate : " + startDate);
+        System.out.println("endDate : " + endDate);
+        System.out.println("different : " + different);
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+        long elapsedSeconds = different / secondsInMilli;
+        System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+        if (elapsedDays > 0) {
+            utils.showLoader(this);
+            utils.Login(btnLogin, sp.getusername(), sp.getpassword());
+        } else {
+            if (elapsedHours > 24) {
+                utils.showLoader(this);
+                utils.Login(btnLogin, sp.getusername(), sp.getpassword());
+            }
+        }
+    }
+
+    public void date2(String perviousDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+        try {
+            String currentTime = simpleDateFormat.format(Calendar.getInstance().getTime());
+            Date date1 = simpleDateFormat.parse(currentTime);
+            Date date2 = simpleDateFormat.parse(perviousDate);
+            Log.i("currentTime", " = " + date1);
+            autoDownload(date1, date2);
         } catch (ParseException e) {
             e.printStackTrace();
         }

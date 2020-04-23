@@ -26,6 +26,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.ags.agssalesandroidclientorder.Activities.DashboardActivity;
 import com.ags.agssalesandroidclientorder.Activities.LoginActivity;
+import com.ags.agssalesandroidclientorder.Activities.SignupActivity;
 import com.ags.agssalesandroidclientorder.BuildConfig;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
@@ -50,8 +51,10 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -454,7 +457,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public void getProductsForSPO(final Button button, final String role) {
-        AGSStore.getInstance().getProductsForSPO(sp.getCompID(), new callback() {
+        AGSStore.getInstance().getProductsForSPO(sp.getCompID(), sp.getbranch(), new callback() {
             @Override
             public void Success(String response) {
                 try {
@@ -531,7 +534,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public void getSalesmanForCustomer(final Button button, final String role) {
-        AGSStore.getInstance().getSalesmanForCustomer(new callback() {
+        AGSStore.getInstance().getSalesmanForCustomer(sp.getbranch(), new callback() {
             @Override
             public void Success(String response) {
                 try {
@@ -567,7 +570,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public void getSalesmanSelfData(final Button button, final String role) {
-        AGSStore.getInstance().getSelfSalesman(sp.getcategory(), new callback() {
+        AGSStore.getInstance().getSelfSalesman(sp.getcategory(), sp.getbranch(), new callback() {
             @Override
             public void Success(String response) {
                 JSONArray jsonArray = null;
@@ -651,6 +654,8 @@ public class Utils implements IOnConnectionTimeoutListener {
         cancel_action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferenceManager.getInstance(context).storeIntInSharedPreferences(Constant.isAlreadyDownlaoded, 1);
+                SharedPreferenceManager.getInstance(context).removeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day, "remove");
                 new Downloading(button, 0).cancel(true);
                 if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
                     button.setEnabled(true);
@@ -702,9 +707,6 @@ public class Utils implements IOnConnectionTimeoutListener {
                     products = jsonMainArrays.get(0);
                     customers = jsonMainArrays.get(1);
                     salesman = jsonMainArrays.get(2);
-
-
-
 
 
                     //TODO: Salesman
@@ -769,8 +771,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                         db.addAllProducts(product);
                     }
 
-                }
-                else {
+                } else {
                     if (inWhich == 0) {
                         products = jsonMainArrays.get(0);
                         customers = jsonMainArrays.get(1);
@@ -853,6 +854,9 @@ public class Utils implements IOnConnectionTimeoutListener {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             subProgress.setProgress(100);
+            // Format time
+            DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+            final String currentTime = df.format(Calendar.getInstance().getTime());
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -874,6 +878,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                         button.setEnabled(true);
                         button.setClickable(true);
                         db.delete(2);
+                        SharedPreferenceManager.getInstance(context).storeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME, currentTime);
                         db.addUserInfo(Integer.parseInt(sp.getuserid()), sp.getusername(), sp.getrole());
                         Intent intent = new Intent(context, DashboardActivity.class);
                         context.startActivity(intent);
@@ -885,6 +890,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                         alertDialog.dismiss();
                         Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES);
                         LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
+                        SharedPreferenceManager.getInstance(context).storeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME, currentTime);
                         alertBox(context, "", "Master data've download completed", "Done", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
@@ -967,23 +973,28 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void ChangeView(String role, final Button button, String username, String password) {
         if (checkActivity(context, "LoginActivity")) {
-  /*          if (db.getUser().size() > 0) {*/
-               /* if (db.getUser().get(0).getUserrole().equalsIgnoreCase(sp.getrole())) {*/
-                    if (db.getAllCustomers().size() > 0 && db.getAllProducts().size() > 0 && db.getAllSalesman().size() > 0) {
-                        /*Downloading when user same and have data in local database*/
-                        hideLoader();
-                        context.startActivity(new Intent(context, DashboardActivity.class));
-                        ((Activity) context).finish();
-                    } else {
-                        /*Downloading when user same but there is not downloading in local database*/
-                        StartDownloading(role, button);
-                    }
-             /*   } else {
-                    *//*Downloading when user change*//*
+            /*          if (db.getUser().size() > 0) {*/
+            /* if (db.getUser().get(0).getUserrole().equalsIgnoreCase(sp.getrole())) {*/
+            if (SharedPreferenceManager.getInstance(context).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT).
+                    equalsIgnoreCase(SharedPreferenceManager.getInstance(context).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT_YES))) {
+                StartDownloading(role, button);
+            } else {
+                if (db.getAllCustomers().size() > 0 && db.getAllProducts().size() > 0 && db.getAllSalesman().size() > 0) {
+                    /*Downloading when user same and have data in local database*/
+                    hideLoader();
+                    context.startActivity(new Intent(context, DashboardActivity.class));
+                    ((Activity) context).finish();
+                } else {
+                    /*Downloading when user same but there is not downloading in local database*/
+                    StartDownloading(role, button);
+                }
+            }
+            /*   } else {
+             *//*Downloading when user change*//*
                     StartDownloading(role, button);
                 }*/
-           /* } else {
-                *//*When new user is comming so previous order is also clear and also clear the master data*//*
+            /* } else {
+             *//*When new user is comming so previous order is also clear and also clear the master data*//*
                 db.clearAll();
                 *//*Downloading when user change*//*
                 StartDownloading(role, button);
@@ -1002,202 +1013,29 @@ public class Utils implements IOnConnectionTimeoutListener {
         }
     }
 
-   /* public class Downloading extends AsyncTask<Void, Integer, String> {
-        Button button;
-        int inWhich = 0;
-        JSONArray products, customers, salesman;
-
-        public Downloading(Button button, int inWhich) {
-            this.button = button;
-            this.inWhich = inWhich;
-            setUpDownloadAlertBox(button);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            alertDialog.show();
-            alertDialog.setCancelable(false);
-            subProgress.setMax(100);
-            subProgress.setProgress(0);
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            subProgress.setProgress(values[0]);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                db.deleteTable();
-                if (inWhich == 0) {
-                    products = jsonMainArrays.get(0);
-                    salesman = jsonMainArrays.get(1);
-                    customers = jsonMainArrays.get(2);
-
-                    JSONObject jObjectsalesman = salesman.getJSONObject(0);
-                    EntitySalesman sman = new EntitySalesman();
-                    sman.setSalesman_Id(Integer.parseInt(jObjectsalesman.get("Salesmen_Code").toString()));
-                    sman.setSalesman_Name(jObjectsalesman.get("Salesmen_Name").toString());
-                    db.addAllSalesMan(sman);
-
-
-                    JSONObject jObjectcustomers = customers.getJSONObject(0);
-                    EntityCustomer customer = new EntityCustomer();
-                    customer.setCustomerId(Integer.parseInt(jObjectcustomers.get("ACCOUNT_CODE").toString()));
-                    customer.setCustomerName(jObjectcustomers.get("ACCOUNT_NAME").toString());
-                    customer.setCustomerBranch(jObjectcustomers.get("ACCOUNT_TOWN_NAME").toString() + " " + jObjectcustomers.get("Account_Address").toString());
-                    db.addAllCustomers(customer);
-
-                    //TODO: PRODUCTS
-                    for (i = 0; i < products.length(); i++) {
-                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
-                        publishProgress((int) percent);
-                        ((Activity) context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                category_label.setText("Importing Products....");
-                                progress_lbl.setText(i + "/" + products.length());
-                                progress_percentage.setText(Math.floor(percent) + "%");
-                            }
-                        });
-                        JSONObject jObject = products.getJSONObject(i);
-                        EntityProduct product = new EntityProduct();
-                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
-                        product.setProductName(jObject.get("prod_name").toString());
-                        product.setProductSize(jObject.get("prod_size").toString());
-                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
-                        product.setProductCompany(jObject.get("prod_company").toString());
-                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
-                        db.addAllProducts(product);
-                    }
-
-                } else if (inWhich == 1) {
-                    products = jsonMainArrays.get(0);
-                    customers = jsonMainArrays.get(1);
-                    salesman = jsonMainArrays.get(2);
-
-                    *//*=============*//*
-
-
-                    try {
-                        //TODO: SALESMAN
-                        for (i = 0; i < salesman.length(); i++) {
-                            percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(salesman.length())));
-                            publishProgress((int) percent);
-                            ((Activity) context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    category_label.setText("Importing Salesmans....");
-                                    progress_lbl.setText(i + "/" + salesman.length());
-                                    progress_percentage.setText(Math.floor(percent) + "%");
-                                }
-                            });
-                            JSONObject jObject = salesman.getJSONObject(i);
-                            EntitySalesman sman = new EntitySalesman();
-                            sman.setSalesman_Id(Integer.parseInt(jObject.get("Salesmen_Code").toString()));
-                            sman.setSalesman_Name(jObject.get("Salesmen_Name").toString());
-                            db.addAllSalesMan(sman);
-                        }
-                        //TODO: CUSTOMERS
-                        for (i = 0; i < customers.length(); i++) {
-                            percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(customers.length())));
-                            publishProgress((int) percent);
-                            ((Activity) context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    category_label.setText("Importing Customers....");
-                                    progress_lbl.setText(i + "/" + customers.length());
-                                    progress_percentage.setText(Math.floor(percent) + "%");
-                                }
-                            });
-                            JSONObject jObject = customers.getJSONObject(i);
-                            EntityCustomer customer = new EntityCustomer();
-                            customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
-                            customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
-                            customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
-                            db.addAllCustomers(customer);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        failedDownload(e.getMessage(), true, button);
-                    }
-
-                    *//*====================*//*
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                failedDownload(e.getMessage(), true, button);
-            }
-            return null;
-        }
-
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            subProgress.setProgress(100);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    category_label.setText("Please wait...");
-                }
-            }, 500);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    category_label.setText("Import've Completed");
-                }
-            }, 500);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (checkActivity(context, "LoginActivity")) {
-                        hideLoader();
-                        alertDialog.dismiss();
-                        button.setEnabled(true);
-                        button.setClickable(true);
-                        Intent intent = new Intent(context, DashboardActivity.class);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
-                    } else {
-                        hideLoader();
-                        alertDialog.dismiss();
-                        // Create login session
-                        alertDialog.dismiss();
-                        Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES);
-                        LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
-                        alertBox(context, "", "Master data've download completed", "Done", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                            }
-                        });
-                    }
-                }
-            }, 2000);
-        }
-
-    }*/
-   public String convertDate(String dateString) throws Exception {
-       String dateInputPattern = "yyyy-MM-dd";
-       String dateTargetPattern = "dd-MMM-yyyy";
-       SimpleDateFormat sdf = new SimpleDateFormat(dateInputPattern);
-       Date date = sdf.parse(dateString);
-       sdf.applyPattern(dateTargetPattern);
-       System.out.println("Target Pattern: " + dateTargetPattern);
-       System.out.println("Converted Date " + sdf.format(date));
-       return sdf.format(date);
-   }
-    public String getURLForResource (int resourceId) {
-        return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
+    public String convertDate(String dateString) throws Exception {
+        String dateInputPattern = "yyyy-MM-dd";
+        String dateTargetPattern = "dd-MMM-yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateInputPattern);
+        Date date = sdf.parse(dateString);
+        sdf.applyPattern(dateTargetPattern);
+        System.out.println("Target Pattern: " + dateTargetPattern);
+        System.out.println("Converted Date " + sdf.format(date));
+        return sdf.format(date);
     }
-    public String getURLForResource2 (int resourceId) {
+
+    public String getURLForResource(int resourceId) {
+        return Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" + resourceId).toString();
+    }
+
+    public String getURLForResource2(int resourceId) {
         Uri path = Uri.parse("android.resource:// com.ags.agssalesandroidclientorder/" + R.drawable.icon);
         String path2 = path.toString();
         return path2;
+    }
+
+    public int timeSplitter(String time) {
+        String[] items = time.split(":");
+        return Integer.parseInt(items[0]);
     }
 }

@@ -125,7 +125,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -564,7 +563,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             p3.setFont(head3Font);
             Date date = new Date();
             String stringDate = DateFormat.getDateTimeInstance().format(date);
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.icon);
+        /*    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.icon);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
             Image img = null;
@@ -579,20 +578,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 e.printStackTrace();
             }
             img.scaleAbsolute(100f, 100f);
-            img.setAlignment(Element.ALIGN_CENTER);
-            document.add(img);
+            img.setAlignment(Element.ALIGN_CENTER);*/
+
 //            p1.add("A.G & Sons Sukkur\n");
             p2.add("Branch of A.G & Sons, Blacksmith Street Off Shahi Bazar Sukkur. Phone# 071-5625355\n");
             p3.add("Loading Report by " + allProdsAndDetails.get(0).getOrderSalName() + " wise All Customers Date: " + stringDate + "\n\n");
-
-            document.add(p1);
-            document.add(p2);
+//            document.add(img);
+//            document.add(p1);
+//            document.add(p2);
             document.add(p3);
             PdfPTable table = new PdfPTable(12);
             table.setWidthPercentage(100);
             float[] widths = new float[]{40f, 30f, 50f, 30f, 50f, 40f, 60f, 20f, 20f, 20f, 30f, 30f};
             table.setWidths(widths);
-
             try {
                 bfCell = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
                 fontHeader = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD, BaseColor.WHITE);
@@ -727,7 +725,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void ChangeSyncButtonState() {
         if (db.getOrderCount() == 0) {
             syncBtn.setTextColor(Color.BLACK);
-            syncBtn.setBackgroundResource(R.color.disableColor);
+            syncBtn.setBackgroundResource(R.color.grey);
             syncBtn.setText("No Pending Orders");
         } else {
             syncBtn.setTextColor(Color.WHITE);
@@ -912,7 +910,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 total_Amount.setText(String.valueOf(0.00 + ".Rs"));
                 if (db.getOrderCount() == 0) {
                     syncBtn.setTextColor(Color.BLACK);
-                    syncBtn.setBackgroundResource(R.color.disableColor);
+                    syncBtn.setBackgroundResource(R.color.grey);
                     syncBtn.setText("No Pending Orders");
                 } else {
                     syncBtn.setTextColor(Color.WHITE);
