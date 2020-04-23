@@ -413,8 +413,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             utils.hideLoader();
                             uploadProductSyncData();
                         } else {
+                            syncBtn.setEnabled(true);
+                            syncBtn.setClickable(true);
                             utils.hideLoader();
-                            utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
+                            utils.alertBox(DashboardActivity.this, "Alert", "You cannot upload your orders because your account've temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
                                 @Override
                                 public void onClick(DialogInterface view, int i) {
                                     view.dismiss();
@@ -422,6 +424,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             });
                         }
                     } catch (JSONException e) {
+                        syncBtn.setEnabled(true);
+                        syncBtn.setClickable(true);
                         utils.hideLoader();
                         e.printStackTrace();
                     }
@@ -429,11 +433,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
                 @Override
                 public void Failure(ErrorResponse response) {
+                    syncBtn.setEnabled(true);
+                    syncBtn.setClickable(true);
                     utils.hideLoader();
                     Toast.makeText(DashboardActivity.this, "Some error occurred in authentication. Kindly inform your administrator.", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
+            syncBtn.setEnabled(true);
+            syncBtn.setClickable(true);
             utils.hideLoader();
             utils.alertBox(DashboardActivity.this, "Alert", "Your account is temporary blocked. Kindly contact your admin", "ok", new setOnitemClickListner() {
                 @Override

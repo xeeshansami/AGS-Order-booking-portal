@@ -427,19 +427,32 @@ public class Utils implements IOnConnectionTimeoutListener {
                         ChangeView(jsonObject.get("role").toString(), button, username, password);
                     } else {
                         hideLoader();
-                        button.setEnabled(true);
-                        button.setClickable(true);
-                        alertBox(context, "Alert", "Username or password is wrong, or may be your account is blocked, kindly inform your administrator", "ok", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                            }
-                        });
+                        if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
+                            button.setEnabled(true);
+                            button.setClickable(true);
+                        }
+                        if (sp.getusername() != null) {
+                            alertBox(context, "Alert", "Logged in user: " + sp.getusername() + " or password is wrong, or may be your account is blocked, kindly inform your administrator", "ok", new setOnitemClickListner() {
+                                @Override
+                                public void onClick(DialogInterface view, int i) {
+                                    view.dismiss();
+                                }
+                            });
+                        } else {
+                            alertBox(context, "Alert", "Username or password is wrong, or may be your account is blocked, kindly inform your administrator", "ok", new setOnitemClickListner() {
+                                @Override
+                                public void onClick(DialogInterface view, int i) {
+                                    view.dismiss();
+                                }
+                            });
+                        }
                     }
 
                 } catch (JSONException e) {
-                    button.setEnabled(true);
-                    button.setClickable(true);
+                    if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
+                        button.setEnabled(true);
+                        button.setClickable(true);
+                    }
                     hideLoader();
                     e.printStackTrace();
                 }
@@ -448,8 +461,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 hideLoader();
                 Toast.makeText(context, "Some error occurred in authentication. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
             }
@@ -655,10 +670,10 @@ public class Utils implements IOnConnectionTimeoutListener {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
-                SharedPreferenceManager.getInstance(context).storeIntInSharedPreferences(Constant.isAlreadyDownlaoded, 1);
                 SharedPreferenceManager.getInstance(context).removeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day, "remove");
                 new Downloading(button, 0).cancel(true);
-                if (SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT) != 1) {
+                int autoDownload = SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT);
+                if (autoDownload != 1) {
                     if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
                         button.setEnabled(true);
                         button.setClickable(true);
@@ -883,7 +898,8 @@ public class Utils implements IOnConnectionTimeoutListener {
                         String currentTime = df.format(Calendar.getInstance().getTime());
                         SharedPreferenceManager.getInstance(context).storeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME, currentTime);
                         db.addUserInfo(Integer.parseInt(sp.getuserid()), sp.getusername(), sp.getrole());
-                        if (SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT) != 1) {
+                        int autoDownload = SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT);
+                        if (autoDownload != 1) {
                             Intent intent = new Intent(context, DashboardActivity.class);
                             context.startActivity(intent);
                             ((Activity) context).finish();
@@ -980,7 +996,8 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void ChangeView(String role, final Button button, String username, String password) {
         if (checkActivity(context, "LoginActivity")) {
-            if (SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT) == 1) {
+            int autoDownload = SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT);
+            if (autoDownload == 1) {
                 StartDownloading(role, button);
             } else {
                 if (db.getAllCustomers().size() > 0 && db.getAllProducts().size() > 0 && db.getAllSalesman().size() > 0) {

@@ -70,7 +70,7 @@ public class SharedPreferenceManager {
     }
 
     public int getIntFromSharedPreferences(String key) {
-        return sSharedPreferences.getInt(key, 0);
+        return sSharedPreferences.getInt(key,0);
     }
 
     public static void setIntList(List<Integer> data) {

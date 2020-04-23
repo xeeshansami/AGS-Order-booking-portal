@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void autoDownload(Date endDate , Date startDate) {
         //milliseconds
-        long different =  endDate.getTime()- startDate.getTime();
+        long different =  startDate.getTime()-endDate.getTime();
 
         System.out.println("startDate : " + startDate);
         System.out.println("endDate : " + endDate);
@@ -339,12 +339,21 @@ public class LoginActivity extends AppCompatActivity {
                 utils.hideLoader();
                 button.setEnabled(true);
                 button.setClickable(true);
-                utils.alertBox(LoginActivity.this, "Alert", "Username or password is invalid please login again.", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        view.dismiss();
-                    }
-                });
+                if(sp.getusername()!=null) {
+                    utils.alertBox(LoginActivity.this, "Alert", "Logged in user: " + sp.getusername() + " or password is wrong, please login again.", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }else{
+                    utils.alertBox(LoginActivity.this, "Alert", "Username or password is wrong, please login again.", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
             }
         } else {
             utils.loginOrActiveCheck(false, true, false, button, username, userpassword);
