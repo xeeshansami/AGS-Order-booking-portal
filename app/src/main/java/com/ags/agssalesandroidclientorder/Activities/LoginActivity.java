@@ -111,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void AutostartDownload() {
         if (utils.checkConnection(this)) {
-            utils.showLoader(this);
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
                 public void onConnectionSuccess() {
@@ -183,9 +182,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void autoDownload(Date startDate, Date endDate) {
+    public void autoDownload(Date endDate , Date startDate) {
         //milliseconds
-        long different = startDate.getTime() - endDate.getTime();
+        long different =  endDate.getTime()- startDate.getTime();
 
         System.out.println("startDate : " + startDate);
         System.out.println("endDate : " + endDate);
@@ -206,10 +205,12 @@ public class LoginActivity extends AppCompatActivity {
         if (elapsedDays > 0) {
             utils.showLoader(this);
             utils.Login(btnLogin, sp.getusername(), sp.getpassword());
+            SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT,1);
         } else {
             if (elapsedHours > 24) {
                 utils.showLoader(this);
                 utils.Login(btnLogin, sp.getusername(), sp.getpassword());
+                SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT,1);
             }
         }
     }

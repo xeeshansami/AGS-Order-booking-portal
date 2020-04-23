@@ -654,21 +654,23 @@ public class Utils implements IOnConnectionTimeoutListener {
         cancel_action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.dismiss();
                 SharedPreferenceManager.getInstance(context).storeIntInSharedPreferences(Constant.isAlreadyDownlaoded, 1);
                 SharedPreferenceManager.getInstance(context).removeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day, "remove");
                 new Downloading(button, 0).cancel(true);
-                if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
-                    button.setEnabled(true);
-                    button.setClickable(true);
-                    context.startActivity(new Intent(context, DashboardActivity.class));
-                    ((Activity) context).finish();
-                } else {
-                    Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED);
-                    LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
+                if (SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT) != 1) {
+                    if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
+                        button.setEnabled(true);
+                        button.setClickable(true);
+                        context.startActivity(new Intent(context, DashboardActivity.class));
+                        ((Activity) context).finish();
+                    } else {
+                        Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED);
+                        LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
+                    }
                 }
                 Snackbar.make(((Activity) context).findViewById(android.R.id.content), "Importing cancelled", 1500).show();
                 hideLoader();
-                alertDialog.dismiss();
             }
         });
     }
@@ -855,8 +857,7 @@ public class Utils implements IOnConnectionTimeoutListener {
             super.onPostExecute(result);
             subProgress.setProgress(100);
             // Format time
-            DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
-            final String currentTime = df.format(Calendar.getInstance().getTime());
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -878,11 +879,15 @@ public class Utils implements IOnConnectionTimeoutListener {
                         button.setEnabled(true);
                         button.setClickable(true);
                         db.delete(2);
+                        DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+                        String currentTime = df.format(Calendar.getInstance().getTime());
                         SharedPreferenceManager.getInstance(context).storeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME, currentTime);
                         db.addUserInfo(Integer.parseInt(sp.getuserid()), sp.getusername(), sp.getrole());
-                        Intent intent = new Intent(context, DashboardActivity.class);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
+                        if (SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT) != 1) {
+                            Intent intent = new Intent(context, DashboardActivity.class);
+                            context.startActivity(intent);
+                            ((Activity) context).finish();
+                        }
                     } else {
                         hideLoader();
                         alertDialog.dismiss();
@@ -890,6 +895,8 @@ public class Utils implements IOnConnectionTimeoutListener {
                         alertDialog.dismiss();
                         Intent intent = new Intent(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES);
                         LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
+                        DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+                        String currentTime = df.format(Calendar.getInstance().getTime());
                         SharedPreferenceManager.getInstance(context).storeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME, currentTime);
                         alertBox(context, "", "Master data've download completed", "Done", new setOnitemClickListner() {
                             @Override
@@ -973,10 +980,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void ChangeView(String role, final Button button, String username, String password) {
         if (checkActivity(context, "LoginActivity")) {
-            /*          if (db.getUser().size() > 0) {*/
-            /* if (db.getUser().get(0).getUserrole().equalsIgnoreCase(sp.getrole())) {*/
-            if (SharedPreferenceManager.getInstance(context).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT).
-                    equalsIgnoreCase(SharedPreferenceManager.getInstance(context).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT_YES))) {
+            if (SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT) == 1) {
                 StartDownloading(role, button);
             } else {
                 if (db.getAllCustomers().size() > 0 && db.getAllProducts().size() > 0 && db.getAllSalesman().size() > 0) {
@@ -989,16 +993,6 @@ public class Utils implements IOnConnectionTimeoutListener {
                     StartDownloading(role, button);
                 }
             }
-            /*   } else {
-             *//*Downloading when user change*//*
-                    StartDownloading(role, button);
-                }*/
-            /* } else {
-             *//*When new user is comming so previous order is also clear and also clear the master data*//*
-                db.clearAll();
-                *//*Downloading when user change*//*
-                StartDownloading(role, button);
-            }*/
         } else {
             /*Downloading from dashboard*/
             downloadMasterData(button);
