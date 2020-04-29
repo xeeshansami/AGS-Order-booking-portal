@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -114,10 +116,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -502,7 +506,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     utils.alertBox(DashboardActivity.this, "Sync Failed", "Do you want to share with pdf?", "Yes", "No", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
-                            exportPdf();
+                            List<EntityOrderAndDetails> allProdsAndDetails = db.getOrderAndDetails(sp.getbranch());
+                            if (allProdsAndDetails.size() > 0 && allProdsAndDetails != null) {
+                                exportFile(allProdsAndDetails);
+                            } else {
+                                utils.alertBox(DashboardActivity.this, "Alert", "There is no data to save for export file", "OK", new setOnitemClickListner() {
+                                    @Override
+                                    public void onClick(DialogInterface view, int i) {
+                                        utils.hideLoader();
+                                        view.dismiss();
+                                    }
+                                });
+                            }
                         }
                     });
                 }
@@ -539,6 +554,60 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         }
+    }
+
+    public void createTxtFile(List<EntityOrderAndDetails> allProdsAndDetails, final String filename) {
+        try {
+            StringBuilder text = new StringBuilder();
+            for (EntityOrderAndDetails details : allProdsAndDetails) {
+                text.append(
+                        details.getOrderSalName() + ", " +
+                        details.getOrderCustCode() + ", " +
+                        details.getOrderCustName() + ", " +
+                        details.getOrderTownId() + ", " +
+                        details.getOrderListDetailProdCode() + ", " +
+                        details.getOrderListDetailProdName() + ", " +
+                        details.getOrderListDetailProdSize() + ", " +
+                        details.getOrderListDetailProdRate() + ", " +
+                        details.getOrderListDetailProdQty() + ", " +
+                        details.getOrderListDetailProdBonus() + ", " +
+                        details.getOrderListDetailProdDiscount() + "\n");
+            }
+            String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
+            file = new File(dir);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            File file = new File(dir);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+            File gpxfile = new File(file, filename + ".txt");
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(text);
+            writer.flush();
+            writer.close();
+            Toast.makeText(this, "Saved your text file in AGS folder", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            return;
+        } finally {
+            utils.alertBox(DashboardActivity.this, "Export Text File", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            Intent shareIntent = shareFile(file, filename + ".txt");
+                            startActivity(shareIntent);
+                            view.dismiss();
+                        }
+                    }, new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            openFile(file, filename + ".txt");
+                            view.dismiss();
+                        }
+                    }
+            );
+        }
+        utils.hideLoader();
     }
 
     public void createPdf(List<EntityOrderAndDetails> allProdsAndDetails, final String filename) {
@@ -667,21 +736,21 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 }
             });
             return;
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             return;
         } finally {
-            utils.alertBox(DashboardActivity.this, "Export PDF", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
+            Toast.makeText(this, "Saved your pdf file in AGS folder", Toast.LENGTH_LONG).show();
+            utils.alertBox(DashboardActivity.this, "Export PDF File", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
-                            Intent shareIntent = shareFile(file, filename);
+                            Intent shareIntent = shareFile(file, filename + ".pdf");
                             startActivity(shareIntent);
                             view.dismiss();
                         }
                     }, new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
-                            openFile(file, filename);
+                            openFile(file, filename + ".pdf");
                             view.dismiss();
                         }
                     }
@@ -743,10 +812,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     }
 
-    public PdfPCell headersCell(PdfPCell cell) {
-
-        return cell;
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -767,7 +832,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 drawer.closeDrawers();
                 break;
             case R.id.orderPdf:
-                exportPdf();
+                List<EntityOrderAndDetails> allProdsAndDetails = db.getOrderAndDetails(sp.getbranch());
+                if (allProdsAndDetails.size() > 0 && allProdsAndDetails != null) {
+                    exportFile(allProdsAndDetails);
+                } else {
+                    utils.alertBox(DashboardActivity.this, "Alert", "There is no data to save for export file", "OK", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            utils.hideLoader();
+                            view.dismiss();
+                        }
+                    });
+                }
                 drawer.closeDrawers();
                 break;
             case R.id.download:
@@ -956,9 +1032,42 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         });
     }
 
-    public void exportPdf() {
+    public void exportPdf(final List<EntityOrderAndDetails> allProdsAndDetails) {
         LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
         promptsView = li.inflate(R.layout.pdf_exporter, null);
+        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+        // create alert dialog
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        final EditText pdf_name = promptsView.findViewById(R.id.pdf_name);
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                pdf_name.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+                pdf_name.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
+            }
+        }, 200);
+        pdf_name.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(pdf_name, InputMethodManager.SHOW_FORCED);
+        imm.showSoftInput(pdf_name, InputMethodManager.SHOW_IMPLICIT);
+        location = promptsView.findViewById(R.id.location);
+        location.setText("Folder: " + Environment.getExternalStorageDirectory() + File.separator + "AGS");
+        Button pdf_name_btn = promptsView.findViewById(R.id.pdf_name_btn);
+        pdf_name_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                utils.showLoader(DashboardActivity.this);
+                createPdf(allProdsAndDetails, pdf_name.getText().toString().trim());
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    public void exportTxt(final List<EntityOrderAndDetails> allProdsAndDetails) {
+        LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
+        promptsView = li.inflate(R.layout.txt_exporter, null);
         alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
@@ -984,47 +1093,62 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onClick(View view) {
                 utils.showLoader(DashboardActivity.this);
-                List<EntityOrderAndDetails> allProdsAndDetails = db.getOrderAndDetails(sp.getbranch());
-                if (allProdsAndDetails.size() > 0 && allProdsAndDetails != null) {
-                    createPdf(allProdsAndDetails, pdf_name.getText().toString().trim());
-                } else {
-                    utils.alertBox(DashboardActivity.this, "Alert", "There is no data to save for export pdf file", "OK", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            utils.hideLoader();
-                            view.dismiss();
-                        }
-                    });
-                }
+                createTxtFile(allProdsAndDetails, pdf_name.getText().toString().trim());
                 alertDialog.dismiss();
             }
         });
     }
 
+    public void exportFile(final List<EntityOrderAndDetails> allProdsAndDetails) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "", 60000);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+        View snackView = inflater.inflate(R.layout.file_export, null);
+        Button pdf_btn = snackView.findViewById(R.id.pdf_btn);
+        Button txt_btn = snackView.findViewById(R.id.file_btn);
+        ImageView imageView = (ImageView) snackView.findViewById(R.id.cancel);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        pdf_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+                exportPdf(allProdsAndDetails);
+            }
+        });
+        txt_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+                exportTxt(allProdsAndDetails);
+            }
+        });
+        layout.setPadding(0, 0, 0, 0);
+        layout.addView(snackView, 0);
+        snackbar.show();
+    }
 
     private Intent shareFile(File file, String filename) {
-        Uri uri = FileProvider.getUriForFile(
-                this,
-                "com.ags.agssalesandroidclientorder.provider", //(use your app signature + ".provider" )
-                new File(file.getPath() + "/" + filename + ".pdf"));
+        Uri uri = FileProvider.getUriForFile(this, "com.ags.agssalesandroidclientorder.provider", new File(file.getPath() + "/" + filename));
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND);
         share.setType("*/*");
         share.putExtra(Intent.EXTRA_STREAM, uri);
         share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Intent.createChooser(share, "Share " + filename + ".pdf");
+        Intent.createChooser(share, "Share " + filename);
 //        share.setPackage("com.whatsapp");
         return share;
     }
 
     public void openFile(File file, String filename) {
-        Uri uri = FileProvider.getUriForFile(
-                this,
-                "com.ags.agssalesandroidclientorder.provider", //(use your app signature + ".provider" )
-                new File(file.getPath() + "/" + filename + ".pdf"));
+        Uri uri = FileProvider.getUriForFile(this, "com.ags.agssalesandroidclientorder.provider", new File(file.getPath() + "/" + filename));
         try {
             Intent intentUrl = new Intent(Intent.ACTION_VIEW);
-            intentUrl.setDataAndType(uri, "application/pdf");
+            intentUrl.setDataAndType(uri, "application/*");
             intentUrl.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intentUrl.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intentUrl);
@@ -1041,6 +1165,4 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             UploadData();
         }
     }
-
-
 }

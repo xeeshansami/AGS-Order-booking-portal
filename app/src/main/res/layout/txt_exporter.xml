@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_text_file"
+            android:tint="@color/white"></ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="4"
+            android:drawableTint="@color/white"
+            android:gravity="center_vertical"
+            android:text="Export Text File"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"></TextView>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:drawableTint="@color/white"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14dp"
+            android:textStyle="italic"></TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottom"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <EditText
+                android:id="@+id/pdf_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableLeft="@drawable/ic_file"
+                android:drawableTint="@color/colorPrimary"
+                android:hint="Type name"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#575656"
+                android:textCursorDrawable="@null"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:drawableTint="@color/white"
+                android:gravity="center_vertical"
+                android:text=".txt"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14dp"
+                android:textStyle="italic"></TextView>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/pdf_name_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/unit_10"
+            android:background="@drawable/bg_changes"
+            android:text="Save"
+            android:textColor="@color/white"></Button>
+    </LinearLayout>
+</LinearLayout>

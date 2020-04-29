@@ -19,7 +19,7 @@
             android:visible="false" />
         <item
             android:id="@+id/orderPdf"
-            android:icon="@drawable/ic_pdf"
+            android:icon="@mipmap/ic_text_file"
             android:title="@string/exportPDF" />
         <item
             android:id="@+id/update"
