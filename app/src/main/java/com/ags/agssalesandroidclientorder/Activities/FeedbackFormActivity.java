@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.R;
@@ -22,12 +24,8 @@ public class FeedbackFormActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        myToolbar.setSubtitle("Product Offers");
-        myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
-        myToolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
-        myToolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
-        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        ImageView cancel_button =  findViewById(R.id.cancel_button);
+        cancel_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();

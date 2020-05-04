@@ -23,9 +23,9 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
-        android:layout_below="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@+id/app_bar"
         android:layout_centerInParent="true">
 
         <LinearLayout
@@ -42,10 +42,10 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_marginBottom="@dimen/unit_10"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/unit_10"
                     android:src="@drawable/icon"></ImageView>
 
                 <TextView
@@ -117,8 +117,8 @@
                         android:id="@+id/hideshow_img"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/ic_hide"
                         android:clickable="true"
+                        android:src="@drawable/ic_hide"
                         android:tint="@color/colorPrimary"></ImageView>
                 </LinearLayout>
 
@@ -142,58 +142,87 @@
                         android:text="Sign In"
                         android:textColor="@color/white" />
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="sans-serif-smallcaps"
-                        android:text="Do you have account?"
-                        android:textAlignment="center" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Do you have account?"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/btnLogin2"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="80dp"
-                        android:layout_marginRight="80dp"
-                        android:background="@drawable/bg_changes"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/export_btn"
                         android:fontFamily="sans-serif-smallcaps"
                         android:singleLine="false"
                         android:text="Sign Up"
-                        android:textColor="@color/colorGray" />
+                        android:textColor="@color/colorPrimary" />
 
-                    <TextView
-                        android:id="@+id/forget_pwd_txt"
+                    <Button
+                        android:id="@+id/as_guest__button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/export_btn"
                         android:fontFamily="sans-serif-smallcaps"
-                        android:text="Forgot Password?"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="15dp"
-                        android:textStyle="bold" />
+                        android:singleLine="false"
+                        android:text="Sign in as guest account"
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/forget_pwd_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Forgot Password?"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
+                    android:gravity="center"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/download_pdf_manual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/ic_pdf_manual"
+                        android:gravity="center_vertical"
+                        android:text="Download user manual:"
+                        android:textColor="@color/colorPrimary"></TextView>
                 </LinearLayout>
 
 
-
             </LinearLayout>
+
             <LinearLayout
-                android:gravity="bottom|center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
+                android:gravity="bottom|center_horizontal"
                 android:orientation="vertical">
 
                 <TextView

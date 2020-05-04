@@ -10,6 +10,7 @@ import com.ags.agssalesandroidclientorder.Utils.SessionManager;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +20,13 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,8 +65,9 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignup, btnLogin;
     ImageView hideImage1;
     boolean showHide = true;
+    TextView download_pdf_manual;
     Toolbar myToolbar;
-    TextView version_name_lbl,forget_pwd_txt;
+    TextView version_name_lbl, forget_pwd_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         forget_pwd_txt = findViewById(R.id.forget_pwd_txt);
+        download_pdf_manual = findViewById(R.id.download_pdf_manual);
         txtUsername = (EditText) findViewById(R.id.txtUserName);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         hideImage1 = findViewById(R.id.hideshow_img);
@@ -93,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         forget_pwd_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
+                startActivity(new Intent(LoginActivity.this, ForgetActivity.class));
             }
         });
         signUpBtnCheck();
@@ -112,6 +121,12 @@ public class LoginActivity extends AppCompatActivity {
                     showHide = true;
                 }
                 new FontImprima(LoginActivity.this, txtPassword);
+            }
+        });
+        download_pdf_manual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, PdfWebViewActivity.class));
             }
         });
     }
@@ -133,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
             }).execute();
         }
     }
+
 
     public void printDifference(Date startDate, Date endDate) {
         //milliseconds
@@ -189,9 +205,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void autoDownload(Date endDate , Date startDate) {
+    public void autoDownload(Date endDate, Date startDate) {
         //milliseconds
-        long different =  endDate.getTime()-startDate.getTime();
+        long different = endDate.getTime() - startDate.getTime();
 
         System.out.println("startDate : " + startDate);
         System.out.println("endDate : " + endDate);
@@ -212,12 +228,12 @@ public class LoginActivity extends AppCompatActivity {
         if (elapsedDays > 0) {
             utils.showLoader(this);
             utils.Login(btnLogin, sp.getusername(), sp.getpassword());
-            SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT,1);
+            SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT, 1);
         } else {
             if (elapsedHours > 24) {
                 utils.showLoader(this);
                 utils.Login(btnLogin, sp.getusername(), sp.getpassword());
-                SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT,1);
+                SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT, 1);
             }
         }
     }
@@ -346,14 +362,14 @@ public class LoginActivity extends AppCompatActivity {
                 utils.hideLoader();
                 button.setEnabled(true);
                 button.setClickable(true);
-                if(sp.getusername()!=null) {
+                if (sp.getusername() != null) {
                     utils.alertBox(LoginActivity.this, "Alert", "Logged in user: " + sp.getusername() + " or password is wrong, please login again.", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
                             view.dismiss();
                         }
                     });
-                }else{
+                } else {
                     utils.alertBox(LoginActivity.this, "Alert", "Username or password is wrong, please login again.", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -402,7 +418,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 offline(btnLogin);
             }
-        }else{
+        } else {
             utils.hideLoader();
             btnLogin.setEnabled(true);
             btnLogin.setClickable(true);

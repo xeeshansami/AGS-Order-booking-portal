@@ -69,9 +69,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
-
         setContentView(R.layout.activity_signup);
-
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setSubtitle("Sign up");

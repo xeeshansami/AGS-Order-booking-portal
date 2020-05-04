@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.FeedbackFormActivity"></activity>
+        <activity android:name=".Activities.PdfWebViewActivity"></activity>
+        <activity android:name=".Activities.FeedbackFormActivity" />
         <activity android:name=".Activities.ProductOfferActivity" />
         <activity android:name=".Activities.ForgetActivity" />
         <activity
