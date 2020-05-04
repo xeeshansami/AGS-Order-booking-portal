@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/white"
+                android:fitsSystemWindows="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/app_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffff"
+                    android:theme="@style/AppTheme.AppBarOverlay">
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
+                </com.google.android.material.appbar.AppBarLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <LinearLayout
+                        android:layout_centerInParent="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="@dimen/unit_10"
+                                android:src="@drawable/icon"></ImageView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:fontFamily="sans-serif-smallcaps"
+                                android:text="@string/app_name"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:fontFamily="sans-serif-smallcaps"
+                                android:text="Forget password using your credentials provided by admin" />
+
+                        </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <EditText
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/txtUserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bottom"
+                    android:drawableLeft="@drawable/ic_username"
+                    android:drawableTint="@color/colorPrimary"
+                    android:hint="Enter your username"
+                    android:singleLine="true"
+                    android:textColor="#575656"
+                    android:textCursorDrawable="@null"
+                    android:textSize="15dp" />
+
+
+                <Button
+                    android:id="@+id/forget_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginTop="@dimen/unit_10"
+                    android:layout_marginRight="60dp"
+                    android:background="@drawable/bg_changes"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:singleLine="false"
+                    android:text="Reset"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

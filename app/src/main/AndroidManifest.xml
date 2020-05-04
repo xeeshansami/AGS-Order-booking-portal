@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".Activities.FeedbackFormActivity"></activity>
+        <activity android:name=".Activities.ProductOfferActivity" />
+        <activity android:name=".Activities.ForgetActivity" />
         <activity
             android:name=".Activities.EditSingleProduct"
             android:screenOrientation="portrait"
@@ -41,7 +43,11 @@
             android:name=".Activities.SplashScreen"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activities.OrderFormActivity"
@@ -69,12 +75,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            tools:ignore="LockedOrientationActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activities.OrderListActivity"
             android:parentActivityName=".Activities.DashboardActivity"

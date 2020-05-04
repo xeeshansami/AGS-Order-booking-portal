@@ -2,11 +2,8 @@ package com.ags.agssalesandroidclientorder.Activities;
 
 import com.ags.agssalesandroidclientorder.BuildConfig;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
-import com.ags.agssalesandroidclientorder.Models.EntityCustomer;
 import com.ags.agssalesandroidclientorder.Models.EntityOrderAndDetails;
 
-import com.ags.agssalesandroidclientorder.Models.EntityProduct;
-import com.ags.agssalesandroidclientorder.Models.EntitySalesman;
 import com.ags.agssalesandroidclientorder.Network.model.response.ErrorResponse;
 import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
@@ -23,13 +20,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -73,7 +65,6 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.model.Dash;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -83,24 +74,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.FontSelector;
-import com.itextpdf.text.pdf.PdfDocument;
-import com.itextpdf.text.pdf.PdfFormXObject;
-import com.itextpdf.text.pdf.PdfImage;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -108,29 +91,15 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -561,6 +530,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             StringBuilder text = new StringBuilder();
             for (EntityOrderAndDetails details : allProdsAndDetails) {
                 text.append(
+                        details.getOrderSalCode() + ", " +
                         details.getOrderSalName() + ", " +
                         details.getOrderCustCode() + ", " +
                         details.getOrderCustName() + ", " +
@@ -871,11 +841,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 drawer.closeDrawers();
                 break;
             case R.id.sendFeedback:
-                Snackbar.make(findViewById(android.R.id.content), "Feature come soon", 1000).show();
+                startActivity(new Intent(this, FeedbackFormActivity.class));
                 drawer.closeDrawers();
                 break;
             case R.id.productOffer:
-                Snackbar.make(findViewById(android.R.id.content), "Feature come soon", 1000).show();
+                startActivity(new Intent(this, ProductOfferActivity.class));
                 drawer.closeDrawers();
                 break;
             case R.id.orderStatistics:

@@ -47,7 +47,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
-
     private String url_Base = "http://mobile.agssukkur.com/agssalesclient.asmx/";
     private String url_Signup = url_Base + "Signup";
     EditText txtFullName;
@@ -67,7 +66,6 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
@@ -77,10 +75,15 @@ public class SignupActivity extends AppCompatActivity {
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setSubtitle("Sign up");
-        myToolbar.setNavigationIcon(R.drawable.ic_login);
+        myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
         myToolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
         myToolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
-
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
 
@@ -220,12 +223,12 @@ public class SignupActivity extends AppCompatActivity {
             txtNumber.setError("Contact number should be at least 11 numbers");
             Snackbar.make(findViewById(android.R.id.content), "Contact number should be at least 11 numbers", 1000).show();
             return false;
-        } else if (!contact.startsWith("92")) {
+        } /*else if (!contact.startsWith("92")) {
             txtNumber.setFocusable(true);
             txtNumber.setError("Contact number starts with 92 format like this 923412030258");
             Snackbar.make(findViewById(android.R.id.content), "Contact number starts with 92 format like this 923412030258", 1000).show();
             return false;
-        } else if (TextUtils.isEmpty(uid)) {
+        } */else if (TextUtils.isEmpty(uid)) {
             txtUserID.setFocusable(true);
             txtUserID.setError("Username should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Username should not be empty", 1000).show();
@@ -273,11 +276,11 @@ public class SignupActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
                             if (jsonObject.get("uid") != null) {
-                                sp.setusername(jsonObject.getString("fullname"));
-                                sp.setemail(jsonObject.getString("email"));
-                                sp.setContact(jsonObject.getString("contact"));
+//                                sp.setusername(jsonObject.getString("fullname"));
+//                                sp.setemail(jsonObject.getString("email"));
+//                                sp.setContact(jsonObject.getString("contact"));
                                 sp.setuserid((String) jsonObject.get("uid"));
-                                sp.setpassword(txtPassword.getText().toString());
+//                                sp.setpassword(txtPassword.getText().toString());
                                 ShowDialog("Signup", "your account successfully created!!!");
                                 DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss"); // Format time
                                 String currentTime = df.format(Calendar.getInstance().getTime());

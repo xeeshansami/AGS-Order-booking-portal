@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     ImageView hideImage1;
     boolean showHide = true;
     Toolbar myToolbar;
-    TextView version_name_lbl;
+    TextView version_name_lbl,forget_pwd_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHandler(this);
         AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        forget_pwd_txt = findViewById(R.id.forget_pwd_txt);
         txtUsername = (EditText) findViewById(R.id.txtUserName);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         hideImage1 = findViewById(R.id.hideshow_img);
@@ -87,6 +88,12 @@ public class LoginActivity extends AppCompatActivity {
                 btnLogin.setEnabled(false);
                 btnLogin.setClickable(false);
                 Login(btnLogin);
+            }
+        });
+        forget_pwd_txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,ForgetActivity.class));
             }
         });
         signUpBtnCheck();

@@ -448,41 +448,50 @@ public class OrderFormActivity extends AppCompatActivity {
     }
 
     public void saveDataSuccessFullyInDB(double latitude, double longitude, String address) {
-        if (SaveOrderValidate()) {
-            EntityOrder order = new EntityOrder();
-            order.setOrderDate(datePicker.getText().toString());
-            order.setCustomerCode(String.valueOf(selectedCustomer.getCustomerId()));
-            if (db.getAllSalesman().size() == 1) {
-                order.setSaleMenCode(String.valueOf(db.getAllSalesman().get(0).getSalesman_Id()));
+        try {
+            if (SaveOrderValidate()) {
+                EntityOrder order = new EntityOrder();
+                order.setOrderDate(datePicker.getText().toString());
+                order.setCustomerCode(String.valueOf(selectedCustomer.getCustomerId()));
+                if (db.getAllSalesman().size() == 1) {
+                    order.setSaleMenCode(String.valueOf(db.getAllSalesman().get(0).getSalesman_Id()));
+                } else {
+                    order.setSaleMenCode(spinnerSalesMan.getSelectedItem().toString().substring(1, spinnerSalesMan.getSelectedItem().toString().indexOf("]")));
+                }
+                order.setNetTotal(txtNetTotal.getText().toString());
+                order.setBranch(sp.getbranch());
+                order.setRemarks(txtRemarks.getText().toString());
+                order.setLocation(String.valueOf(latitude));
+                order.setLocation1(String.valueOf(longitude));
+                order.setOrderAddress(address);
+                // old saleman logic below
+                ///order.setOrderSalName(spinnerSalesMan.getSelectedItem().toString().substring(spinnerSalesMan.getSelectedItem().toString().indexOf("]") + 2));
+
+                // new saleman logic as defined in ticket Task 15
+                EntitySalesman salesManEntity = db.getSalesMan(Integer.parseInt(order.getSaleMenCode()));
+                order.setOrderSalName(salesManEntity.getSalesman_Name());
+
+                order.setOrderCustName(selectedCustomer.getCustomerName());
+                order.setOrderCustAddress(selectedCustomer.getCustomerBranch());
+                order.setorderCreatedOn(DateFormat.getDateTimeInstance().format(new Date()));
+                order.setAllProducts(productsList);
+                db.CreateOrder(order);
+                Toast.makeText(OrderFormActivity.this, "Order created Successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(OrderFormActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                utils.hideLoader();
+                finish();
             } else {
-                order.setSaleMenCode(spinnerSalesMan.getSelectedItem().toString().substring(1, spinnerSalesMan.getSelectedItem().toString().indexOf("]")));
+                utils.hideLoader();
+                Toast.makeText(OrderFormActivity.this, "Select customer or add atleast 1 product", Toast.LENGTH_SHORT).show();
             }
-            order.setNetTotal(txtNetTotal.getText().toString());
-            order.setBranch(sp.getbranch());
-            order.setRemarks(txtRemarks.getText().toString());
-            order.setLocation(String.valueOf(latitude));
-            order.setLocation1(String.valueOf(longitude));
-            order.setOrderAddress(address);
-            // old saleman logic below
-            ///order.setOrderSalName(spinnerSalesMan.getSelectedItem().toString().substring(spinnerSalesMan.getSelectedItem().toString().indexOf("]") + 2));
-
-            // new saleman logic as defined in ticket Task 15
-            EntitySalesman salesManEntity = db.getSalesMan(Integer.parseInt(order.getSaleMenCode()));
-            order.setOrderSalName(salesManEntity.getSalesman_Name());
-
-            order.setOrderCustName(selectedCustomer.getCustomerName());
-            order.setOrderCustAddress(selectedCustomer.getCustomerBranch());
-            order.setorderCreatedOn(DateFormat.getDateTimeInstance().format(new Date()));
-            order.setAllProducts(productsList);
-            db.CreateOrder(order);
-            Toast.makeText(OrderFormActivity.this, "Order created Successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(OrderFormActivity.this, DashboardActivity.class);
-            startActivity(intent);
-            utils.hideLoader();
-            finish();
-        } else {
-            utils.hideLoader();
-            Toast.makeText(OrderFormActivity.this, "Select customer or add atleast 1 product", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            utils.alertBox(this, "Error", e.getMessage(), "Ok", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    view.dismiss();
+                }
+            });
         }
     }
 

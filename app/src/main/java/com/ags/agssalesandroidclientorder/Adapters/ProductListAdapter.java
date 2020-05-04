@@ -13,9 +13,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by Asad on 10/3/2016.
- */
 public class ProductListAdapter extends BaseAdapter {
 
     private Activity activity;
@@ -58,15 +55,12 @@ public class ProductListAdapter extends BaseAdapter {
         TextView productSize = (TextView) convertView.findViewById(R.id.productSize);
         TextView productPrice = (TextView) convertView.findViewById(R.id.productPrice);
         TextView productCompany = (TextView) convertView.findViewById(R.id.productCompany);
-
         EntityProduct product = productItems.get(position);
-
         productId.setText(String.valueOf(product.getProductId()));
         productName.setText(product.getProductName());
-        productSize.setText(product.getProductSize());
+        productSize.setText("Offer: "+product.getProductSize());
         productPrice.setText(String.valueOf(product.getProductPrice()));
         productCompany.setText(product.getProd_Group_Name());
-
         return convertView;
     }
 }
