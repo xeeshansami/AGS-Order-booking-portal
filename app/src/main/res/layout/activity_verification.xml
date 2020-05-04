@@ -64,8 +64,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
                                 android:fontFamily="sans-serif-smallcaps"
-                                android:textSize="13dp"
-                                android:text="Using your number whose provided by you for AGS admin." />
+                                android:text="User reset code for change the password" />
 
                         </LinearLayout>
 
@@ -78,20 +77,20 @@
                 android:padding="10dp">
 
                 <EditText
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="70dp"
+                    android:layout_marginLeft="70dp"
                     android:id="@+id/txtUserName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/bottom"
-                    android:drawableLeft="@drawable/ic_username"
+                    android:drawableLeft="@mipmap/ic_verifiy"
                     android:drawableTint="@color/colorPrimary"
-                    android:hint="Enter your number"
+                    android:hint="Enter code"
                     android:singleLine="true"
-                    android:maxLength="11"
+                    android:maxLength="4"
                     android:inputType="number"
                     android:textColor="#575656"
+                    android:background="@drawable/border_edge_edittext"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -100,13 +99,13 @@
                     android:id="@+id/forget_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
+                    android:layout_marginLeft="120dp"
                     android:layout_marginTop="@dimen/unit_10"
-                    android:layout_marginRight="60dp"
+                    android:layout_marginRight="120dp"
                     android:background="@drawable/bg_changes"
                     android:fontFamily="sans-serif-smallcaps"
                     android:singleLine="false"
-                    android:text="Send"
+                    android:text="Reset"
                     android:textColor="@color/white" />
 
 

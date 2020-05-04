@@ -14,7 +14,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <application
         android:name=".Network.MyApplication"
         android:allowBackup="true"
@@ -27,6 +28,8 @@
         <activity android:name=".Activities.FeedbackFormActivity" />
         <activity android:name=".Activities.ProductOfferActivity" />
         <activity android:name=".Activities.ForgetActivity" />
+        <activity android:name=".Activities.VarificationActivity" />
+        <activity android:name=".Activities.ChangePassword" />
         <activity
             android:name=".Activities.EditSingleProduct"
             android:screenOrientation="portrait"

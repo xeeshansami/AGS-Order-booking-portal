@@ -97,6 +97,21 @@ public class SharedPreferenceHandler {
     public String getUser_Category(){
         return get("User_Category");
     }
+    public void setUserNumber(String category){
+        set("user_number", category);
+    }
+
+    public String getUserNumber(){
+        return get("user_number");
+    }
+
+    public void setRandomNumber(String category){
+        set("user_forget_pwd_number", category);
+    }
+
+    public String getRandomNumber(){
+        return get("user_forget_pwd_number");
+    }
 
     public void setUser_Category(String User_Category){
         set("User_Category", User_Category);
