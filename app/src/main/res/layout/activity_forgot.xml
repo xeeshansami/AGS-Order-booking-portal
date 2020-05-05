@@ -65,7 +65,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:fontFamily="sans-serif-smallcaps"
                                 android:textSize="13dp"
-                                android:text="Using your number whose provided by you for AGS admin." />
+                                android:text="Use your number whose provided by you for AGS" />
 
                         </LinearLayout>
 
@@ -83,6 +83,7 @@
                     android:id="@+id/txtUserName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/bottom"
                     android:drawableLeft="@drawable/ic_username"
