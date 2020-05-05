@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferenceHandler sp;
     EditText txtUsername;
     EditText txtPassword;
-    Button btnSignup, btnLogin;
+    Button btnSignup, btnLogin, as_guest__button;
     ImageView hideImage1;
     boolean showHide = true;
     TextView download_pdf_manual;
@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHandler(this);
         AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        as_guest__button = findViewById(R.id.as_guest__button);
         forget_pwd_txt = findViewById(R.id.forget_pwd_txt);
         download_pdf_manual = findViewById(R.id.download_pdf_manual);
         txtUsername = (EditText) findViewById(R.id.txtUserName);
@@ -91,6 +92,18 @@ public class LoginActivity extends AppCompatActivity {
         myToolbar.setNavigationIcon(R.drawable.ic_login);
         myToolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
         myToolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
+        as_guest__button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                utils.alertBox(LoginActivity.this, "Thank You!", "This feature is under development and come soon.",
+                        "Ok", new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                view.dismiss();
+                            }
+                        });
+            }
+        });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

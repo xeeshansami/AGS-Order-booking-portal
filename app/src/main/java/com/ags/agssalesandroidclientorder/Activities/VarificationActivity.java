@@ -65,6 +65,9 @@ public class VarificationActivity extends AppCompatActivity {
                             public void onClick(DialogInterface view, int i) {
                                 Intent intent = new Intent(VarificationActivity.this, ChangePassword.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                if(getIntent().hasExtra("userid")){
+                                    intent.putExtra("userid",getIntent().getStringExtra("userid"));
+                                }
                                 startActivity(intent);
                                 finish();
                                 view.dismiss();

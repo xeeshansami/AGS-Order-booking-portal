@@ -10,11 +10,15 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
+import com.ags.agssalesandroidclientorder.Network.model.response.ErrorResponse;
+import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
+import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.Utils.FontImprima;
 import com.ags.agssalesandroidclientorder.Utils.OnConnectionCallback;
@@ -112,15 +116,13 @@ public class ChangePassword extends AppCompatActivity {
                 @Override
                 public void onConnectionSuccess() {
                     if (validation()) {
-//                        ShowRequestDialog();
-                        /*     DoSignup();*/
-                        utils.alertBox(ChangePassword.this, "Congratulations!", "Your password has been changed", "Ok", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                onBackPressed();
-                                view.dismiss();
-                            }
-                        });
+                        if(getIntent().hasExtra("userid")) {
+                            String username = getIntent().getStringExtra("userid");
+                            String password = txtRePassword.getText().toString().trim();
+                            updatePwd(password, username);
+                        }else{
+
+                        }
                     }
                 }
 
@@ -191,64 +193,30 @@ public class ChangePassword extends AppCompatActivity {
         }
     }
 
-  /*  private void DoSignup() {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = url_Signup
-                + "?fullname=" + txtFullName.getText().toString().trim()
-                + "&email=" + txtEmail.getText().toString().trim()
-                + "&contact=" + txtNumber.getText().toString().trim()
-                + "&uid=" + txtUserID.getText().toString().trim()
-                + "&pwd=" + txtPassword.getText().toString().trim();
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
-                            if (jsonObject.get("uid") != null) {
-//                                sp.setusername(jsonObject.getString("fullname"));
-//                                sp.setemail(jsonObject.getString("email"));
-//                                sp.setContact(jsonObject.getString("contact"));
-                                sp.setuserid((String) jsonObject.get("uid"));
-//                                sp.setpassword(txtPassword.getText().toString());
-                                ShowDialog("Signup", "your account successfully created!!!");
-                                DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss"); // Format time
-                                String currentTime = df.format(Calendar.getInstance().getTime());
-//                                String temptime="09/4/2020 04:40:00";
-                                SharedPreferenceManager.getInstance(ChangePassword.this).storeStringInSharedPreferences(Constant.signupTime, currentTime);
-                                utils.alertBox(ChangePassword.this, "Congratulation", "Signup Successfully, Kinldy contact your administrator", "OK", new setOnitemClickListner() {
-                                    @Override
-                                    public void onClick(DialogInterface view, int i) {
-                                        Intent intent = new Intent(ChangePassword.this, LoginActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                        view.dismiss();
-                                    }
-                                });
-                            }
-                        } catch (JSONException e) {
-                            HideDialog();
-                            Toast.makeText(ChangePassword.this, "Some error occurred. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+    public void updatePwd(final String pwd, String uid) {
+        utils.showLoader(this);
+        AGSStore.getInstance().setUpdatePwd(pwd, uid, new callback() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                HideDialog();
-                Toast.makeText(ChangePassword.this, "Some error occurred. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
+            public void Success(String response) {
+                utils.hideLoader();
+                sp.setpassword(pwd);
+                utils.alertBox(ChangePassword.this, "Congratulations!", "Your password has been updated", "ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        onBackPressed();
+                        view.dismiss();
+                    }
+                });
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) {
+                Toast.makeText(ChangePassword.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                utils.hideLoader();
             }
         });
-        int socketTimeout = 30000;//30 seconds - change to what you want
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        stringRequest.setRetryPolicy(policy);
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }*/
+    }
 
-    @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);

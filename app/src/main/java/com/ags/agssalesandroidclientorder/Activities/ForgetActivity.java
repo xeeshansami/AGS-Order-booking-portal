@@ -30,7 +30,7 @@ public class ForgetActivity extends AppCompatActivity {
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
     Utils utils;
-    EditText txtUserNumber;
+    EditText txtUserName, txtUserNumber;
     Button forget_btn;
     private final static int SEND_SMS_PERMISSION_REQ = 1;
 
@@ -42,6 +42,7 @@ public class ForgetActivity extends AppCompatActivity {
         utils = new Utils(this);
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        txtUserName = findViewById(R.id.txtUserName);
         txtUserNumber = findViewById(R.id.txtUserName);
         forget_btn = findViewById(R.id.forget_btn);
         myToolbar.setSubtitle("Forget Password");
@@ -59,7 +60,7 @@ public class ForgetActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (validation()) {
                     if (checkPermission(Manifest.permission.SEND_SMS)) {
-                        utils.alertBox(ForgetActivity.this, "Alert", "This sms charge with standard rate apply!", "Yes","No", new setOnitemClickListner() {
+                        utils.alertBox(ForgetActivity.this, "Alert", "This sms charge with standard rate apply!", "Yes", "No", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
                                 forget();
@@ -77,10 +78,16 @@ public class ForgetActivity extends AppCompatActivity {
 
     public boolean validation() {
         String usernumber = txtUserNumber.getText().toString().trim();
+        String username = txtUserName.getText().toString().trim();
         if (TextUtils.isEmpty(usernumber)) {
             txtUserNumber.setError("User number should not be empty");
             txtUserNumber.setFocusable(true);
             Snackbar.make(findViewById(android.R.id.content), "User number should not be empty", 1000).show();
+            return false;
+        } else if (TextUtils.isEmpty(username)) {
+            txtUserNumber.setError("User name should not be empty");
+            txtUserNumber.setFocusable(true);
+            Snackbar.make(findViewById(android.R.id.content), "User name should not be empty", 1000).show();
             return false;
         } else if (usernumber.length() < 11) {
             txtUserNumber.setFocusable(true);
@@ -98,13 +105,17 @@ public class ForgetActivity extends AppCompatActivity {
     }
 
     public void forget() {
-        String username = txtUserNumber.getText().toString().trim();
-        if (username != null && !TextUtils.isEmpty(username)) {
+        String usernumber = txtUserNumber.getText().toString().trim();
+        String username = txtUserName.getText().toString().trim();
+        if (usernumber != null && !TextUtils.isEmpty(usernumber)) {
             final String random = String.format("%04d", new Random().nextInt(10000));
-            String messageToSend = random + " is your ags account reset code";
+            String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" +
+                    "Warning! Do not share your OTP with anyone.";
             sp.setRandomNumber(random);
-            SmsManager.getDefault().sendTextMessage(username, null, messageToSend, null, null);
-            startActivity(new Intent(this, VarificationActivity.class));
+            SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);
+            Intent intent = new Intent(this, VarificationActivity.class);
+            intent.putExtra("userid", username);
+            startActivity(intent);
             finish();
         } else {
             {

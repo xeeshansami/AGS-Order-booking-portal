@@ -77,13 +77,13 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
+
                 <EditText
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
-                    android:id="@+id/txtUserName"
+                    android:id="@+id/txtUserNumber"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/bottom"
                     android:drawableLeft="@drawable/ic_username"
@@ -96,6 +96,23 @@
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
+                <EditText
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/txtUserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bottom"
+                    android:drawableLeft="@drawable/ic_username"
+                    android:drawableTint="@color/colorPrimary"
+                    android:hint="Enter username"
+                    android:singleLine="true"
+                    android:maxLength="11"
+                    android:inputType="number"
+                    android:textColor="#575656"
+                    android:textCursorDrawable="@null"
+                    android:textSize="15dp" />
 
                 <Button
                     android:id="@+id/forget_btn"
