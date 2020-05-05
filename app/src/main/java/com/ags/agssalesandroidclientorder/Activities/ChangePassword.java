@@ -193,13 +193,15 @@ public class ChangePassword extends AppCompatActivity {
         }
     }
 
-    public void updatePwd(final String pwd, String uid) {
+    public void updatePwd(final String pwd, final String uid) {
         utils.showLoader(this);
         AGSStore.getInstance().setUpdatePwd(pwd, uid, new callback() {
             @Override
             public void Success(String response) {
                 utils.hideLoader();
-                sp.setpassword(pwd);
+                if(sp.getuserid()!=null && sp.getuserid().equalsIgnoreCase(uid)) {
+                    sp.setpassword(pwd);
+                }
                 utils.alertBox(ChangePassword.this, "Congratulations!", "Your password has been updated", "ok", new setOnitemClickListner() {
                     @Override
                     public void onClick(DialogInterface view, int i) {

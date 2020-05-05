@@ -10,13 +10,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ags.agssalesandroidclientorder.Adapters.ProductListAdapter;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityProduct;
+import com.ags.agssalesandroidclientorder.Network.model.response.ErrorResponse;
+import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
+import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorder.Utils.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +36,7 @@ public class ProductOfferActivity extends AppCompatActivity {
     ListView product_offer_recycler_view;
     private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
     private ProductListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +45,7 @@ public class ProductOfferActivity extends AppCompatActivity {
         utils = new Utils(this);
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        product_offer_recycler_view =  findViewById(R.id.product_offer_recycler_view);
+        product_offer_recycler_view = findViewById(R.id.product_offer_recycler_view);
         myToolbar.setSubtitle("Product Offers");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
         myToolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
@@ -47,12 +56,43 @@ public class ProductOfferActivity extends AppCompatActivity {
                 finish();
             }
         });
-        productsList = db.getAllProducts();
         BindProductsList();
     }
-    private void BindProductsList(){
-        adapter = new ProductListAdapter(this, productsList);
-        product_offer_recycler_view.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+
+    private void BindProductsList() {
+        utils.showLoader(this);
+        AGSStore.getInstance().getProductOffers(sp.getbranch(), new callback() {
+            @Override
+            public void Success(String response) {
+                try {
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.indexOf("}]") + 2));
+                    //TODO: PRODUCTS
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jObject = jsonArray.getJSONObject(i);
+                        EntityProduct product = new EntityProduct();
+                        product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
+                        product.setProductName(jObject.get("prod_name").toString());
+                        product.setProductSize(jObject.get("prod_size").toString());
+                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProductCompany(jObject.get("prod_company").toString());
+                        product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
+                        productsList.add(product);
+                    }
+                    adapter = new ProductListAdapter(ProductOfferActivity.this, productsList);
+                    product_offer_recycler_view.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                utils.hideLoader();
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) {
+                Toast.makeText(ProductOfferActivity.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                utils.hideLoader();
+            }
+        });
+
     }
 }

@@ -31,4 +31,10 @@ public interface APIInterface {
 
     @GET("ResetPass?")
     Call<String> setUpdatePwd(@Query("newpass") String newpass, @Query("userid") String userid);
+
+    @GET("productsOffer?")
+    Call<String> getProductOffers(@Query("branch") String branch);
+    @GET("LoginForPassword?")
+
+    Call<String> getLoginForPassword(@Query("uname") String uname,@Query("mobilenumb") String mobilenumb);
 }

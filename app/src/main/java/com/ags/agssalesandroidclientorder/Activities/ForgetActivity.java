@@ -16,13 +16,22 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
+import com.ags.agssalesandroidclientorder.Models.EntityProduct;
+import com.ags.agssalesandroidclientorder.Network.model.response.ErrorResponse;
+import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
+import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorder.Utils.Utils;
 import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Random;
 
@@ -43,7 +52,7 @@ public class ForgetActivity extends AppCompatActivity {
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         txtUserName = findViewById(R.id.txtUserName);
-        txtUserNumber = findViewById(R.id.txtUserName);
+        txtUserNumber = findViewById(R.id.txtUserNumber);
         forget_btn = findViewById(R.id.forget_btn);
         myToolbar.setSubtitle("Forget Password");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
@@ -104,29 +113,52 @@ public class ForgetActivity extends AppCompatActivity {
         }
     }
 
+    String usernumberReplace;
+
     public void forget() {
-        String usernumber = txtUserNumber.getText().toString().trim();
-        String username = txtUserName.getText().toString().trim();
-        if (usernumber != null && !TextUtils.isEmpty(usernumber)) {
-            final String random = String.format("%04d", new Random().nextInt(10000));
-            String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" +
-                    "Warning! Do not share your OTP with anyone.";
-            sp.setRandomNumber(random);
-            SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);
-            Intent intent = new Intent(this, VarificationActivity.class);
-            intent.putExtra("userid", username);
-            startActivity(intent);
-            finish();
-        } else {
-            {
-                utils.alertBox(ForgetActivity.this, "Alert", "This user number is invalid, please enter a valid user number again.", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        view.dismiss();
-                    }
-                });
-            }
+        final String usernumber = txtUserNumber.getText().toString().trim();
+        final String username = txtUserName.getText().toString().trim();
+        if (usernumber.startsWith("03")) {
+            usernumberReplace = usernumber.replace("03", "923");
         }
+        utils.showLoader(this);
+        AGSStore.getInstance().getLoginForPassword(username, usernumberReplace, new callback() {
+            @Override
+            public void Success(String response) {
+                try {
+                    JSONObject objects = new JSONObject(response);
+                    String userid = objects.get("userid").toString();
+                    String userphonenumber = objects.get("role").toString();
+                    if (!userid.equalsIgnoreCase("0") && !userphonenumber.equalsIgnoreCase("0")) {
+                        final String random = String.format("%04d", new Random().nextInt(10000));
+                        String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" + "Warning! Do not share your OTP with anyone.";
+                        sp.setRandomNumber(random);
+                        SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);
+                        Intent intent = new Intent(ForgetActivity.this, VarificationActivity.class);
+                        intent.putExtra("userid", userid);
+                        intent.putExtra("usernumber", usernumberReplace);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        utils.alertBox(ForgetActivity.this, "Alert", "This user number or userid is invalid, please enter a valid user number & username again.", "ok", new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                view.dismiss();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                utils.hideLoader();
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) {
+                Toast.makeText(ForgetActivity.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                utils.hideLoader();
+            }
+        });
     }
 
     @Override
@@ -152,4 +184,6 @@ public class ForgetActivity extends AppCompatActivity {
         int checkpermission = ContextCompat.checkSelfPermission(this, sendSms);
         return checkpermission == PackageManager.PERMISSION_GRANTED;
     }
+
+    
 }

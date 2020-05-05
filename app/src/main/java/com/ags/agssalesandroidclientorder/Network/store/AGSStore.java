@@ -59,6 +59,13 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
     public void setUpdatePwd(String pwd,String id, callback callback) {
         consumerAPI.setUpdatePwd(pwd,id).enqueue(new BaseHR(callback));
     }
+    public void getProductOffers(String branch, callback callback) {
+        consumerAPI.getProductOffers(branch).enqueue(new BaseHR(callback));
+    }
+
+    public void getLoginForPassword(String uname,String mobileNumber, callback callback) {
+        consumerAPI.getLoginForPassword(uname,mobileNumber).enqueue(new BaseHR(callback));
+    }
 
     @Override
     public void onConnectionTimeout() {

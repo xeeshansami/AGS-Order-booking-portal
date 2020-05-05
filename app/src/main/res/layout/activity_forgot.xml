@@ -8,7 +8,6 @@
                 android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
-
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/app_bar"
                     android:layout_width="match_parent"
@@ -65,7 +64,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:fontFamily="sans-serif-smallcaps"
                                 android:textSize="13dp"
-                                android:text="Use your number whose provided by you for AGS" />
+                                android:text="Use credentials whose provided by you for AGS" />
 
                         </LinearLayout>
 
@@ -88,7 +87,7 @@
                     android:background="@drawable/bottom"
                     android:drawableLeft="@drawable/ic_username"
                     android:drawableTint="@color/colorPrimary"
-                    android:hint="Enter your number"
+                    android:hint="Enter mobile number"
                     android:singleLine="true"
                     android:maxLength="11"
                     android:inputType="number"
@@ -97,6 +96,8 @@
                     android:textSize="15dp" />
 
                 <EditText
+                    android:digits="@string/characters"
+                    android:inputType="textFilter"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:id="@+id/txtUserName"
@@ -106,10 +107,8 @@
                     android:background="@drawable/bottom"
                     android:drawableLeft="@drawable/ic_username"
                     android:drawableTint="@color/colorPrimary"
-                    android:hint="Enter username"
+                    android:hint="Enter user name"
                     android:singleLine="true"
-                    android:maxLength="11"
-                    android:inputType="number"
                     android:textColor="#575656"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />

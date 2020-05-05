@@ -767,8 +767,8 @@ public class Utils implements IOnConnectionTimeoutListener {
                     }
                     //TODO: PRODUCTS
                     for (i = 0; i < products.length(); i++) {
-                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
-                        publishProgress((int) percent);
+                            percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
+                            publishProgress((int) percent);
                         ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

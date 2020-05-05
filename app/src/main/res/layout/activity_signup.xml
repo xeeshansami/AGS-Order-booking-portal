@@ -117,6 +117,8 @@
                     android:textSize="15dp" />
 
                 <EditText
+                    android:digits="@string/characters"
+                    android:inputType="textFilter"
                     android:id="@+id/txtUserID"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -125,7 +127,6 @@
                     android:drawableLeft="@drawable/ic_username"
                     android:drawableTint="@color/colorPrimary"
                     android:hint="User ID"
-                    android:inputType="text"
                     android:singleLine="true"
                     android:textColor="#575656"
                     android:textCursorDrawable="@null"

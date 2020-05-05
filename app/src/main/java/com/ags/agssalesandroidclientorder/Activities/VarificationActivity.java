@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,7 @@ public class VarificationActivity extends AppCompatActivity {
     Utils utils;
     EditText txtUserNumber;
     Button forget_btn;
+    TextView sendCodeAgain;
     private final static int SEND_SMS_PERMISSION_REQ = 1;
 
     @Override
@@ -42,6 +45,7 @@ public class VarificationActivity extends AppCompatActivity {
         utils = new Utils(this);
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        sendCodeAgain = findViewById(R.id.sendCodeAgain);
         txtUserNumber = findViewById(R.id.txtUserName);
         forget_btn = findViewById(R.id.forget_btn);
         myToolbar.setSubtitle("Verification");
@@ -52,6 +56,19 @@ public class VarificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        sendCodeAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getIntent().hasExtra("usernumber")) {
+                    final String random = String.format("%04d", new Random().nextInt(10000));
+                    String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" +
+                            "Warning! Do not share your OTP with anyone.";
+                    sp.setRandomNumber(random);
+                    SmsManager.getDefault().sendTextMessage(getIntent().getStringExtra("usernumber"), null, messageToSend, null, null);
+                    Toast.makeText(VarificationActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
+                }
             }
         });
         forget_btn.setOnClickListener(new View.OnClickListener() {
@@ -65,15 +82,15 @@ public class VarificationActivity extends AppCompatActivity {
                             public void onClick(DialogInterface view, int i) {
                                 Intent intent = new Intent(VarificationActivity.this, ChangePassword.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                if(getIntent().hasExtra("userid")){
-                                    intent.putExtra("userid",getIntent().getStringExtra("userid"));
+                                if (getIntent().hasExtra("userid")) {
+                                    intent.putExtra("userid", getIntent().getStringExtra("userid"));
                                 }
                                 startActivity(intent);
                                 finish();
                                 view.dismiss();
                             }
                         });
-                    }else{
+                    } else {
                         utils.alertBox(VarificationActivity.this, "Alert", "Verification code is invalid", "ok", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {

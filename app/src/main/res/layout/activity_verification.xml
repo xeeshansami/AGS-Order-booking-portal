@@ -1,96 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/white"
-                android:fitsSystemWindows="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
 
-                <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/app_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ffff"
-                    android:theme="@style/AppTheme.AppBarOverlay">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffff"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
-                </com.google.android.material.appbar.AppBarLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
-                    <LinearLayout
-                        android:layout_centerInParent="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_gravity="center"
-                                android:layout_marginBottom="@dimen/unit_10"
-                                android:src="@drawable/icon"></ImageView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:fontFamily="sans-serif-smallcaps"
-                                android:text="@string/app_name"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="20dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:fontFamily="sans-serif-smallcaps"
-                                android:text="User reset code for change the password" />
-
-                        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/unit_10"
+                    android:src="@drawable/icon"></ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="@string/app_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="User reset code for change the password" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/unit_10"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="A code has been sent to your phone. Enter that code here"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/unit_10"
+                    android:textStyle="bold" />
+
                 <EditText
-                    android:layout_marginRight="70dp"
-                    android:layout_marginLeft="70dp"
                     android:id="@+id/txtUserName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="70dp"
+                    android:layout_marginRight="70dp"
+                    android:background="@drawable/border_edge_edittext"
                     android:drawableLeft="@mipmap/ic_verifiy"
                     android:drawableTint="@color/colorPrimary"
                     android:hint="Enter code"
-                    android:singleLine="true"
-                    android:maxLength="4"
                     android:inputType="number"
+                    android:maxLength="4"
+                    android:singleLine="true"
                     android:textColor="#575656"
-                    android:background="@drawable/border_edge_edittext"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -108,7 +119,17 @@
                     android:text="Reset"
                     android:textColor="@color/white" />
 
-
+                <TextView
+                    android:id="@+id/sendCodeAgain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/unit_10"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Send Code Again"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
