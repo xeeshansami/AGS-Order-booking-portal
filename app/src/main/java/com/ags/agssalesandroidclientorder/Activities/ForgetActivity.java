@@ -7,8 +7,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -36,13 +41,16 @@ import org.json.JSONObject;
 import java.util.Random;
 
 public class ForgetActivity extends AppCompatActivity {
+    String SENT = "Code has been sent again, Please check your phone";
+    String DELIVERED ="Code has not been send due to some problem occurred, please try again later.";
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
     Utils utils;
     EditText txtUserName, txtUserNumber;
     Button forget_btn;
     private final static int SEND_SMS_PERMISSION_REQ = 1;
-
+    BroadcastReceiver sendBroadcastReceiver = new SentReceiver();
+    BroadcastReceiver deliveryBroadcastReciever = new DeliverReceiver();;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,8 +102,8 @@ public class ForgetActivity extends AppCompatActivity {
             Snackbar.make(findViewById(android.R.id.content), "User number should not be empty", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(username)) {
-            txtUserNumber.setError("User name should not be empty");
-            txtUserNumber.setFocusable(true);
+            txtUserName.setError("User name should not be empty");
+            txtUserName.setFocusable(true);
             Snackbar.make(findViewById(android.R.id.content), "User name should not be empty", 1000).show();
             return false;
         } else if (usernumber.length() < 11) {
@@ -103,12 +111,12 @@ public class ForgetActivity extends AppCompatActivity {
             txtUserNumber.setError("User number should be at least 11 numbers");
             Snackbar.make(findViewById(android.R.id.content), "User number should be at least 11 numbers", 1000).show();
             return false;
-        } else if (!usernumber.startsWith("03")) {
+        }/* else if (!usernumber.startsWith("03")) {
             txtUserNumber.setFocusable(true);
             txtUserNumber.setError("User number starts with 03 format like this 03XXXXXXXXX");
             Snackbar.make(findViewById(android.R.id.content), "User number starts with 03 format like this 03XXXXXXXXX", 1000).show();
             return false;
-        } else {
+        }*/ else {
             return true;
         }
     }
@@ -133,11 +141,18 @@ public class ForgetActivity extends AppCompatActivity {
                         final String random = String.format("%04d", new Random().nextInt(10000));
                         String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" + "Warning! Do not share your OTP with anyone.";
                         sp.setRandomNumber(random);
+                        PendingIntent sentPI = PendingIntent.getBroadcast(ForgetActivity.this, 0, new Intent(
+                                SENT), 0);
+                        PendingIntent deliveredPI = PendingIntent.getBroadcast(ForgetActivity.this, 0,
+                                new Intent(DELIVERED), 0);
+                        registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
+                        registerReceiver(deliveryBroadcastReciever, new IntentFilter(DELIVERED));
                         SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);
                         Intent intent = new Intent(ForgetActivity.this, VarificationActivity.class);
                         intent.putExtra("userid", userid);
                         intent.putExtra("usernumber", usernumberReplace);
                         startActivity(intent);
+                        Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
                         finish();
                     } else {
                         utils.alertBox(ForgetActivity.this, "Alert", "This user number or userid is invalid, please enter a valid user number & username again.", "ok", new setOnitemClickListner() {
@@ -159,6 +174,31 @@ public class ForgetActivity extends AppCompatActivity {
                 utils.hideLoader();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        try {
+            unregisterReceiver(sendBroadcastReceiver);
+            unregisterReceiver(deliveryBroadcastReciever);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        try {
+            unregisterReceiver(sendBroadcastReceiver);
+            unregisterReceiver(deliveryBroadcastReciever);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -185,5 +225,47 @@ public class ForgetActivity extends AppCompatActivity {
         return checkpermission == PackageManager.PERMISSION_GRANTED;
     }
 
-    
+    class SentReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent arg1) {
+            switch (getResultCode()) {
+                case Activity.RESULT_OK:
+                    Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
+                /*    startActivity(new Intent(SendSMS.this, ChooseOption.class));
+                    overridePendingTransition(R.anim.animation, R.anim.animation2);*/
+                    break;
+                case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                    Toast.makeText(getBaseContext(), "Sms sending failed", Toast.LENGTH_SHORT).show();
+                    break;
+                case SmsManager.RESULT_ERROR_NO_SERVICE:
+                    Toast.makeText(getBaseContext(), "No service available",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                case SmsManager.RESULT_ERROR_NULL_PDU:
+                    Toast.makeText(getBaseContext(), "Null PDU", Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                case SmsManager.RESULT_ERROR_RADIO_OFF:
+                    Toast.makeText(getBaseContext(), "Radio off",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+
+        }
+    }
+
+    class DeliverReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent arg1) {
+            switch (getResultCode()) {
+                case Activity.RESULT_OK:
+                    Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(ForgetActivity.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_LONG).show();
+                    break;
+            }
+
+        }
+    }
 }

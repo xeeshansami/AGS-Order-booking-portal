@@ -58,7 +58,7 @@ public class ProductListAdapter extends BaseAdapter {
         EntityProduct product = productItems.get(position);
         productId.setText(String.valueOf(product.getProductId()));
         productName.setText(product.getProductName());
-        productSize.setText("Offer: "+product.getProductSize());
+        productSize.setText("Size: "+product.getProductSize());
         productPrice.setText(String.valueOf(product.getProductPrice()));
         productCompany.setText(product.getProd_Group_Name());
         return convertView;

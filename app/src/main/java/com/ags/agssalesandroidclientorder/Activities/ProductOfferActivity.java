@@ -5,22 +5,32 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ags.agssalesandroidclientorder.Adapters.ProductListAdapter;
+import com.ags.agssalesandroidclientorder.BuildConfig;
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorder.Models.EntityProduct;
 import com.ags.agssalesandroidclientorder.Network.model.response.ErrorResponse;
 import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorder.R;
+import com.ags.agssalesandroidclientorder.Utils.Constant;
+import com.ags.agssalesandroidclientorder.Utils.OnConnectionCallback;
 import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceHandler;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceManager;
 import com.ags.agssalesandroidclientorder.Utils.Utils;
+import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,9 +66,42 @@ public class ProductOfferActivity extends AppCompatActivity {
                 finish();
             }
         });
-        BindProductsList();
+        downloadMasterData();
     }
+    public void downloadMasterData() {
+        if (utils.checkConnection(this)) {
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    BindProductsList();
+                }
 
+                @Override
+                public void onConnectionFail(String errorMsg) {
+                    utils.alertBox(ProductOfferActivity.this, "Internet Connections", "Poor connection, please check your internet connection", "ok", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            view.dismiss();
+                        }
+                    });
+                }
+            }).execute();
+        } else {
+            utils.alertBox(this, "Internet Connections", "Network not available please check", "Setting", "Cancel", "Exit", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    view.dismiss();
+                }
+            }, new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                    view.dismiss();
+                }
+            });
+        }
+    }
     private void BindProductsList() {
         utils.showLoader(this);
         AGSStore.getInstance().getProductOffers(sp.getbranch(), new callback() {

@@ -459,7 +459,8 @@ public class OrderFormActivity extends AppCompatActivity {
                     order.setSaleMenCode(spinnerSalesMan.getSelectedItem().toString().substring(1, spinnerSalesMan.getSelectedItem().toString().indexOf("]")));
                 }
                 order.setNetTotal(txtNetTotal.getText().toString());
-                order.setBranch(sp.getbranch());
+                order.setBranch(selectedCustomer.getCustomerBranch());
+//                order.setBranch(sp.getbranch());
                 order.setRemarks(txtRemarks.getText().toString());
                 order.setLocation(String.valueOf(latitude));
                 order.setLocation1(String.valueOf(longitude));

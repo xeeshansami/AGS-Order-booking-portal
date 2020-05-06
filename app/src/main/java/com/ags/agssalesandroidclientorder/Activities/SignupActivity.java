@@ -55,9 +55,11 @@ public class SignupActivity extends AppCompatActivity {
     EditText txtUserID;
     EditText txtPassword;
     EditText txtRePassword;
+    EditText txtCity;
     ImageView hideImage1, hideimage2;
     ProgressDialog progressDialog;
     boolean showHide = true, showHide2 = true;
+    String usernumberReplac;
     Utils utils;
 
     public void HideDialog() {
@@ -91,8 +93,10 @@ public class SignupActivity extends AppCompatActivity {
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtUserID = (EditText) findViewById(R.id.txtUserID);
         txtNumber = (EditText) findViewById(R.id.txtNumber);
+        txtCity = (EditText) findViewById(R.id.txtCity);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtRePassword = (EditText) findViewById(R.id.txtRePassword);
+        new FontImprima(this, txtCity);
         new FontImprima(this, txtFullName);
         new FontImprima(this, txtEmail);
         new FontImprima(this, txtUserID);
@@ -192,6 +196,7 @@ public class SignupActivity extends AppCompatActivity {
         String fullname = txtFullName.getText().toString().trim();
         String email = txtEmail.getText().toString().trim();
         String contact = txtNumber.getText().toString().trim();
+        String city = txtCity.getText().toString().trim();
         String uid = txtUserID.getText().toString().trim();
         String pwd = txtPassword.getText().toString().trim();
         String rePwd = txtRePassword.getText().toString().trim();
@@ -219,7 +224,7 @@ public class SignupActivity extends AppCompatActivity {
         } else if (contact.length() < 11) {
             txtNumber.setFocusable(true);
             txtNumber.setError("Contact number should be at least 11 numbers");
-            Snackbar.make(findViewById(android.R.id.content), "Contact number should be at least 11 numbers", 1000).show();
+            Snackbar.make(findViewById(android.R.id.content), "Contact number should be at least 12 numbers", 1000).show();
             return false;
         } /*else if (!contact.startsWith("92")) {
             txtNumber.setFocusable(true);
@@ -230,6 +235,11 @@ public class SignupActivity extends AppCompatActivity {
             txtUserID.setFocusable(true);
             txtUserID.setError("Username should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Username should not be empty", 1000).show();
+            return false;
+        }else if (TextUtils.isEmpty(city)) {
+            txtCity.setFocusable(true);
+            txtCity.setError("City should not be empty");
+            Snackbar.make(findViewById(android.R.id.content), "City should should not be empty", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(pwd)) {
             txtPassword.setFocusable(true);
@@ -260,10 +270,14 @@ public class SignupActivity extends AppCompatActivity {
     private void DoSignup() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
+        final String usernumber = txtNumber.getText().toString().trim();
+        if (usernumber.startsWith("03")) {
+            usernumberReplac = usernumber.replace("03", "923");
+        }
         String url = url_Signup
-                + "?fullname=" + txtFullName.getText().toString().trim()
+                + "?fullname=" + txtFullName.getText().toString().trim() +" "+txtCity.getText().toString().trim()
                 + "&email=" + txtEmail.getText().toString().trim()
-                + "&contact=" + txtNumber.getText().toString().trim()
+                + "&contact=" + usernumberReplac
                 + "&uid=" + txtUserID.getText().toString().trim()
                 + "&pwd=" + txtPassword.getText().toString().trim();
         // Request a string response from the provided URL.

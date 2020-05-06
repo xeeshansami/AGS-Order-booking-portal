@@ -89,15 +89,13 @@
                     android:drawableTint="@color/colorPrimary"
                     android:hint="Enter mobile number"
                     android:singleLine="true"
-                    android:maxLength="11"
+                    android:maxLength="13"
                     android:inputType="number"
                     android:textColor="#575656"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
                 <EditText
-                    android:digits="@string/characters"
-                    android:inputType="textFilter"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:id="@+id/txtUserName"
