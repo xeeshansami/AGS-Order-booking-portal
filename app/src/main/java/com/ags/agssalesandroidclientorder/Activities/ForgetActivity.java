@@ -49,8 +49,8 @@ public class ForgetActivity extends AppCompatActivity {
     EditText txtUserName, txtUserNumber;
     Button forget_btn;
     private final static int SEND_SMS_PERMISSION_REQ = 1;
-    BroadcastReceiver sendBroadcastReceiver = new SentReceiver();
-    BroadcastReceiver deliveryBroadcastReciever = new DeliverReceiver();;
+//    BroadcastReceiver sendBroadcastReceiver = new SentReceiver();
+//    BroadcastReceiver deliveryBroadcastReciever = new DeliverReceiver();;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +76,7 @@ public class ForgetActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (validation()) {
-                    if (checkPermission(Manifest.permission.SEND_SMS)) {
+//                    if (checkPermission(Manifest.permission.SEND_SMS)) {
                         utils.alertBox(ForgetActivity.this, "Alert", "This sms charge with standard rate apply!", "Yes", "No", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
@@ -84,9 +84,9 @@ public class ForgetActivity extends AppCompatActivity {
                                 view.dismiss();
                             }
                         });
-                    } else {
-                        ActivityCompat.requestPermissions(ForgetActivity.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQ);
-                    }
+//                    } else {
+//                        ActivityCompat.requestPermissions(ForgetActivity.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQ);
+//                    }
 
                 }
             }
@@ -128,6 +128,8 @@ public class ForgetActivity extends AppCompatActivity {
         final String username = txtUserName.getText().toString().trim();
         if (usernumber.startsWith("03")) {
             usernumberReplace = usernumber.replace("03", "923");
+        }else{
+            usernumberReplace=usernumber;
         }
         utils.showLoader(this);
         AGSStore.getInstance().getLoginForPassword(username, usernumberReplace, new callback() {
@@ -138,7 +140,7 @@ public class ForgetActivity extends AppCompatActivity {
                     String userid = objects.get("userid").toString();
                     String userphonenumber = objects.get("role").toString();
                     if (!userid.equalsIgnoreCase("0") && !userphonenumber.equalsIgnoreCase("0")) {
-                        final String random = String.format("%04d", new Random().nextInt(10000));
+                  /*      final String random = String.format("%04d", new Random().nextInt(10000));
                         String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" + "Warning! Do not share your OTP with anyone.";
                         sp.setRandomNumber(random);
                         PendingIntent sentPI = PendingIntent.getBroadcast(ForgetActivity.this, 0, new Intent(
@@ -147,12 +149,12 @@ public class ForgetActivity extends AppCompatActivity {
                                 new Intent(DELIVERED), 0);
                         registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
                         registerReceiver(deliveryBroadcastReciever, new IntentFilter(DELIVERED));
-                        SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);
-                        Intent intent = new Intent(ForgetActivity.this, VarificationActivity.class);
+                        SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);*/
+                        Intent intent = new Intent(ForgetActivity.this, ChangePassword.class);
                         intent.putExtra("userid", userid);
                         intent.putExtra("usernumber", usernumberReplace);
                         startActivity(intent);
-                        Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
                         finish();
                     } else {
                         utils.alertBox(ForgetActivity.this, "Alert", "This user number or userid is invalid, please enter a valid user number & username again.", "ok", new setOnitemClickListner() {
@@ -181,8 +183,8 @@ public class ForgetActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onDestroy();
         try {
-            unregisterReceiver(sendBroadcastReceiver);
-            unregisterReceiver(deliveryBroadcastReciever);
+      /*      unregisterReceiver(sendBroadcastReceiver);
+            unregisterReceiver(deliveryBroadcastReciever);*/
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -193,8 +195,8 @@ public class ForgetActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onPause();
         try {
-            unregisterReceiver(sendBroadcastReceiver);
-            unregisterReceiver(deliveryBroadcastReciever);
+       /*     unregisterReceiver(sendBroadcastReceiver);
+            unregisterReceiver(deliveryBroadcastReciever);*/
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -204,7 +206,7 @@ public class ForgetActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case SEND_SMS_PERMISSION_REQ:
+         /*   case SEND_SMS_PERMISSION_REQ:
                 if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     utils.alertBox(ForgetActivity.this, "Alert", "This sms charge with standard rate apply!", "ok", new setOnitemClickListner() {
                         @Override
@@ -216,23 +218,23 @@ public class ForgetActivity extends AppCompatActivity {
                 } else {
                     finish();
                 }
-                break;
+                break;*/
         }
     }
 
-    private boolean checkPermission(String sendSms) {
+  /*  private boolean checkPermission(String sendSms) {
         int checkpermission = ContextCompat.checkSelfPermission(this, sendSms);
         return checkpermission == PackageManager.PERMISSION_GRANTED;
-    }
+    }*/
 
-    class SentReceiver extends BroadcastReceiver {
+ /*   class SentReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent arg1) {
             switch (getResultCode()) {
                 case Activity.RESULT_OK:
                     Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
-                /*    startActivity(new Intent(SendSMS.this, ChooseOption.class));
-                    overridePendingTransition(R.anim.animation, R.anim.animation2);*/
+                *//*    startActivity(new Intent(SendSMS.this, ChooseOption.class));
+                    overridePendingTransition(R.anim.animation, R.anim.animation2);*//*
                     break;
                 case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                     Toast.makeText(getBaseContext(), "Sms sending failed", Toast.LENGTH_SHORT).show();
@@ -267,5 +269,5 @@ public class ForgetActivity extends AppCompatActivity {
             }
 
         }
-    }
+    }*/
 }

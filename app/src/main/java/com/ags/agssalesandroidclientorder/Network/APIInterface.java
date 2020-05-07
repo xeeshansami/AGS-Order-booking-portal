@@ -34,7 +34,14 @@ public interface APIInterface {
 
     @GET("productsOffer?")
     Call<String> getProductOffers(@Query("branch") String branch);
-    @GET("LoginForPassword?")
 
+    @GET("LoginForPassword?")
     Call<String> getLoginForPassword(@Query("uname") String uname,@Query("mobilenumb") String mobilenumb);
+
+    @GET("SubmitFeedBack?")
+    Call<String> postFeedBack(@Query("userid") String userid,
+                                     @Query("userName") String userName,
+                                     @Query("Subject") String Subject,
+                                     @Query("usercategory") String usercategory,
+                                     @Query("iMessage") String iMessage);
 }

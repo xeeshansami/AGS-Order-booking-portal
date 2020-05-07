@@ -11,8 +11,8 @@ android {
         applicationId "com.ags.agssalesandroidclientorder"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 7
-        versionName "1.7"
+        versionCode 8
+        versionName "1.8"
         multiDexEnabled true
     }
     lintOptions {
@@ -22,7 +22,7 @@ android {
         abortOnError false
     }
     useLibrary 'org.apache.http.legacy'
-    buildTypes {
+        buildTypes {
         debug {
             manifestPlaceholders = [usesCleartextTraffic: "true"]
             minifyEnabled false

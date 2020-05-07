@@ -68,6 +68,7 @@
             android:textStyle="bold"></TextView>
 
         <EditText
+            android:id="@+id/txt_feeback"
             android:layout_marginTop="@dimen/unit_10"
             android:layout_width="match_parent"
             android:layout_height="400dp"
@@ -95,18 +96,22 @@
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/bug"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bug"></RadioButton>
 
         <RadioButton
+            android:id="@+id/suggestion"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Suggestion"></RadioButton>
 
         <RadioButton
+            android:checked="true"
+            android:id="@+id/other"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,6 +119,7 @@
     </RadioGroup>
 
     <Button
+        android:id="@+id/sendFeedback_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"

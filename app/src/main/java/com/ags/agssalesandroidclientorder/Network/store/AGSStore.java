@@ -8,6 +8,8 @@ import com.ags.agssalesandroidclientorder.Network.IOnConnectionTimeoutListener;
 import com.ags.agssalesandroidclientorder.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorder.Network.responseHandler.handler.BaseHR;
 
+import retrofit2.http.Query;
+
 
 public class AGSStore extends Application implements IOnConnectionTimeoutListener {
     private static AGSStore store;
@@ -67,7 +69,9 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
         consumerAPI.getLoginForPassword(uname,mobileNumber).enqueue(new BaseHR(callback));
     }
 
-    @Override
+    public void postFeedBack(String userid,String userName,String Subject,String usercategory,String iMessage, callback callback) {
+        consumerAPI.postFeedBack(userid,userName,Subject,usercategory,iMessage).enqueue(new BaseHR(callback));
+    }
     public void onConnectionTimeout() {
 
     }
