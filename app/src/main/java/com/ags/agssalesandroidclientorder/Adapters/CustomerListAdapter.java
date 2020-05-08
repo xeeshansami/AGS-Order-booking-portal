@@ -55,12 +55,10 @@ public class CustomerListAdapter extends BaseAdapter {
         TextView customerId = (TextView) convertView.findViewById(R.id.customerId);
         TextView customerName = (TextView) convertView.findViewById(R.id.customerName);
         TextView customerBranch = (TextView) convertView.findViewById(R.id.customerBranch);
-
         EntityCustomer customer = customerItems.get(position);
-
         customerId.setText(String.valueOf(customer.getCustomerId()));
         customerName.setText(customer.getCustomerName());
-        customerBranch.setText(customer.getCustomerBranch());
+        customerBranch.setText(customer.getCustomerAddress());
 
         return convertView;
     }

@@ -37,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String customerId = "customerId";
     private static final String customerName = "customerName";
     private static final String customerBranch = "customerBranch";
+    private static final String customerAddress = "customerAddress";
 
     // endregion
 
@@ -128,6 +129,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_TABLE_CUSTOMER = "create table " + TABLE_CUSTOMER + "("
                 + customerId + " integer primary key, "
                 + customerName + " text, "
+                + customerAddress + " text, "
                 + customerBranch + " text" + ")";
         db.execSQL(CREATE_TABLE_CUSTOMER);
         String CREATE_TABLE_PRODUCT = "create table " + TABLE_PRODUCT + "("
@@ -220,7 +222,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void addAllCustomers(EntityCustomer allCustomers) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" + allCustomers.getCustomerBranch() + "');";
+        String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" +allCustomers.getCustomerAddress() + "','" + allCustomers.getCustomerBranch() + "');";
         db.execSQL(sql);
     }
 
@@ -239,7 +241,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         EntityCustomer customer = new EntityCustomer();
         customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
         customer.setCustomerName(cursor.getString(1));
-        customer.setCustomerBranch(cursor.getString(2));
+        customer.setCustomerAddress(cursor.getString(2));
+        customer.setCustomerBranch(cursor.getString(3));
 
         // return contact
         return customer;
@@ -263,7 +266,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
                 customer.setCustomerName(cursor.getString(1));
-                customer.setCustomerBranch(cursor.getString(2));
+                customer.setCustomerAddress(cursor.getString(2));
+                customer.setCustomerBranch(cursor.getString(3));
 
                 // Adding contact to list
                 customerList.add(customer);
@@ -314,10 +318,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 EntityCustomer customer = new EntityCustomer();
-
                 customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
                 customer.setCustomerName(cursor.getString(1));
-                customer.setCustomerBranch(cursor.getString(2));
+                customer.setCustomerAddress(cursor.getString(2));
+                customer.setCustomerBranch(cursor.getString(3));
 
                 // Adding contact to list
                 customerList.add(customer);
@@ -796,7 +800,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "ol.orderTotalDiscount," +
                 "ol.orderTotalNet," +
                 "ol.orderTotalRemarks," +
-                "'" + branch + "' as orderBranch," +
+                "ol.orderBranch," +
                 "ol.orderBranchSerial," +
                 "ol.orderTownId," +
                 "old.orderListDetailId," +

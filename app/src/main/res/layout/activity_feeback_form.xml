@@ -9,11 +9,11 @@
     android:weightSum="10">
 
     <RelativeLayout
-        android:padding="@dimen/unit_10"
-        android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/colorPrimary">
+        android:layout_weight="2"
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/unit_10">
 
         <ImageView
             android:id="@+id/cancel_button"
@@ -37,11 +37,11 @@
             android:textStyle="bold"></TextView>
 
         <TextView
-            android:layout_marginTop="@dimen/unit_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/feedback_header"
             android:layout_marginLeft="@dimen/unit_10"
+            android:layout_marginTop="@dimen/unit_10"
             android:fontFamily="sans-serif"
             android:text="Do you have a suggestion  or found any bug?\nlet us know in the feed below"
             android:textColor="@color/white"
@@ -49,72 +49,85 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/white"
-        >
+        android:layout_weight="3"
+        android:background="@color/white">
 
         <TextView
-            android:padding="20dp"
             android:id="@+id/feedback_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unit_10"
             android:fontFamily="sans-serif"
+            android:padding="20dp"
             android:text="How was your experience?"
             android:textColor="@color/colorBlack"
             android:textSize="20dp"
             android:textStyle="bold"></TextView>
 
         <EditText
+            android:layout_marginBottom="@dimen/unit_10"
             android:id="@+id/txt_feeback"
-            android:layout_marginTop="@dimen/unit_10"
             android:layout_width="match_parent"
             android:layout_height="400dp"
             android:layout_below="@+id/feedback_body"
             android:background="@color/feedback_bg"
             android:fontFamily="sans-serif"
             android:gravity="top|left"
-            android:scrollbars="vertical"
+            android:hint="Describe your experience here..."
+            android:maxLength="4000"
+            android:padding="@dimen/unit_10"
             android:scrollbarSize="2dp"
             android:scrollbarThumbVertical="@color/colorPrimary"
-            android:hint="Describe your experience here..."
-            android:padding="@dimen/unit_10"
+            android:scrollbars="vertical"
             android:textColor="@color/colorBlack"
             android:textSize="20dp"></EditText>
-    </RelativeLayout>
 
-    <RadioGroup
-        android:weightSum="3"
-        android:layout_marginLeft="30dp"
-        android:layout_weight="1"
+
+    </RelativeLayout>
+    <TextView
+        android:paddingRight="@dimen/unit_10"
+        android:gravity="right"
+        android:layout_below="@+id/txt_feeback"
+        android:id="@+id/countWords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="0/4000"
+        android:textColor="@color/colorBlack"
+        android:textSize="13dp"
+        ></TextView>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="@dimen/unit_10"
+        android:layout_weight="1"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <RadioButton
             android:id="@+id/bug"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bug"></RadioButton>
+            android:layout_weight="1"
+            android:text="Complain"></RadioButton>
 
         <RadioButton
             android:id="@+id/suggestion"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
             android:text="Suggestion"></RadioButton>
 
         <RadioButton
-            android:checked="true"
             android:id="@+id/other"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Other"></RadioButton>
     </RadioGroup>
 

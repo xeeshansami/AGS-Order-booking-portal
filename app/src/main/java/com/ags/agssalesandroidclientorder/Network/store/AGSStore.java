@@ -69,8 +69,8 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
         consumerAPI.getLoginForPassword(uname,mobileNumber).enqueue(new BaseHR(callback));
     }
 
-    public void postFeedBack(String userid,String userName,String Subject,String usercategory,String iMessage, callback callback) {
-        consumerAPI.postFeedBack(userid,userName,Subject,usercategory,iMessage).enqueue(new BaseHR(callback));
+    public void postFeedBack(String userid,String userName,String Subject,String usercategory,String iMessage,String branch, callback callback) {
+        consumerAPI.postFeedBack(userid,userName,Subject,usercategory,iMessage,branch).enqueue(new BaseHR(callback));
     }
     public void onConnectionTimeout() {
 

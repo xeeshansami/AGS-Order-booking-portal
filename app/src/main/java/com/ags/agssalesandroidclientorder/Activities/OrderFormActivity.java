@@ -121,7 +121,7 @@ public class OrderFormActivity extends AppCompatActivity {
                     selectedCustomer = db.getCustomer(customerId);
                     textViewCustomer.setText(selectedCustomer.getCustomerName());
                     textViewCustomer.setVisibility(View.VISIBLE);
-                    textViewCustomerTown.setText(selectedCustomer.getCustomerBranch());
+                    textViewCustomerTown.setText(selectedCustomer.getCustomerAddress());
                     textViewCustomerTown.setVisibility(View.VISIBLE);
                     btnSelectCustomer.setText("Change Customer");
                 }
@@ -473,7 +473,7 @@ public class OrderFormActivity extends AppCompatActivity {
                 order.setOrderSalName(salesManEntity.getSalesman_Name());
 
                 order.setOrderCustName(selectedCustomer.getCustomerName());
-                order.setOrderCustAddress(selectedCustomer.getCustomerBranch());
+                order.setOrderCustAddress(selectedCustomer.getCustomerAddress());
                 order.setorderCreatedOn(DateFormat.getDateTimeInstance().format(new Date()));
                 order.setAllProducts(productsList);
                 db.CreateOrder(order);

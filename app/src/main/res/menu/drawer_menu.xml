@@ -36,6 +36,18 @@
             android:title="@string/clearMasterData"
             android:visible="false" />
 
+
+        <item
+            android:id="@+id/productOffer"
+            android:icon="@mipmap/ic_product_offers"
+            android:title="@string/productOffer" />
+
+
+        <item
+            android:visible="false"
+            android:id="@+id/orderStatistics"
+            android:icon="@mipmap/ic_order_statistics"
+            android:title="@string/orderStatistics" />
         <item
             android:id="@+id/updateProfile"
             android:icon="@mipmap/ic_profile_update"
@@ -45,17 +57,6 @@
             android:id="@+id/sendFeedback"
             android:icon="@mipmap/ic_feedback"
             android:title="@string/sendFeedback" />
-
-        <item
-            android:id="@+id/productOffer"
-            android:icon="@mipmap/ic_product_offers"
-            android:title="@string/productOffer" />
-
-
-        <item
-            android:id="@+id/orderStatistics"
-            android:icon="@mipmap/ic_order_statistics"
-            android:title="@string/orderStatistics" />
 
 
         <item

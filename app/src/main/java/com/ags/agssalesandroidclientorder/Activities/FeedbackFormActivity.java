@@ -5,13 +5,17 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ags.agssalesandroidclientorder.Database.DatabaseHandler;
@@ -30,8 +34,9 @@ public class FeedbackFormActivity extends AppCompatActivity {
     Utils utils;
     Button sendFeedback_btn;
     EditText txt_feeback;
+    TextView countWords;
     RadioButton bug, suggestion, other;
-
+    final  int count =4000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +45,7 @@ public class FeedbackFormActivity extends AppCompatActivity {
         utils = new Utils(this);
         db = new DatabaseHandler(this);
         ImageView cancel_button = findViewById(R.id.cancel_button);
+        countWords = findViewById(R.id.countWords);
         txt_feeback = findViewById(R.id.txt_feeback);
         sendFeedback_btn = findViewById(R.id.sendFeedback_btn);
         bug = findViewById(R.id.bug);
@@ -58,11 +64,28 @@ public class FeedbackFormActivity extends AppCompatActivity {
                     if (bug.isChecked()) {
                         sendFeeBack("bug");
                     } else if (suggestion.isChecked()) {
-                        sendFeeBack("bug");
+                        sendFeeBack("suggestion");
                     } else {
                         sendFeeBack("other");
                     }
                 }
+            }
+        });
+        txt_feeback.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int result=count-txt_feeback.length();
+                countWords.setText(result+"/4000 Characters");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -83,7 +106,7 @@ public class FeedbackFormActivity extends AppCompatActivity {
         String txtFeedBack = txt_feeback.getText().toString().trim();
         if (sp.getusername() != null) {
             utils.showLoader(this);
-            AGSStore.getInstance().postFeedBack(sp.getuserid(), sp.getusername(), subject, sp.getcategory(), txtFeedBack, new callback() {
+            AGSStore.getInstance().postFeedBack(sp.getuserid(), sp.getusername(), subject, sp.getcategory(), txtFeedBack,sp.getbranch(), new callback() {
                 @Override
                 public void Success(String response) {
                     utils.hideLoader();

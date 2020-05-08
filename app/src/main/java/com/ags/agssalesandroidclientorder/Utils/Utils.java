@@ -762,7 +762,8 @@ public class Utils implements IOnConnectionTimeoutListener {
                         EntityCustomer customer = new EntityCustomer();
                         customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
                         customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
-                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        customer.setCustomerAddress(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        customer.setCustomerBranch(jObject.get("Account_Branch").toString());
                         db.addAllCustomers(customer);
                     }
                     //TODO: PRODUCTS
@@ -834,7 +835,8 @@ public class Utils implements IOnConnectionTimeoutListener {
                         EntityCustomer customer = new EntityCustomer();
                         customer.setCustomerId(Integer.parseInt(jObject.get("ACCOUNT_CODE").toString()));
                         customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
-                        customer.setCustomerBranch(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        customer.setCustomerAddress(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
+                        customer.setCustomerBranch(jObject.get("Account_Branch").toString());
                         db.addAllCustomers(customer);
                     }
 
@@ -864,8 +866,9 @@ public class Utils implements IOnConnectionTimeoutListener {
             } catch (Exception e) {
                 e.printStackTrace();
                 failedDownload(e.getMessage(), true, button);
+            }finally {
+                return null;
             }
-            return null;
         }
 
         protected void onPostExecute(String result) {
@@ -1048,5 +1051,44 @@ public class Utils implements IOnConnectionTimeoutListener {
     public int timeSplitter(String time) {
         String[] items = time.split(":");
         return Integer.parseInt(items[0]);
+    }
+    private static char[] smallCaps = new char[]
+            {
+                    '\uf761', //A
+                    '\uf762',
+                    '\uf763',
+                    '\uf764',
+                    '\uf765',
+                    '\uf766',
+                    '\uf767',
+                    '\uf768',
+                    '\uf769',
+                    '\uf76A',
+                    '\uf76B',
+                    '\uf76C',
+                    '\uf76D',
+                    '\uf76E',
+                    '\uf76F',
+                    '\uf770',
+                    '\uf771',
+                    '\uf772',
+                    '\uf773',
+                    '\uf774',
+                    '\uf775',
+                    '\uf776',
+                    '\uf777',
+                    '\uf778',
+                    '\uf779',
+                    '\uf77A'   //Z
+            };
+
+    public static String getSmallCapsString (String input) {
+        char[] chars = input.toCharArray();
+        for(int i = 0; i < chars.length; i++) {
+            if(chars[i] >= 'a' && chars[i] <= 'z') {
+                chars[i] = smallCaps[chars[i] - 'a'];
+            }
+        }
+        return String.valueOf(chars);
     }
 }

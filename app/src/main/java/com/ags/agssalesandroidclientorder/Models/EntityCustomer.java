@@ -9,6 +9,16 @@ public class EntityCustomer {
     private String customerName;
     private String customerBranch;
 
+    public String getCustomerAddress() {
+        return customerAddress;
+    }
+
+    public void setCustomerAddress(String customerAddress) {
+        this.customerAddress = customerAddress;
+    }
+
+    private String customerAddress;
+
     public int getCustomerId() {
         return customerId;
     }

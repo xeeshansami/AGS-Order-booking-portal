@@ -298,7 +298,7 @@ public class SignupActivity extends AppCompatActivity {
                                 String currentTime = df.format(Calendar.getInstance().getTime());
 //                                String temptime="09/4/2020 04:40:00";
                                 SharedPreferenceManager.getInstance(SignupActivity.this).storeStringInSharedPreferences(Constant.signupTime, currentTime);
-                                utils.alertBox(SignupActivity.this, "Congratulation", "Signup Successfully, Kinldy contact your administrator", "OK", new setOnitemClickListner() {
+                                utils.alertBox(SignupActivity.this, "Congratulations!!!", "Your account has been submitted for review, Please wait for approval or contact us for immediately action.", "OK", new setOnitemClickListner() {
                                     @Override
                                     public void onClick(DialogInterface view, int i) {
                                         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);

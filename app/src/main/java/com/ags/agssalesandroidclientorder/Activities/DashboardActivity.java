@@ -162,7 +162,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         user_title = findViewById(R.id.user_title);
         toolbar.setTitle("Dashboard");
-        user_title.setText(sp.getrole() + ": " + sp.getUser_Category());
+        String txt=sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
+        user_title.setText(txt);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -836,16 +837,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 deleteOrders();
                 drawer.closeDrawers();
                 break;
+
+            case R.id.productOffer:
+                startActivity(new Intent(this, ProductOfferActivity.class));
+                drawer.closeDrawers();
+                break;
             case R.id.updateProfile:
                 startActivity(new Intent(this, UpdateProfile.class));
                 drawer.closeDrawers();
                 break;
             case R.id.sendFeedback:
                 startActivity(new Intent(this, FeedbackFormActivity.class));
-                drawer.closeDrawers();
-                break;
-            case R.id.productOffer:
-                startActivity(new Intent(this, ProductOfferActivity.class));
                 drawer.closeDrawers();
                 break;
             case R.id.orderStatistics:
