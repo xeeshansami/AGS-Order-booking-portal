@@ -56,7 +56,7 @@ public class CustomerActivity extends AppCompatActivity {
         // Sets the Toolbar to act as the ActionBar for this Activities window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         ab = getSupportActionBar();
 
         ab.setTitle("Select Customer");
@@ -75,13 +75,9 @@ public class CustomerActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
                 String getText = txtCustomerSearch.getText().toString();
                 customersList = db.getAllCustomers(getText);
                 BindCustomersList();
-
-
             }
 
             @Override

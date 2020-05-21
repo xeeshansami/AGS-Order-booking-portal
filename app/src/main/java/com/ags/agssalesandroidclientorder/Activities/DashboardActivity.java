@@ -143,7 +143,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     TextView syncBtn, user_title;
     DatabaseReference databse;
-
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +162,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         user_title = findViewById(R.id.user_title);
         toolbar.setTitle("Dashboard");
-        String txt=sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
+        String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
         user_title.setText(txt);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
@@ -172,13 +172,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 //        toolbar.setNavigationIcon(android.R.drawable);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
         TextView footar_version = navigationView.findViewById(R.id.footar_version);
         TextView userid = hView.findViewById(R.id.header_userid);
         TextView usertitle = hView.findViewById(R.id.header_username);
         footar_version.setText(BuildConfig.VERSION_NAME);
+        if (sp.getrole().equalsIgnoreCase("Saleman")) {
+            showItem();
+        }
         userid.setText("As Role : " + sp.getrole());
         usertitle.setText("UserID: " + sp.getusername());
         progressDialog = new ProgressDialog(this);
@@ -204,6 +207,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         .setAction("Action", null).show();*/
             }
         });
+    }
+
+    private void showItem() {
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.updateCustomerProfile).setVisible(true);
     }
 
     @Override
@@ -532,17 +540,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             for (EntityOrderAndDetails details : allProdsAndDetails) {
                 text.append(
                         details.getOrderSalCode() + ", " +
-                        details.getOrderSalName() + ", " +
-                        details.getOrderCustCode() + ", " +
-                        details.getOrderCustName() + ", " +
-                        details.getOrderTownId() + ", " +
-                        details.getOrderListDetailProdCode() + ", " +
-                        details.getOrderListDetailProdName() + ", " +
-                        details.getOrderListDetailProdSize() + ", " +
-                        details.getOrderListDetailProdRate() + ", " +
-                        details.getOrderListDetailProdQty() + ", " +
-                        details.getOrderListDetailProdBonus() + ", " +
-                        details.getOrderListDetailProdDiscount() + "\n");
+                                details.getOrderSalName() + ", " +
+                                details.getOrderCustCode() + ", " +
+                                details.getOrderCustName() + ", " +
+                                details.getOrderTownId() + ", " +
+                                details.getOrderListDetailProdCode() + ", " +
+                                details.getOrderListDetailProdName() + ", " +
+                                details.getOrderListDetailProdSize() + ", " +
+                                details.getOrderListDetailProdRate() + ", " +
+                                details.getOrderListDetailProdQty() + ", " +
+                                details.getOrderListDetailProdBonus() + ", " +
+                                details.getOrderListDetailProdDiscount() + "\n");
             }
             String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
             file = new File(dir);
@@ -848,6 +856,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.sendFeedback:
                 startActivity(new Intent(this, FeedbackFormActivity.class));
+                drawer.closeDrawers();
+                break;
+            case R.id.resetPassword:
+                startActivity(new Intent(this, ForgetActivity.class));
+                drawer.closeDrawers();
+                break;
+            case R.id.updateCustomerProfile:
+                startActivity(new Intent(this, UpdateCustomerProfile.class));
                 drawer.closeDrawers();
                 break;
             case R.id.orderStatistics:

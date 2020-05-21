@@ -54,6 +54,15 @@
             android:title="@string/updateProfile" />
 
         <item
+            android:visible="false"
+            android:id="@+id/updateCustomerProfile"
+            android:icon="@mipmap/ic_profile_update"
+            android:title="@string/updateCustomerProfile" />
+        <item
+            android:id="@+id/resetPassword"
+            android:icon="@drawable/ic_lock"
+            android:title="@string/resetPassword" />
+        <item
             android:id="@+id/sendFeedback"
             android:icon="@mipmap/ic_feedback"
             android:title="@string/sendFeedback" />

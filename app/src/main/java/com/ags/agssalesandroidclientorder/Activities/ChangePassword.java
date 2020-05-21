@@ -220,9 +220,6 @@ public class ChangePassword extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
         finish();
     }
 }

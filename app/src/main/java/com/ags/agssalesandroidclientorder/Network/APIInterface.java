@@ -45,4 +45,21 @@ public interface APIInterface {
                               @Query("usercategory") String usercategory,
                               @Query("iMessage") String iMessage,
                               @Query("branchid") String branchid);
+
+    @GET("UpdateProfileTwo?")
+    Call<String> postUpdateProfile(@Query("newname") String newname,
+                                   @Query("newEmail") String newEmail,
+                                   @Query("newMobile") String newMobile,
+                                   @Query("userid") String userid);
+
+
+    @GET("UpdateProfileTwo?")
+    Call<String> postUpdateProfileForCustomer(@Query("newname") String newname,
+                                              @Query("vLat") String vLat,
+                                              @Query("vLong") String vLong,
+                                              @Query("LicenceNo") String LicenceNo,
+                                              @Query("LicenceDate") String LicenceDate,
+                                              @Query("Prop") String Prop,
+                                              @Query("vAddress") String vAddress,
+                                              @Query("userid") String userid);
 }

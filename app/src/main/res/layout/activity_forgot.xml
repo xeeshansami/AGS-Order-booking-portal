@@ -121,7 +121,7 @@
                     android:background="@drawable/bg_changes"
                     android:fontFamily="sans-serif-smallcaps"
                     android:singleLine="false"
-                    android:text="Send"
+                    android:text="Verification"
                     android:textColor="@color/white" />
 
 

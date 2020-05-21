@@ -39,7 +39,7 @@
     <string name="exportPDF">Export File</string>
     <string name="clearMasterData">Clear MasterData</string>
     <string name="clearOrders">Clear AllOrders</string>
-    <string name="updateProfile">Update profile</string>
+    <string name="updateProfile">Update Profile</string>
     <string name="sendFeedback">Send Feedback</string>
     <string name="productOffer">Products Offer</string>
     <string name="orderStatistics">Order Statistics</string>
@@ -49,4 +49,6 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="characters">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@!#$%^*()_+=-:\';,./?|/</string>
+    <string name="updateCustomerProfile">Update Customer</string>
+    <string name="resetPassword">Reset Password</string>
 </resources>

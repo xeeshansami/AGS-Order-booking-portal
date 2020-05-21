@@ -21,7 +21,7 @@ public class SharedPreferenceManager {
         return sharedPrefManagerInstance;
     }
 
-    private SharedPreferenceManager() {
+    public SharedPreferenceManager() {
     }
 
     public void storeStringInSharedPreferences(String key, String content) {
