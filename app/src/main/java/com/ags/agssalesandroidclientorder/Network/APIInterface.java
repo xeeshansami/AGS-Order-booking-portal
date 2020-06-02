@@ -52,6 +52,10 @@ public interface APIInterface {
                                    @Query("newMobile") String newMobile,
                                    @Query("userid") String userid);
 
+    @GET("APIAdvertisement")
+    Call<String> getNotifications();
+
+
 
     @GET("UpdateProfileTwo?")
     Call<String> postUpdateProfileForCustomer(@Query("newname") String newname,

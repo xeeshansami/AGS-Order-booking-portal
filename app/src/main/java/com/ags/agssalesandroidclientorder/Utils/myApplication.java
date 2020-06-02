@@ -19,7 +19,15 @@ public class myApplication extends Application {
     public void onCreate() {
         super.onCreate();
         consumerApplication = this;
-        FirebaseMessaging.getInstance().subscribeToTopic("general")
+       /* FirebaseMessaging.getInstance().subscribeToTopic("general")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                        }
+                    }
+                });*/
+        FirebaseMessaging.getInstance().subscribeToTopic("my")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -27,7 +35,6 @@ public class myApplication extends Application {
                         }
                     }
                 });
-
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override

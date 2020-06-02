@@ -841,6 +841,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 deleteMasterData();
                 drawer.closeDrawers();
                 break;
+            case R.id.notifications:
+                startActivity(new Intent(DashboardActivity.this, NotificationActivity.class));
+                drawer.closeDrawers();
+                break;
             case R.id.clearOrders:
                 deleteOrders();
                 drawer.closeDrawers();

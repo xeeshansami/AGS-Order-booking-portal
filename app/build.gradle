@@ -22,7 +22,7 @@ android {
         abortOnError false
     }
     useLibrary 'org.apache.http.legacy'
-        buildTypes {
+    buildTypes {
         debug {
             manifestPlaceholders = [usesCleartextTraffic: "true"]
             minifyEnabled false

@@ -15,7 +15,9 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.ags.agssalesandroidclientorder.Activities.NotificationActivity;
 import com.ags.agssalesandroidclientorder.Activities.SplashScreen;
+import com.ags.agssalesandroidclientorder.Models.Notifications;
 import com.ags.agssalesandroidclientorder.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -30,11 +32,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendMyNotification(String message, String title) {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent intent = new Intent(this, SplashScreen.class);
+        Intent intent = new Intent(this, NotificationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             @SuppressLint("WrongConstant")
             NotificationChannel notificationChannel = new NotificationChannel(getResources().getString(R.string.channel_Id),

@@ -78,6 +78,10 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
         consumerAPI.postUpdateProfile(newName, newEmail, newNumber, userID).enqueue(new BaseHR(callback));
     }
 
+    public void getNotifications(callback callback) {
+        consumerAPI.getNotifications().enqueue(new BaseHR(callback));
+    }
+
     public void postUpdateProfileForCustomer(String newname,
                                              String vLat,
                                              String vLong,
