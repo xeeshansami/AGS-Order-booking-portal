@@ -5,7 +5,9 @@ import android.net.Uri;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Notifications {
+import java.io.Serializable;
+
+public class Notifications implements Serializable {
     @SerializedName("CompanyCode")
     @Expose
     private String companyCode;

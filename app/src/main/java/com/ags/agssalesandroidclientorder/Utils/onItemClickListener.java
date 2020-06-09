@@ -9,3 +9,5 @@ import com.ags.agssalesandroidclientorder.Models.EntityProductDetails;
 public interface onItemClickListener {
    void onItemClick(View view, int position, EntityOrder order, ImageView imageView);
 }
+
+

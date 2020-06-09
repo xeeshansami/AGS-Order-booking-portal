@@ -15,6 +15,7 @@ import com.ags.agssalesandroidclientorder.Models.EntityOrder;
 import com.ags.agssalesandroidclientorder.Models.Notifications;
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListenerForNotifications;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private Context context;
     private ArrayList<Notifications> arrayList;
-    onItemClickListener onItemClickListener;
+    onItemClickListenerForNotifications onItemClickListener;
 
-    public NotificationAdapter(Context context, ArrayList<Notifications> list, onItemClickListener onItemClickListener) {
+    public NotificationAdapter(Context context, ArrayList<Notifications> list, onItemClickListenerForNotifications onItemClickListener) {
         this.context = context;
         this.arrayList = list;
         this.onItemClickListener = onItemClickListener;
@@ -61,6 +62,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             notification_body = (TextView) convertView.findViewById(R.id.notification_body);
             notification_date = (TextView) convertView.findViewById(R.id.notification_date);
             read_more = (TextView) convertView.findViewById(R.id.read_more);
+
         }
 
         void bind(final Notifications notifications) {
@@ -68,10 +70,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             notification_header.setText(notifications.getCompanyName());
             notification_body.setText(notifications.getDescription());
             notification_date.setText(notifications.getDurationStart());
+            read_more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(view,getLayoutPosition(),notifications,imageView);
+                }
+            });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    onItemClickListener.onItemClick(view,getLayoutPosition(),order,imageView);
+                    onItemClickListener.onItemClick(view,getLayoutPosition(),notifications,imageView);
                 }
             });
         }

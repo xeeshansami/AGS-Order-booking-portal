@@ -55,6 +55,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.ags.agssalesandroidclientorder.Utils.Constant;
 import com.ags.agssalesandroidclientorder.Utils.FontImprima;
 import com.ags.agssalesandroidclientorder.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorder.Utils.SharedPreferenceManager;
 import com.ags.agssalesandroidclientorder.Utils.Utils;
 import com.ags.agssalesandroidclientorder.Utils.setOnitemClickListner;
 import com.android.volley.DefaultRetryPolicy;
@@ -100,6 +101,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -141,17 +145,78 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         return (x / y) * 100;
     }
 
-    TextView syncBtn, user_title;
+    Button syncBtn;
+    TextView user_title;
     DatabaseReference databse;
     NavigationView navigationView;
 
+    public void autoDownload(Button syncBtn, Date endDate, Date startDate) {
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+        System.out.println("startDate : " + startDate);
+        System.out.println("endDate : " + endDate);
+        System.out.println("different : " + different);
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+        long elapsedSeconds = different / secondsInMilli;
+        System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+        if (elapsedDays > 0) {
+            utils.showLoader(this);
+            utils.Login(syncBtn, sp.getusername(), sp.getpassword());
+            SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT, 1);
+        } else {
+            if (elapsedHours > 24) {
+                utils.showLoader(this);
+                utils.Login(syncBtn, sp.getusername(), sp.getpassword());
+                SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT, 1);
+            }
+        }
+    }
+    private void AutostartDownload(final Button syncBtn) {
+        if (utils.checkConnection(this)) {
+            new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
+                @Override
+                public void onConnectionSuccess() {
+                    if (sp.getpassword() != null && sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
+                        date2(syncBtn, SharedPreferenceManager.getInstance(DashboardActivity.this).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME));
+                    }
+                }
+
+                @Override
+                public void onConnectionFail(String errorMsg) {
+
+                }
+            }).execute();
+        }
+    }
+    public void date2(Button syncBtn, String perviousDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+        try {
+            String currentTime = simpleDateFormat.format(Calendar.getInstance().getTime());
+            Date date1 = simpleDateFormat.parse(currentTime);
+            Date date2 = simpleDateFormat.parse(perviousDate);
+            Log.i("currentTime", " = " + date1);
+            autoDownload(syncBtn, date1, date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
-        syncBtn = (TextView) findViewById(R.id.syncNowBtn);
+        syncBtn = findViewById(R.id.syncNowBtn);
         syncBtn.setOnClickListener(this);
         utils = new Utils(this);
+        session = new SessionManager(this);
         databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
@@ -184,6 +249,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
         userid.setText("As Role : " + sp.getrole());
         usertitle.setText("UserID: " + sp.getusername());
+        AutostartDownload(syncBtn);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -277,6 +343,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             public void onClick(DialogInterface dialog, int which) {
                 sp.clearAll();
                 db.clearAll();
+                session.setLogin(false);
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

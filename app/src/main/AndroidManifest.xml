@@ -23,7 +23,11 @@
         <activity
             android:name=".Activities.NotificationActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"></activity>
+        <activity
+            android:name=".Activities.NotificationDetails"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"></activity>
         <activity
             android:name=".Activities.PdfWebViewActivity"
             android:screenOrientation="portrait"

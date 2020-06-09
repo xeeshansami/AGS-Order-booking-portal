@@ -37,14 +37,13 @@ public class SplashScreen extends AppCompatActivity {
         splashTV2 = findViewById(R.id.welcome_tv2);
         new FontImprima(this, splashTV);
         new FontImprima(this, splashTV2);
-        // Session manager
-//        session = new SessionManager(getApplicationContext());
-        // Check if user is already logged in or not
-//        if (session.isLoggedIn()) {
-//            intent = new Intent(getApplicationContext(), DashboardActivity.class);
-//        } else {
+        //Check if user is already logged in or not
+        session=new SessionManager(this);
+        if (session.isLoggedIn()) {
+            intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        } else {
             intent = new Intent(getApplicationContext(), LoginActivity.class);
-//        }
+        }
         Thread thread = new Thread() {
             @Override
             public void run() {

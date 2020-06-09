@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.ags.agssalesandroidclientorder.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorder.R;
 import com.ags.agssalesandroidclientorder.Utils.Utils;
 import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
+import com.ags.agssalesandroidclientorder.Utils.onItemClickListenerForNotifications;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +53,7 @@ public class NotificationActivity extends AppCompatActivity {
         });
         utils = new Utils(this);
         utils.showLoader(this);
-        notifications=new ArrayList<>();
+        notifications = new ArrayList<>();
         AGSStore.getInstance().getNotifications(new callback() {
             @Override
             public void Success(String response) {
@@ -83,13 +85,16 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
-    private void notifications(ArrayList<Notifications> notifications) {
+    private void notifications(final ArrayList<Notifications> notifications) {
         recyclerView = (RecyclerView) findViewById(R.id.notification_recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new NotificationAdapter(this, notifications, new onItemClickListener() {
+        adapter = new NotificationAdapter(this, notifications, new onItemClickListenerForNotifications() {
             @Override
-            public void onItemClick(View view, int position, EntityOrder order, ImageView imageView) {
+            public void onItemClick(View view, int position, Notifications dataOfNotificatons, ImageView imageView) {
+                Intent intent = new Intent(NotificationActivity.this, NotificationDetails.class);
+                intent.putExtra("notification", dataOfNotificatons);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);

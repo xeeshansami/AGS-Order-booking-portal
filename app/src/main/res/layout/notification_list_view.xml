@@ -42,7 +42,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/image_notification_layout"
             android:layout_marginLeft="@dimen/unit_10"
             android:layout_marginRight="@dimen/unit_10"
@@ -84,7 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/head_text_layout"
                 android:layout_marginTop="5dp"
-                android:text="asdasd"
+                android:maxLines="3"
+                android:text="asdasdakljsdklasjdklas askdaskldjaskld askljdalsk djaskldjaskldj askld askldaskldjaskld"
                 android:textColor="@color/colorBlack"></TextView>
 
             <TextView

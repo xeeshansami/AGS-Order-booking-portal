@@ -28,6 +28,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,6 +69,9 @@ public class LoginActivity extends AppCompatActivity {
     TextView download_pdf_manual;
     Toolbar myToolbar;
     TextView version_name_lbl, forget_pwd_txt;
+    CheckBox check_remember;
+    SessionManager session;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
+        check_remember = findViewById(R.id.check_remember);
+        // Session manager
+        session = new SessionManager(getApplicationContext());
         AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         as_guest__button = findViewById(R.id.as_guest__button);
@@ -420,15 +427,30 @@ public class LoginActivity extends AppCompatActivity {
                 new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                     @Override
                     public void onConnectionSuccess() {
+                        if (check_remember.isChecked()) {
+                            session.setLogin(true);
+                        } else {
+                            session.setLogin(false);
+                        }
                         online(btnLogin);
                     }
 
                     @Override
                     public void onConnectionFail(String errorMsg) {
+                        if (check_remember.isChecked()) {
+                            session.setLogin(true);
+                        } else {
+                            session.setLogin(false);
+                        }
                         offline(btnLogin);
                     }
                 }).execute();
             } else {
+                if (check_remember.isChecked()) {
+                    session.setLogin(true);
+                } else {
+                    session.setLogin(false);
+                }
                 offline(btnLogin);
             }
         } else {
