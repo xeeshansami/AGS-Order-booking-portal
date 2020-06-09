@@ -31,7 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NotificationDetails extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -76,9 +79,9 @@ public class NotificationDetails extends AppCompatActivity {
             title2.setText(notificationsData.getTitle2());
             title3.setText(notificationsData.getTitle3());
             descriptions.setText(notificationsData.getDescription());
-            addedOn.setText(notificationsData.getAddedOn());
+            addedOn.setText(getDate(notificationsData.getAddedOn()));
             companyname.setText(notificationsData.getCompanyName());
-            validTill.setText(notificationsData.getOfferExpiry());
+            validTill.setText(getDate(notificationsData.getOfferExpiry()));
         }
         order_from_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +99,19 @@ public class NotificationDetails extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    public String getDate(String mydate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("M/DD/YYYY HH:MM:SS");
+        Date date = null;
+        try {
+            date = sdf.parse(mydate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(date.getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy h:ss a");
+        String myDate = dateFormat.format(new Date(date.getTime()));
+        return myDate;
     }
 }

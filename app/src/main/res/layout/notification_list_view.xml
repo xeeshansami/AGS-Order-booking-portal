@@ -16,9 +16,10 @@
             android:id="@+id/image_notification_layout"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/bg_app">
+          >
 
             <Button
+                android:visibility="gone"
                 android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
@@ -33,10 +34,10 @@
 
             <ImageView
                 android:id="@+id/notification_image"
-                android:layout_width="200dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:scaleType="center"
+                android:scaleType="fitXY"
                 android:src="@mipmap/ic_date"></ImageView>
         </RelativeLayout>
 

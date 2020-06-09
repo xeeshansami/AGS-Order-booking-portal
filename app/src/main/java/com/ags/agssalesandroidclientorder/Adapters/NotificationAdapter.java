@@ -18,7 +18,12 @@ import com.ags.agssalesandroidclientorder.Utils.onItemClickListener;
 import com.ags.agssalesandroidclientorder.Utils.onItemClickListenerForNotifications;
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MultiViewHolder> {
 
@@ -67,21 +72,35 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         void bind(final Notifications notifications) {
             Glide.with(context).load(notifications.getPicURL()).into(imageView);
-            notification_header.setText(notifications.getCompanyName());
-            notification_body.setText(notifications.getDescription());
-            notification_date.setText(notifications.getDurationStart());
+            notification_header.setText(notifications.getTitle1());
+            notification_body.setText(notifications.getTitle2());
+            notification_date.setText(getDate(notifications.getAddedOn()));
             read_more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(view,getLayoutPosition(),notifications,imageView);
+                    onItemClickListener.onItemClick(view, getLayoutPosition(), notifications, imageView);
                 }
             });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(view,getLayoutPosition(),notifications,imageView);
+                    onItemClickListener.onItemClick(view, getLayoutPosition(), notifications, imageView);
                 }
             });
         }
+    }
+
+    public String getDate(String mydate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("M/DD/YYYY HH:MM:SS");
+        Date date = null;
+        try {
+            date = sdf.parse(mydate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(date.getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy h:ss a");
+        String myDate = dateFormat.format(new Date(date.getTime()));
+        return myDate;
     }
 }

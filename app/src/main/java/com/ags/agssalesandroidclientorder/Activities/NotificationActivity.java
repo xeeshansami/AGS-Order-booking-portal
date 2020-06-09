@@ -64,10 +64,18 @@ public class NotificationActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jObject = jsonArray.getJSONObject(i);
                         Notifications product = new Notifications();
+                        product.setActive(jObject.get("Active").toString());
                         product.setCompanyName(jObject.get("CompanyName").toString());
                         product.setDescription(jObject.get("Description").toString());
+                        product.setDurationStart(jObject.get("DurationStart").toString());
+                        product.setDurationEnd(jObject.get("DurationEnd").toString());
+                        product.setOfferExpiry(jObject.get("OfferExpiry").toString());
+                        product.setAddedBy(jObject.get("AddedBy").toString());
                         product.setAddedOn(jObject.get("AddedOn").toString());
                         product.setPicURL(jObject.get("Pic_URL").toString());
+                        product.setTitle1(jObject.get("Title1").toString());
+                        product.setTitle2(jObject.get("Title2").toString());
+                        product.setTitle3(jObject.get("Title3").toString());
                         notifications.add(product);
                     }
                     notifications(notifications);
