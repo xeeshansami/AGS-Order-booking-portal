@@ -322,6 +322,11 @@
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
 
+                        <View
+                            android:id="@+id/view5"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -348,11 +353,6 @@
                             android:textSize="15dp" />
 
                     </LinearLayout>
-
-                    <View
-                        android:id="@+id/view5"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
