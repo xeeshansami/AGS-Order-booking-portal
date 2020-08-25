@@ -127,6 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:checked="true"
                     android:layout_marginRight="@dimen/unit_10"
                     android:text="Remember me"
                     android:textColor="@color/grey"></CheckBox>
