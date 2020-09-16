@@ -212,67 +212,78 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);
-        syncBtn = findViewById(R.id.syncNowBtn);
-        syncBtn.setOnClickListener(this);
-        utils = new Utils(this);
-        session = new SessionManager(this);
-        databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED));
-        db = new DatabaseHandler(this);
-        sp = new SharedPreferenceHandler(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        user_title = findViewById(R.id.user_title);
-        toolbar.setTitle("Dashboard");
-        String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
-        user_title.setText(txt);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        setSupportActionBar(toolbar);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        try {
+            setContentView(R.layout.dashboard);
+            syncBtn = findViewById(R.id.syncNowBtn);
+            syncBtn.setOnClickListener(this);
+            utils = new Utils(this);
+            session = new SessionManager(this);
+            databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
+            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
+            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
+            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_TEXT_VALUES));
+            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED));
+            db = new DatabaseHandler(this);
+            sp = new SharedPreferenceHandler(this);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            user_title = findViewById(R.id.user_title);
+            toolbar.setTitle("Dashboard");
+            String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
+            user_title.setText(txt);
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+            setSupportActionBar(toolbar);
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
 //        toolbar.setNavigationIcon(android.R.drawable);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View hView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
-        TextView footar_version = navigationView.findViewById(R.id.footar_version);
-        TextView userid = hView.findViewById(R.id.header_userid);
-        TextView usertitle = hView.findViewById(R.id.header_username);
-        footar_version.setText(BuildConfig.VERSION_NAME);
-        if (sp.getrole().equalsIgnoreCase("Saleman")) {
-            showItem();
-        }
-        userid.setText("As Role : " + sp.getrole());
-        usertitle.setText("UserID: " + sp.getusername());
-        AutostartDownload(syncBtn);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCanceledOnTouchOutside(false);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (utils.isGPSEnabled(DashboardActivity.this)) {
-                    startActivity(new Intent(DashboardActivity.this, OrderFormActivity.class));
-                } else {
-                    utils.alertBox(DashboardActivity.this, "Alert", "For create an order, Kindly first enable your gps locations ", "Enabled", "Later", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
-                            view.dismiss();
-                        }
-                    });
-                }
+            navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View hView = navigationView.getHeaderView(0);
+            navigationView.setNavigationItemSelectedListener(this);
+            TextView footar_version = navigationView.findViewById(R.id.footar_version);
+            TextView userid = hView.findViewById(R.id.header_userid);
+            TextView usertitle = hView.findViewById(R.id.header_username);
+            footar_version.setText(BuildConfig.VERSION_NAME);
+            if (sp.getrole().equalsIgnoreCase("Saleman")) {
+                showItem();
+            }
+            userid.setText("As Role : " + sp.getrole());
+            usertitle.setText("UserID: " + sp.getusername());
+            AutostartDownload(syncBtn);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCanceledOnTouchOutside(false);
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (utils.isGPSEnabled(DashboardActivity.this)) {
+                        startActivity(new Intent(DashboardActivity.this, OrderFormActivity.class));
+                    } else {
+                        utils.alertBox(DashboardActivity.this, "Alert", "For create an order, Kindly first enable your gps locations ", "Enabled", "Later", new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
+                                view.dismiss();
+                            }
+                        });
+                    }
 
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-            }
-        });
+                }
+            });
+        }catch (Exception e){
+            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n"+e.getMessage(), "Yes", "Later", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
+                    startActivity(intent);
+                    view.dismiss();
+                }
+            });
+        }
     }
 
     private void showItem() {
@@ -512,8 +523,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         List<EntityOrderAndDetails> allProdsAndDetails = db.getOrderAndDetails(sp.getbranch());
         if (allProdsAndDetails.size() > 0) {
             final String jsonProds = new Gson().toJson(allProdsAndDetails);
-
-            StringRequest sr = new StringRequest(Request.Method.POST, "http://mobile.agssukkur.com/agssalesclient.asmx/createOrder", new Response.Listener<String>() {
+            StringRequest sr = new StringRequest(Request.Method.POST,
+                    "https://mobile.agssukkur.com/agssalesclient.asmx/createOrder", new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     syncBtn.setEnabled(true);
@@ -545,6 +556,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    System.out.println("DashboardActivityCheck"+" : "+error.getMessage());
                     syncBtn.setEnabled(true);
                     syncBtn.setClickable(true);
                     progressDialog.dismiss();

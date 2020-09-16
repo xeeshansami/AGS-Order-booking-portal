@@ -23,6 +23,7 @@ public interface APIInterface {
     @GET("salesman2")
     Call<String> getSalesmanForCustomer(@Query("branch") String branch);
 
+
     @GET("customers2")
     Call<String> getSelfCustomer(@Query("branch") String branch, @Query("AccountID") String AccountID);
 

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 //import okhttp3.logging.HttpLoggingInterceptor;
 
 public class Constant {
-    final public static String baseUrl="http://mobile.agssukkur.com/agssalesclient.asmx/";
+    final public static String baseUrl="https://mobile.agssukkur.com/agssalesclient.asmx/";
     public static final String BASE_URL_MAP = "";
     @NotNull
     public static final  String HEADER_TAG = "@";
