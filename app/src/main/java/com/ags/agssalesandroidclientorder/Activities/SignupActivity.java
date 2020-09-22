@@ -47,7 +47,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
-    private String url_Base = "http://mobile.agssukkur.com/agssalesclient.asmx/";
+    private String url_Base = "https://mobile.agssukkur.com/agssalesclient.asmx/";
     private String url_Signup = url_Base + "Signup";
     EditText txtFullName;
     EditText txtEmail;
