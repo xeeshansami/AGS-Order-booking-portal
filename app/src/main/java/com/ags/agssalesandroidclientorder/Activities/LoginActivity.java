@@ -15,7 +15,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -58,7 +62,17 @@ import com.ags.agssalesandroidclientorder.R;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "testter";
     Utils utils;
-    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] permissions = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] permissions2 = {
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION};
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
     EditText txtUsername;
@@ -313,7 +327,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkForPermissions();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+            checkForPermissions2();
+        } else {
+            checkForPermissions();
+        }
     }
 
     public void onResume() {
@@ -343,12 +361,62 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void allowExtPermissions() {
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+        }
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.setData(Uri.parse(String.format("package:%s", getApplication().getPackageName())));
+        startActivity(intent);
+    }
+
     private void checkForPermissions() {
         Permissions.check(this/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
             @Override
             public void onGranted() {
                 // do your task.
-                isOnlineOffline();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        allowExtPermissions();
+                    }
+                } else {
+                    isOnlineOffline();
+                }
+            }
+
+            @Override
+            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                utils.alertBox(LoginActivity.this, "Permission Denied", "Without permission application will not start, Kindly accept first all permission",
+                        "Later", "Again", new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                view.dismiss();
+                                finish();
+                            }
+                        }, new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                checkForPermissions();
+                            }
+                        });
+            }
+        });
+
+    }
+
+    private void checkForPermissions2() {
+        Permissions.check(this/*context*/, permissions2, null/*rationale*/, null/*options*/, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                // do your task.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        allowExtPermissions();
+                    }
+                } else {
+                    isOnlineOffline();
+                }
             }
 
             @Override

@@ -83,11 +83,11 @@ public class PdfWebViewActivity extends AppCompatActivity {
         webSettings.setUseWideViewPort(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
+//        webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
 //        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 //        webSettings.setUserAgentString(DEFAULT_USER_AGENT);
-        webSettings.setAppCacheEnabled(true);
-        webSettings.setAppCachePath("");
+//        webSettings.setAppCacheEnabled(true);
+//        webSettings.setAppCachePath("");
         webSettings.setDomStorageEnabled(true);
         webView.clearCache(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);

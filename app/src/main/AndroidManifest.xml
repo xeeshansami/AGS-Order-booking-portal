@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ags.agssalesandroidclientorder">
-
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -11,7 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <application
         android:name=".Network.MyApplication"
         android:allowBackup="true"
@@ -19,48 +23,60 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
         <activity
+            android:exported="true"
             android:name=".Activities.NotificationActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
+            android:exported="true"
             android:name=".Activities.NotificationDetails"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
+            android:exported="true"
             android:name=".Activities.PdfWebViewActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.FeedbackFormActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.ProductOfferActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.ForgetActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.VarificationActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.ChangePassword"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.EditSingleProduct"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.UpdateProfile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.UpdateCustomerProfile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
@@ -70,6 +86,7 @@
             android:required="false" />
 
         <activity
+            android:exported="true"
             android:name=".Activities.SplashScreen"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
@@ -80,6 +97,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:exported="true"
             android:name=".Activities.OrderFormActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".Activities.DashboardActivity"
@@ -87,19 +105,23 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.CustomerActivity"
             android:parentActivityName=".Activities.OrderFormActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.ProductActivity"
             android:parentActivityName=".Activities.OrderFormActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.LoginActivity"
             android:parentActivityName=".Activities.OrderFormActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:launchMode="singleTop"
@@ -107,22 +129,27 @@
             android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.OrderListActivity"
             android:parentActivityName=".Activities.DashboardActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.ActivityOrderProductsDetail"
             android:parentActivityName=".Activities.OrderListActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".Activities.SignupActivity"
             android:label="@string/title_activity_signup_acitivity" />
 
+
         <service
             android:name=".Fcm.MyFirebaseMessagingService"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

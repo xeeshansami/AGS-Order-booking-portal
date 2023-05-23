@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#5AB7F4</color>
-    <color name="colorPrimary">#2397E2</color>
-    <color name="colorPrimaryDark">#0384D7</color>
+    <color name="colorAccent">#D1E2C4</color>
+    <color name="colorPrimary">#778A35</color>
+    <color name="colorPrimaryDark">#31352E</color>
     <color name="colorAccentLight">#FF9800</color>
     <color name="colorGray">#eeeeee</color>
     <color name="colorBlack">#333333</color>
     <color name="bgzColor">#0D5173E5</color>
-    <color name="disableColor">#4040AC</color>
+    <color name="disableColor">#EBEBE8</color>
     <color name="activeColor">#FFD10000</color>
     <color name="white">#FFFFFF</color>
     <color name="activieColorBg">#FFB2B2</color>
-    <color name="table_header_bg">#4C68A2</color>
-    <color name="table_left_column_bg">#9EB6E4</color>
+    <color name="table_header_bg">#778A35</color>
+    <color name="table_left_column_bg">#31352E</color>
     <color name="feedback_bg">#659EB6E4</color>
     <color name="grey">#B6B6B6</color>
 </resources>

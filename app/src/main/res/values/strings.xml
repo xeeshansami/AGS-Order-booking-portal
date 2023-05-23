@@ -30,6 +30,7 @@
     <string name="navigation_drawer_close">Close drawer</string>
     <string name="splashWelomeNote">Welcome</string>
     <string name="splashWelomeNote2">AGS Mobile Order Booking</string>
+    <string name="companyName">Powered By Paxees Technologies ©2023</string>
     <string name="something_went_wrong">Something went wrong, try again later</string>
     <string name="notifications_admin_channel_name">admin</string>
     <string name="notifications_admin_channel_description">admin_description</string>

@@ -68,4 +68,20 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcome_tv1" />
+
+    <TextView
+        android:layout_margin="3dp"
+        android:id="@+id/poweredBy"
+
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/companyName"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="13dp"
+        android:textStyle="bold"></TextView>
+
 </RelativeLayout>
