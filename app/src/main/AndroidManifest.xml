@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.ags.agssalesandroidclientorder">
+    package="com.ags.agssalesandroidclientorderdocter">
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <application
-        android:name=".Network.MyApplication"
+        android:name="com.ags.agssalesandroidclientorderdocter.Network.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
@@ -27,57 +27,57 @@
         android:usesCleartextTraffic="true">
         <activity
             android:exported="true"
-            android:name=".Activities.NotificationActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.NotificationActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
             android:exported="true"
-            android:name=".Activities.NotificationDetails"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.NotificationDetails"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
             android:exported="true"
-            android:name=".Activities.PdfWebViewActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.PdfWebViewActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.FeedbackFormActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.FeedbackFormActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.ProductOfferActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.ProductOfferActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.ForgetActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.ForgetActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.VarificationActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.VarificationActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.ChangePassword"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.ChangePassword"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.EditSingleProduct"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.EditSingleProduct"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.UpdateProfile"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.UpdateProfile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.UpdateCustomerProfile"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.UpdateCustomerProfile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
@@ -87,7 +87,7 @@
 
         <activity
             android:exported="true"
-            android:name=".Activities.SplashScreen"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.SplashScreen"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -98,31 +98,31 @@
         </activity>
         <activity
             android:exported="true"
-            android:name=".Activities.OrderFormActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.OrderFormActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".Activities.DashboardActivity"
+            android:parentActivityName="com.ags.agssalesandroidclientorderdocter.Activities.DashboardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.CustomerActivity"
-            android:parentActivityName=".Activities.OrderFormActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.CustomerActivity"
+            android:parentActivityName="com.ags.agssalesandroidclientorderdocter.Activities.OrderFormActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.ProductActivity"
-            android:parentActivityName=".Activities.OrderFormActivity" />
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.ProductActivity"
+            android:parentActivityName="com.ags.agssalesandroidclientorderdocter.Activities.OrderFormActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.LoginActivity"
-            android:parentActivityName=".Activities.OrderFormActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.LoginActivity"
+            android:parentActivityName="com.ags.agssalesandroidclientorderdocter.Activities.OrderFormActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.DashboardActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -130,24 +130,24 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.OrderListActivity"
-            android:parentActivityName=".Activities.DashboardActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.OrderListActivity"
+            android:parentActivityName="com.ags.agssalesandroidclientorderdocter.Activities.DashboardActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.ActivityOrderProductsDetail"
-            android:parentActivityName=".Activities.OrderListActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.ActivityOrderProductsDetail"
+            android:parentActivityName="com.ags.agssalesandroidclientorderdocter.Activities.OrderListActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:exported="true"
-            android:name=".Activities.SignupActivity"
+            android:name="com.ags.agssalesandroidclientorderdocter.Activities.SignupActivity"
             android:label="@string/title_activity_signup_acitivity" />
 
 
         <service
-            android:name=".Fcm.MyFirebaseMessagingService"
+            android:name="com.ags.agssalesandroidclientorderdocter.Fcm.MyFirebaseMessagingService"
             android:permission="com.google.android.c2dm.permission.SEND"
             android:exported="true">
             <intent-filter>
@@ -171,7 +171,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.ags.agssalesandroidclientorder.provider"
+            android:authorities="com.ags.agssalesandroidclientorderdocter.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
