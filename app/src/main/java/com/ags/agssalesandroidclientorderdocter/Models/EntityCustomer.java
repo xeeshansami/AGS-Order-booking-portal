@@ -1,11 +1,23 @@
 package com.ags.agssalesandroidclientorderdocter.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Asad on 10/1/2016.
  */
-public class EntityCustomer {
+public class EntityCustomer implements Serializable {
 
     private int customerId;
+
+    public boolean getSelectedCustomer() {
+        return selectedCustomer;
+    }
+
+    public void setSelectedCustomer(boolean selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
+    }
+
+    private boolean selectedCustomer;
     private String customerName;
     private String customerBranch;
 

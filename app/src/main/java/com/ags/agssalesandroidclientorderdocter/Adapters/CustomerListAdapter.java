@@ -3,8 +3,11 @@ package com.ags.agssalesandroidclientorderdocter.Adapters;
 import com.ags.agssalesandroidclientorderdocter.Models.EntityCustomer;
 
 import com.ags.agssalesandroidclientorderdocter.R;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ public class CustomerListAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (inflater == null)
@@ -56,6 +60,12 @@ public class CustomerListAdapter extends BaseAdapter {
         TextView customerName = (TextView) convertView.findViewById(R.id.customerName);
         TextView customerBranch = (TextView) convertView.findViewById(R.id.customerBranch);
         EntityCustomer customer = customerItems.get(position);
+        if(customer.getSelectedCustomer() ){
+            Log.i("CustomerProd",customer.getCustomerId()+" Adapter ");
+            customerId.setTextColor(R.color.green);
+            customerName.setTextColor(R.color.green);
+            customerBranch.setTextColor(R.color.green);
+        }
         customerId.setText(String.valueOf(customer.getCustomerId()));
         customerName.setText(customer.getCustomerName());
         customerBranch.setText(customer.getCustomerAddress());

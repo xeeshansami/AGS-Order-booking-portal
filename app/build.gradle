@@ -7,16 +7,10 @@ android {
     defaultConfig {
         applicationId "com.ags.agssalesandroidclientorderdocter"
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 32
         versionCode 13
         versionName "2.2"
         multiDexEnabled true
-    }
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
     }
     useLibrary 'org.apache.http.legacy'
     buildTypes {
@@ -30,6 +24,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 
@@ -52,7 +50,7 @@ dependencies {
     implementation 'me.neavo:volley:2014.12.09'
     implementation('com.stripe:stripe-android:8.1.0') {
         exclude group: 'com.android.support'
-        implementation 'com.nabinbhandari.android:permissions:3.7'
+//        implementation 'com.nabinbhandari.android:permissions:3.7'
     }
 //    implementation files('libs/gson-2.2.4.jar')
     implementation 'com.google.android.gms:play-services-location:15.0.0'

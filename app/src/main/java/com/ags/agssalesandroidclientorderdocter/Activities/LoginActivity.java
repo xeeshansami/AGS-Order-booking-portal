@@ -12,6 +12,7 @@ import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,8 +29,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.ags.agssalesandroidclientorderdocter.Utils.Constant;
 import com.ags.agssalesandroidclientorderdocter.Utils.FontImprima;
@@ -38,8 +41,6 @@ import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 import com.google.android.material.snackbar.Snackbar;
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -351,83 +352,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void allowExtPermissions() {
-        Intent intent = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-        }
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.setData(Uri.parse(String.format("package:%s", getApplication().getPackageName())));
-        startActivity(intent);
-    }
+//    private void allowExtPermissions() {
+//        Intent intent = null;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+//            intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+//        }
+//        intent.addCategory("android.intent.category.DEFAULT");
+//        intent.setData(Uri.parse(String.format("package:%s", getApplication().getPackageName())));
+//        startActivity(intent);
+//    }
 
-    private void checkForPermissions() {
-        Permissions.check(this/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                // do your task.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (!Environment.isExternalStorageManager()) {
-                        allowExtPermissions();
-                    }
-                } else {
-                    isOnlineOffline();
-                }
-            }
 
-            @Override
-            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                utils.alertBox(LoginActivity.this, "Permission Denied", "Without permission application will not start, Kindly accept first all permission",
-                        "Later", "Again", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                                finish();
-                            }
-                        }, new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                checkForPermissions();
-                            }
-                        });
-            }
-        });
-
-    }
-
-    private void checkForPermissions2() {
-        Permissions.check(this/*context*/, permissions2, null/*rationale*/, null/*options*/, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                // do your task.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (!Environment.isExternalStorageManager()) {
-                        allowExtPermissions();
-                    }
-                } else {
-                    isOnlineOffline();
-                }
-            }
-
-            @Override
-            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                utils.alertBox(LoginActivity.this, "Permission Denied", "Without permission application will not start, Kindly accept first all permission",
-                        "Later", "Again", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                                finish();
-                            }
-                        }, new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                checkForPermissions();
-                            }
-                        });
-            }
-        });
-
-    }
 
     public void online(Button button) {
         String username = txtUsername.getText().toString().trim();
@@ -515,6 +450,89 @@ public class LoginActivity extends AppCompatActivity {
             utils.hideLoader();
             btnLogin.setEnabled(true);
             btnLogin.setClickable(true);
+        }
+    }
+
+
+
+    private boolean hasAllPermissions(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void checkForPermissions() {
+        if (hasAllPermissions(permissions)) {
+            handlePermissionsGranted();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions,1001);
+            }
+        }
+    }
+
+    private void checkForPermissions2() {
+        if (hasAllPermissions(permissions2)) {
+            handlePermissionsGranted();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions2,1001);
+            }
+        }
+    }
+
+    private void handlePermissionsGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                allowExtPermissions();
+            }
+        } else {
+            isOnlineOffline();
+        }
+    }
+
+    private void allowExtPermissions() {
+        // Implement logic to request special permission for managing external storage
+        Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1001) {
+            boolean allGranted = true;
+
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+
+            if (allGranted) {
+                handlePermissionsGranted();
+            } else {
+                utils.alertBox(this, "Permission Denied",
+                        "Without permission, the application cannot proceed. Please grant all permissions.",
+                        "Exit", "Retry", new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                view.dismiss();
+                                finish();
+                            }
+                        }, new setOnitemClickListner() {
+                            @Override
+                            public void onClick(DialogInterface view, int i) {
+                                checkForPermissions();
+                            }
+                        });
+            }
         }
     }
 }

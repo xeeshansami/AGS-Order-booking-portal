@@ -3,10 +3,14 @@ package com.ags.agssalesandroidclientorderdocter.Activities;
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorderdocter.Models.EntityProduct;
 
+import com.ags.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.ags.agssalesandroidclientorderdocter.R;
 import android.app.Activity;
 
 import com.ags.agssalesandroidclientorderdocter.Adapters.ProductListAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,7 +42,20 @@ public class ProductActivity extends AppCompatActivity {
 
         db = new DatabaseHandler(this);
         productsList = db.getAllProducts();
+        if(getIntent().hasExtra("products")){
+            List<EntityProductDetails> list = new Gson().fromJson(
+                    getIntent().getStringExtra("products"),
+                    new TypeToken<List<EntityProductDetails>>(){}.getType()
+            );
+            for(EntityProductDetails s : list){
+                for(int i=0;i<productsList.size();i++){
+                    if(s.getProductId()==productsList.get(i).getProductId()){
+                        productsList.get(i).setSelectedProduct(true);
+                    }
+                }
 
+            }
+        }
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activities window.
@@ -46,8 +63,6 @@ public class ProductActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Select Product");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         BindSearchProductTextBox();
         BindProductsList();
     }
@@ -89,7 +104,6 @@ public class ProductActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 EntityProduct entry= (EntityProduct) parent.getAdapter().getItem(position);
-
                 /*Toast.makeText(ProductActivity.this, entry.getName(), Toast.LENGTH_SHORT).show();*/
 
                 Intent returnIntent = new Intent();

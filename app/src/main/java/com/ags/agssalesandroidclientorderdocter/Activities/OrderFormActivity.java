@@ -67,6 +67,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -646,11 +647,19 @@ public class OrderFormActivity extends AppCompatActivity {
 
     public void SelectCustomer(View v) {
         Intent intent = new Intent(OrderFormActivity.this, CustomerActivity.class);
+
+        if(selectedCustomer!=null) {
+            intent.putExtra("selectedCustomer", selectedCustomer);
+        }
         startActivityForResult(intent, 1);
     }
 
     public void SelectProduct(View v) {
         Intent intent = new Intent(OrderFormActivity.this, ProductActivity.class);
+        if(productsList.size()!=0) {
+            String json = new Gson().toJson(productsList);
+            intent.putExtra("products", json);
+        }
         startActivityForResult(intent, 2);
     }
 
@@ -727,6 +736,10 @@ public class OrderFormActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 addProductToList();
                                 Intent intent = new Intent(OrderFormActivity.this, ProductActivity.class);
+                                if(productsList.size()!=0) {
+                                    String json = new Gson().toJson(productsList);
+                                    intent.putExtra("products", json);
+                                }
                                 startActivityForResult(intent, 2);
                                 new Handler().postDelayed(new Runnable() {
                                     public void run() {
@@ -764,6 +777,8 @@ public class OrderFormActivity extends AppCompatActivity {
             detailsProd.setProductName(product.getProductName());
             detailsProd.setProductSize(product.getProductSize());
             detailsProd.setProductPrice(product.getProductPrice());
+            detailsProd.setProductPrice(product.getProductPrice());
+            detailsProd.setProductSelected(true);
 
             detailsProd.setProductQty(Integer.parseInt(productQty.getText().toString()));
             detailsProd.setProductBonus(productBonus.getText().toString().trim().equals("") != true ? Integer.parseInt(productBonus.getText().toString()) : 0);

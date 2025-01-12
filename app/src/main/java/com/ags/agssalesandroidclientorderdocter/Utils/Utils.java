@@ -698,7 +698,9 @@ public class Utils implements IOnConnectionTimeoutListener {
         public Downloading(Button button, int inWhich) {
             this.button = button;
             this.inWhich = inWhich;
-            setUpDownloadAlertBox(button);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setUpDownloadAlertBox(button);
+            }
         }
 
         @Override

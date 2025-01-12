@@ -5,6 +5,15 @@ package com.ags.agssalesandroidclientorderdocter.Models;
  */
 public class EntityProduct {
 
+    public boolean isSelectedProduct() {
+        return selectedProduct;
+    }
+
+    public void setSelectedProduct(boolean selectedProduct) {
+        this.selectedProduct = selectedProduct;
+    }
+
+    private boolean selectedProduct;
     private int productId;
     private String productName;
     private String productSize;

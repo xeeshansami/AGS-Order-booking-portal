@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/splashLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.3"
-        android:background="@drawable/bg_medical"></RelativeLayout>
+        android:alpha="0.3"></ImageView>
 
     <ImageView
         android:id="@+id/welcome_img1"

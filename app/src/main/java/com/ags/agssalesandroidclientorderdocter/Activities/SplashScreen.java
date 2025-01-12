@@ -7,13 +7,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.ags.agssalesandroidclientorderdocter.R;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 /**
@@ -28,6 +35,7 @@ public class SplashScreen extends AppCompatActivity {
     SessionManager session;
     Intent intent;
     TextView poweredBy;
+    ImageView splashLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +44,14 @@ public class SplashScreen extends AppCompatActivity {
         //get Splash Screen into the mobile screen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash_screen);
+        splashLayout = findViewById(R.id.splashLayout);
         splashTV = findViewById(R.id.welcome_tv1);
         splashTV2 = findViewById(R.id.welcome_tv2);
         poweredBy = findViewById(R.id.poweredBy);
         new FontImprima(this, splashTV);
         new FontImprima(this, splashTV2);
         new FontImprima(this, poweredBy);
+        loadBackgroundImage();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             poweredBy.setText(Html.fromHtml("<h6>Powered By<font color=#FF0000><u> Paxees Technologies </u></font> © 2023</h6>", Html.FROM_HTML_MODE_COMPACT));
         }
@@ -71,6 +81,35 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+    private void loadBackgroundImage() {
+        String imageUrl = "https://help.apple.com/assets/673E75B8CE653059AF0BD8F5/673E75BE8753C5C3E8099DAD/en_US/fa285248da8e823dab903bad95d84600.png";
+
+        new Thread(() -> {
+            try {
+                // Initialize URL connection
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    // If you need to parse the response, handle it here
+                    runOnUiThread(() ->
+                            Glide.with(this)
+                                    .load(imageUrl) // Directly load the image
+                                    .into(splashLayout) // Your ImageView
+                    );
+                } else {
+                    // Handle server error response
+                    runOnUiThread(() -> splashLayout.setImageResource(R.drawable.bg_medical));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Fallback to default image in case of exception
+                runOnUiThread(() -> splashLayout.setImageResource(R.drawable.bg_medical));
+            }
+        }).start();
     }
 
     @Override

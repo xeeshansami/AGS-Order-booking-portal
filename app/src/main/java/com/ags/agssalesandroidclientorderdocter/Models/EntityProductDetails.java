@@ -7,6 +7,15 @@ import java.io.Serializable;
  */
 public class EntityProductDetails implements Serializable {
 
+    public boolean isProductSelected() {
+        return productSelected;
+    }
+
+    public void setProductSelected(boolean productSelected) {
+        this.productSelected = productSelected;
+    }
+
+    private boolean productSelected;
     private int productId;
     private String productName;
     private String productSize;
