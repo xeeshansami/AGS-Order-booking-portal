@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/unit_10"
         android:layout_marginTop="@dimen/unit_10"
         android:layout_marginRight="@dimen/unit_10"
-        android:text="Customer: Text medical Text medical Text medical Text medical Text medical"
+        android:text="Customer:"
         android:textColor="@color/colorPrimary"
         android:textSize="15dp"
         android:textStyle="italic|bold"></TextView>
@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:background="#FFD10000"
             android:fontFamily="sans-serif-smallcaps"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:padding="10dp"
             android:text="Send Orders now"
             android:textColor="#fff"

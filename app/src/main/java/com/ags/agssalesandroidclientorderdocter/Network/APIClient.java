@@ -7,7 +7,15 @@ import com.google.gson.GsonBuilder;
 //import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -20,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 /**
+ *
  */
 public class APIClient {
 
@@ -34,11 +43,46 @@ public class APIClient {
     public static Retrofit getClient(IOnConnectionTimeoutListener listener) {
         timeoutListener = listener;
         if (retrofit == null) {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            SSLContext sslContext = null;
+            try {
+                sslContext = SSLContext.getInstance("SSL");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            try {
+                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            }
+
+            // Create an all-trusting hostname verifier
+            HostnameVerifier allHostsValid = (hostname, session) -> true;
+
             OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+            builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
+                    .hostnameVerifier(allHostsValid);
             builder.readTimeout(APIConstants.READ_TIMEOUT, TimeUnit.SECONDS);
             builder.writeTimeout(APIConstants.WRITE_TIMEOUT, TimeUnit.SECONDS);
             builder.connectTimeout(APIConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
-            builder.callTimeout(30,TimeUnit.SECONDS);
+            builder.callTimeout(30, TimeUnit.SECONDS);
             if (BuildConfig.DEBUG) {
 //                if (MyApplication.getConsumerApplication() != null) {
 //                    builder.addInterceptor(new ChuckInterceptor(MyApplication.getConsumerApplication()));
@@ -80,19 +124,19 @@ public class APIClient {
         return retrofit;
     }
 
-    public static Retrofit getClient(IOnConnectionTimeoutListener listener,long timeout) {
+    public static Retrofit getClient(IOnConnectionTimeoutListener listener, long timeout) {
         timeoutListener = listener;
         if (retrofitLongTimeout == null) {
             OkHttpClient.Builder builder = new OkHttpClient().newBuilder().readTimeout(timeout, TimeUnit.SECONDS).
-            writeTimeout(timeout, TimeUnit.SECONDS).connectTimeout(timeout, TimeUnit.SECONDS);
+                    writeTimeout(timeout, TimeUnit.SECONDS).connectTimeout(timeout, TimeUnit.SECONDS);
 
 //            if (BuildConfig.DEBUG) {
 //                if (MyApplication.getConsumerApplication() != null) {
 //                    builder.addInterceptor(new ChuckInterceptor(MyApplication.getConsumerApplication()));
 //                }
-                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                builder.addInterceptor(interceptor);
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(interceptor);
 //            }
             builder.addInterceptor(new Interceptor() {
                 @Override

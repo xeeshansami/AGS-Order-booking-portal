@@ -53,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
         new FontImprima(this, poweredBy);
         loadBackgroundImage();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            poweredBy.setText(Html.fromHtml("<h6>Powered By<font color=#FF0000><u> Paxees Technologies </u></font> © 2023</h6>", Html.FROM_HTML_MODE_COMPACT));
+            poweredBy.setText(Html.fromHtml("<h6>Powered By<font color=#FF0000><u> Paxees Technologies </u></font> © 2025</h6>", Html.FROM_HTML_MODE_COMPACT));
         }
         //Check if user is already logged in or not
         session = new SessionManager(this);

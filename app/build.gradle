@@ -9,7 +9,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 32
         versionCode 13
-        versionName "2.2"
+        versionName "15.1.0"
         multiDexEnabled true
     }
     useLibrary 'org.apache.http.legacy'
