@@ -83,7 +83,7 @@ public class SplashScreen extends AppCompatActivity {
         super.onStart();
     }
     private void loadBackgroundImage() {
-        String imageUrl = "https://help.apple.com/assets/673E75B8CE653059AF0BD8F5/673E75BE8753C5C3E8099DAD/en_US/fa285248da8e823dab903bad95d84600.png";
+        String imageUrl = "https://mobile.agssukkur.com/Images/abcimage.png";
 
         new Thread(() -> {
             try {
@@ -92,7 +92,6 @@ public class SplashScreen extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
-
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     // If you need to parse the response, handle it here
                     runOnUiThread(() ->

@@ -9,6 +9,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callback
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 
 import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
@@ -1147,7 +1148,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         alertDialog.show();
         final EditText pdf_name = promptsView.findViewById(R.id.pdf_name);
         new Handler().postDelayed(new Runnable() {
-
             public void run() {
                 pdf_name.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
                 pdf_name.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
@@ -1173,6 +1173,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void exportFile(final List<EntityOrderAndDetails> allProdsAndDetails) {
         LayoutInflater inflater = LayoutInflater.from(this);
         final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "", 60000);
+        @SuppressLint("RestrictedApi")
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
         View snackView = inflater.inflate(R.layout.file_export, null);
         Button pdf_btn = snackView.findViewById(R.id.pdf_btn);

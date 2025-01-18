@@ -248,13 +248,18 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public void showLoader(Context context) {
-        mProgressDialog = new TransparentProgressDialog(context);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
+        if (mProgressDialog == null) {
+            mProgressDialog = new TransparentProgressDialog(context);
+        }
+        if(!mProgressDialog.isShowing()) {
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
     }
 
     public void hideLoader() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
             mProgressDialog.cancel();
         }
     }
@@ -770,8 +775,8 @@ public class Utils implements IOnConnectionTimeoutListener {
                     }
                     //TODO: PRODUCTS
                     for (i = 0; i < products.length(); i++) {
-                            percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
-                            publishProgress((int) percent);
+                        percent = div(Double.parseDouble(String.valueOf(i)), Double.parseDouble(String.valueOf(products.length())));
+                        publishProgress((int) percent);
                         ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -868,7 +873,7 @@ public class Utils implements IOnConnectionTimeoutListener {
             } catch (Exception e) {
                 e.printStackTrace();
                 failedDownload(e.getMessage(), true, button);
-            }finally {
+            } finally {
                 return null;
             }
         }
@@ -1054,6 +1059,7 @@ public class Utils implements IOnConnectionTimeoutListener {
         String[] items = time.split(":");
         return Integer.parseInt(items[0]);
     }
+
     private static char[] smallCaps = new char[]
             {
                     '\uf761', //A
@@ -1084,10 +1090,10 @@ public class Utils implements IOnConnectionTimeoutListener {
                     '\uf77A'   //Z
             };
 
-    public static String getSmallCapsString (String input) {
+    public static String getSmallCapsString(String input) {
         char[] chars = input.toCharArray();
-        for(int i = 0; i < chars.length; i++) {
-            if(chars[i] >= 'a' && chars[i] <= 'z') {
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] >= 'a' && chars[i] <= 'z') {
                 chars[i] = smallCaps[chars[i] - 'a'];
             }
         }
