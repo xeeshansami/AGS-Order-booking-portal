@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
@@ -77,17 +78,24 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox check_remember;
     SessionManager session;
     Intent intent;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = new SharedPreferenceHandler(this);
         setContentView(R.layout.activity_login);
         utils = new Utils(this);
+
         db = new DatabaseHandler(this);
+
         check_remember = findViewById(R.id.check_remember);
         // Session manager
         session = new SessionManager(getApplicationContext());
+        boolean isDarkMode = session.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         as_guest__button = findViewById(R.id.as_guest__button);
@@ -107,13 +115,10 @@ public class LoginActivity extends AppCompatActivity {
         as_guest__button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                utils.alertBox(LoginActivity.this, "Thank You!", "This feature is under development and come soon.",
-                        "Ok", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                            }
-                        });
+                Intent intent=new Intent(LoginActivity.this, DashboardActivity.class);
+                session.setGuestUserLogin(true);
+                intent.putExtra("isGuestAccount",true);
+                startActivity(intent);
             }
         });
         btnLogin.setOnClickListener(new View.OnClickListener() {

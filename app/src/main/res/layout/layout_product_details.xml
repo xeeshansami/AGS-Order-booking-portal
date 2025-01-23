@@ -5,6 +5,7 @@
     android:padding="10dp">
 
     <LinearLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -30,7 +31,7 @@
                 android:id="@+id/productName"
                 android:layout_gravity="center_horizontal"
                 android:textCursorDrawable="@null"
-                android:textColor="#575656"
+                android:textColor="@color/grey"
                 android:singleLine="true"
                 android:textSize="15dp"
                 android:inputType="number"
@@ -50,7 +51,7 @@
                 android:id="@+id/productQty"
                 android:layout_gravity="center_horizontal"
                 android:textCursorDrawable="@null"
-                android:textColor="#575656"
+                android:textColor="@color/grey"
                 android:singleLine="true"
                 android:textSize="15dp"
                 android:inputType="number"
@@ -87,7 +88,7 @@
                 android:id="@+id/productBonus"
                 android:layout_gravity="center_horizontal"
                 android:textCursorDrawable="@null"
-                android:textColor="#575656"
+                android:textColor="@color/grey"
                 android:singleLine="true"
                 android:textSize="15dp"
                 android:inputType="number" />
@@ -115,7 +116,7 @@
                 android:id="@+id/productDiscount"
                 android:layout_gravity="center_horizontal"
                 android:textCursorDrawable="@null"
-                android:textColor="#575656"
+                android:textColor="@color/grey"
                 android:singleLine="true"
                 android:textSize="15dp"
                 android:inputType="number" />

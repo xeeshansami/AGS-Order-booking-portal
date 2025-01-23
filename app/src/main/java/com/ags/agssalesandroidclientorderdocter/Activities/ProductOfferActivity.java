@@ -1,6 +1,7 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callback
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
 import com.ags.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -33,6 +35,7 @@ public class ProductOfferActivity extends AppCompatActivity {
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
     Utils utils;
+    SessionManager sessionManager;
     ListView product_offer_recycler_view;
     private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
     private ProductListAdapter adapter;
@@ -43,6 +46,13 @@ public class ProductOfferActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_offer);
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         product_offer_recycler_view = findViewById(R.id.product_offer_recycler_view);
@@ -117,7 +127,9 @@ public class ProductOfferActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                utils.hideLoader();
+                if(utils!=null) {
+                    utils.hideLoader();
+                }
             }
 
             @Override

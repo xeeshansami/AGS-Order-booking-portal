@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
@@ -24,6 +25,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.model.response.ErrorResp
 import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -41,6 +43,7 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
     private Calendar myCalendar;
     private AGSStore agsStore;
     private Utils utils;
+    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Toolbar toolbar;
     TextView customer_date;
@@ -75,7 +78,13 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
         utils = new Utils(this);
         myCalendar = Calendar.getInstance();
         agsStore = AGSStore.getInstance();
-
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         customer_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

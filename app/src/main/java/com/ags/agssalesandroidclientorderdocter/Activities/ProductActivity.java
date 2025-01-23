@@ -8,6 +8,7 @@ import com.ags.agssalesandroidclientorderdocter.R;
 import android.app.Activity;
 
 import com.ags.agssalesandroidclientorderdocter.Adapters.ProductListAdapter;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.List;
 public class ProductActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
+    private SessionManager sessionManager;
 
     private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
     private ListView listView;
@@ -41,6 +44,13 @@ public class ProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product);
 
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         productsList = db.getAllProducts();
         if(getIntent().hasExtra("products")){
             List<EntityProductDetails> list = new Gson().fromJson(

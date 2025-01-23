@@ -42,6 +42,7 @@
     <string name="clearOrders">Clear AllOrders</string>
     <string name="updateProfile">Update Profile</string>
     <string name="sendFeedback">Send Feedback</string>
+    <string name="setting">Setting</string>
     <string name="productOffer">Products Offer</string>
     <string name="orderStatistics">Order Statistics</string>
     <string name="title_activity_login2222">Sign in</string>

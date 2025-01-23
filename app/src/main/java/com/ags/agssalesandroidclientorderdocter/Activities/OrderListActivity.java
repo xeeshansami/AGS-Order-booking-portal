@@ -2,6 +2,7 @@ package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorderdocter.Models.EntityOrder;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +34,7 @@ import com.ags.agssalesandroidclientorderdocter.Adapters.OrderListAdapter;
 public class OrderListActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
+    private SessionManager sessionManager;
 
     private ArrayList<EntityOrder> orderList = new ArrayList<EntityOrder>();
     private RecyclerView recyclerView;
@@ -56,6 +59,13 @@ public class OrderListActivity extends AppCompatActivity {
             db = new DatabaseHandler(this);
             orderList = db.getAllOrders();
             selectedItems = new ArrayList<Integer>();
+            sessionManager = new SessionManager(this);
+            boolean isDarkMode = sessionManager.isDarkMode();
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
             // Find the toolbar view inside the activity layout
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             // Sets the Toolbar to act as the ActionBar for this Activities window.

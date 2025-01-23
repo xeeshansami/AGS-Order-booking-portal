@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
@@ -22,6 +23,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
 import com.ags.agssalesandroidclientorderdocter.Utils.FontImprima;
 import com.ags.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -31,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class ChangePassword extends AppCompatActivity {
 
     private DatabaseHandler db;
+    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     private String url_Base = "http://mobile.agssukkur.com/agssalesclient.asmx/";
     private String url_Signup = url_Base + "Signup";
@@ -52,6 +55,13 @@ public class ChangePassword extends AppCompatActivity {
         utils = new Utils(this);
         setContentView(R.layout.activity_changepassword);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setSubtitle("Change Password");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);

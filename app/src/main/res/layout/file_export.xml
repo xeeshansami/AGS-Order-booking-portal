@@ -58,6 +58,7 @@
             android:layout_weight="1"
             android:background="@drawable/export_btn"
             android:drawableTop="@mipmap/ic_text_file"
+            android:textColor="@color/grey"
             android:fontFamily="sans-serif-smallcaps"
             android:text="Text file"></Button>
         <View
@@ -70,6 +71,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_weight="1"
+            android:textColor="@color/grey"
             android:background="@drawable/export_btn"
             android:drawableTop="@drawable/ic_pdf"
             android:drawableTint="@android:color/holo_red_dark"

@@ -13,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Constant;
 import com.ags.agssalesandroidclientorderdocter.Utils.FontImprima;
@@ -46,6 +48,7 @@ import java.util.Calendar;
 public class SignupActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
+    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     private String url_Base = "https://mobile.agssukkur.com/agssalesclient.asmx/";
     private String url_Signup = url_Base + "Signup";
@@ -73,6 +76,13 @@ public class SignupActivity extends AppCompatActivity {
         utils = new Utils(this);
         setContentView(R.layout.activity_signup);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setSubtitle("Sign up");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);

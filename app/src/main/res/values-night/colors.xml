@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorPrimary">#778A35</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccentLight">#FF9800</color>
+    <color name="colorGray">#eeeeee</color>
+    <color name="colorBlack">#FFFFFF</color>
+    <color name="bgzColor">#FFFFFF</color>
+    <color name="disableColor">#EBEBE8</color>
+    <color name="activeColor">#FFD10000</color>
+    <color name="white">#000000</color>
+    <color name="activieColorBg">#FFB2B2</color>
+    <color name="table_header_bg">#778A35</color>
+    <color name="table_left_column_bg">#31352E</color>
+    <color name="feedback_bg">#659EB6E4</color>
+    <color name="grey">#FFFFFF</color>
+    <color name="green">#069319</color>
+</resources>

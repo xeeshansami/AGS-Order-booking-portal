@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:background="@color/white"
     android:focusableInTouchMode="true">
 
     <androidx.appcompat.widget.Toolbar
@@ -12,8 +13,9 @@
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@android:color/white"
-        android:background="?attr/colorPrimary">
+        app:titleTextColor="@color/colorPrimary"
+        app:subtitleTextColor="@color/colorPrimary"
+        android:background="@color/white">
     </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
@@ -35,7 +37,7 @@
             android:id="@+id/searchProductList"
             android:layout_gravity="center_horizontal"
             android:textCursorDrawable="@null"
-            android:textColor="#575656"
+            android:textColor="@color/grey"
             android:singleLine="true"
             android:textSize="15dp" />
 

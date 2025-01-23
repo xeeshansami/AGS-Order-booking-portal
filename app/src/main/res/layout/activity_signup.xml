@@ -13,11 +13,13 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffff"
+        android:background="@color/white"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            app:subtitleTextColor="@color/colorPrimary"
+            app:titleTextColor="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
@@ -59,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="sans-serif-smallcaps"
+                    android:textColor="@color/grey"
                     android:text="Sign up using credentials " />
 
             </LinearLayout>
@@ -81,7 +84,7 @@
                     android:hint="Enter Full Name (Pak Medical Store/Salesman)"
                     android:paddingLeft="10dp"
                     android:singleLine="true"
-                    android:textColor="#575656"
+                    android:textColor="@color/grey"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -96,7 +99,7 @@
                     android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
-                    android:textColor="#575656"
+                    android:textColor="@color/grey"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -112,7 +115,7 @@
                     android:maxLength="13"
                     android:inputType="number"
                     android:singleLine="true"
-                    android:textColor="#575656"
+                    android:textColor="@color/grey"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -127,7 +130,7 @@
                     android:hint="City: Sukkur "
                     android:maxLength="13"
                     android:singleLine="true"
-                    android:textColor="#575656"
+                    android:textColor="@color/grey"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -143,7 +146,7 @@
                     android:drawableTint="@color/colorPrimary"
                     android:hint="User ID"
                     android:singleLine="true"
-                    android:textColor="#575656"
+                    android:textColor="@color/grey"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 
@@ -168,7 +171,7 @@
                         android:hint="Type Password"
                         android:inputType="textPassword"
                         android:singleLine="true"
-                        android:textColor="#575656"
+                        android:textColor="@color/grey"
                         android:textSize="15dp" />
 
                     <ImageView
@@ -200,7 +203,7 @@
                         android:hint="Retype Password"
                         android:inputType="textPassword"
                         android:singleLine="true"
-                        android:textColor="#575656"
+                        android:textColor="@color/grey"
                         android:textSize="15dp" />
 
                     <ImageView

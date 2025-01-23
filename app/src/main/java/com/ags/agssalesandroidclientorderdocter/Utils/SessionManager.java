@@ -17,6 +17,9 @@ public class SessionManager {
 
     //We will use this to store the boolean in sharedpreference to track user is loggedin or not
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
+    public static final String LOGGEDIN_GUEST_USER_SHARED_PREF = "loggedinAsGuestUser";
+    public static final String DARK_MODE = "DARK_MODE";
+    public static final String COLOR_MODE = "COLOR_MODE";
 
 
 
@@ -42,12 +45,47 @@ public class SessionManager {
         editor.apply();
         // commit changes
         editor.commit();
-
         Log.d(TAG, "User login session modified!");
     }
 
     public boolean isLoggedIn() {
         return pref.getBoolean(LOGGEDIN_SHARED_PREF, false);
+    }
+    public void setGuestUserLogin(boolean isGuestLoggedIn) {
+        editor.putBoolean(LOGGEDIN_GUEST_USER_SHARED_PREF, isGuestLoggedIn);
+        //Apply changes
+        editor.apply();
+        // commit changes
+        editor.commit();
+        Log.d(TAG, "Guest User login session modified!");
+    }
+
+    public boolean isGuestUserLoggedIn() {
+        return pref.getBoolean(LOGGEDIN_GUEST_USER_SHARED_PREF, false);
+    }
+    public void setDarkMode(boolean isDarkMode) {
+        editor.putBoolean(DARK_MODE, isDarkMode);
+        //Apply changes
+        editor.apply();
+        // commit changes
+        editor.commit();
+        Log.d(TAG, "DarkMode modified!");
+    }
+
+    public boolean isDarkMode() {
+        return pref.getBoolean(DARK_MODE, false);
+    }
+ public void setColorMode(boolean isColor) {
+        editor.putBoolean(COLOR_MODE, isColor);
+        //Apply changes
+        editor.apply();
+        // commit changes
+        editor.commit();
+        Log.d(TAG, "DarkMode modified!");
+    }
+
+    public boolean isColorMode() {
+        return pref.getBoolean(COLOR_MODE, false);
     }
 
 }

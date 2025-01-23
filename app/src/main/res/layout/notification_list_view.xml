@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="horizontal">
 
     <RelativeLayout
@@ -28,6 +29,7 @@
                 android:background="@drawable/outline_round"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:src="@mipmap/ic_date"
+                android:drawableTint="@color/colorBlack"
                 android:text="New"
                 android:textColor="@color/white"
                 android:textSize="@dimen/unit_10"></Button>
@@ -37,7 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:scaleType="fitXY"
+                android:scaleType="centerInside"
+                android:tint="@color/colorBlack"
                 android:src="@mipmap/ic_date"></ImageView>
         </RelativeLayout>
 
@@ -63,7 +66,7 @@
                     android:layout_gravity="center_vertical|center"
                     android:layout_marginTop="5dp"
                     android:layout_weight="2"
-                    android:text="asdasd"
+                    android:text=""
                     android:textColor="@color/colorBlack"
                     android:textSize="20dp"
                     android:textStyle="bold"></TextView>
@@ -74,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:layout_marginTop="5dp"
-                    android:text="21-Dec-20"
+                    android:text=""
                     android:textSize="@dimen/unit_10"
                     android:textColor="@color/colorBlack"></TextView>
             </LinearLayout>
@@ -86,7 +89,7 @@
                 android:layout_below="@+id/head_text_layout"
                 android:layout_marginTop="5dp"
                 android:maxLines="3"
-                android:text="asdasdakljsdklasjdklas askdaskldjaskld askljdalsk djaskldjaskldj askld askldaskldjaskld"
+                android:text=""
                 android:textColor="@color/colorBlack"></TextView>
 
             <TextView

@@ -14,6 +14,7 @@ import android.app.DatePickerDialog;
 
 import com.ags.agssalesandroidclientorderdocter.R;
 import com.ags.agssalesandroidclientorderdocter.Adapters.ProductDetailsListAdapter;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 
@@ -49,6 +50,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -80,6 +82,7 @@ public class OrderFormActivity extends AppCompatActivity {
 
     DatabaseHandler db;
     SharedPreferenceHandler sp;
+    SessionManager sessionManager;
     /**
      * set Google location listner
      */
@@ -167,6 +170,13 @@ public class OrderFormActivity extends AppCompatActivity {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(OrderFormActivity.this);
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
+            sessionManager = new SessionManager(this);
+            boolean isDarkMode = sessionManager.isDarkMode();
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
             // Find the toolbar view inside the activity layout
             Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
             txtSelectSalesman = findViewById(R.id.txtSelectSalesman);

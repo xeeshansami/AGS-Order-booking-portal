@@ -210,6 +210,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
     }
 
+    public void getAllTotalOrders() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
+    }
+
     // region Customer
     public boolean updateSingleOrder(String orderID, String qty, String bonus, String discount) {
         SQLiteDatabase database = this.getWritableDatabase();
@@ -631,6 +636,44 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+    public ArrayList<EntityOrder> getAllAmount() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<EntityOrder> order = new ArrayList<EntityOrder>();
+
+        String helloWorld = "select * from order_list";
+
+        Cursor cursor = db.rawQuery(helloWorld, null);
+        Log.d("query", helloWorld);
+
+        if (cursor != null) {
+
+            if (cursor.moveToFirst()) {
+                do {
+                    EntityOrder singleOrder = new EntityOrder();
+
+                    singleOrder.setOrderId(cursor.getString(0));
+                    singleOrder.setOrderSalName(cursor.getString(3));
+                    singleOrder.setOrderCustName(cursor.getString(4));
+                    singleOrder.setOrderStatus(cursor.getString(7));
+                    singleOrder.setNetTotal(cursor.getString(5));
+                    singleOrder.setTotalUniqueProducts(cursor.getString(8));
+                    singleOrder.setorderCreatedOn(cursor.getString(9));
+//                    singleOrder.setLocation(cursor.getString(15));
+//                    singleOrder.setLocation1(cursor.getString(16));
+//                    singleOrder.setOrderAddress(cursor.getString(17));
+
+                    // return contact
+                    order.add(singleOrder);
+
+                } while (cursor.moveToNext());
+            }
+
+        }
+
+        return order;
+
+    }
 
     public int getAllOrdersCount() {
 
@@ -773,9 +816,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.moveToFirst();
 
-            return cursor.getString(0) + " Rs";
+            return "Rs. "+cursor.getString(0);
         } else {
-            return "0.00" + " Rs";
+            return "Rs. 0.00" ;
         }
     }
 

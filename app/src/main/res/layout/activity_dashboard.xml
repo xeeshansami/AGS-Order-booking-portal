@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
@@ -12,9 +12,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        app:titleTextColor="@android:color/white"></androidx.appcompat.widget.Toolbar>
+        app:subtitleTextColor="@color/white"
+        app:titleTextColor="@color/white"></androidx.appcompat.widget.Toolbar>
 
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -33,7 +34,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:src="@android:drawable/ic_input_add"
-            android:tint="#fff"
+            android:tint="@color/white"
             app:backgroundTint="@color/colorPrimary" />
 
     </RelativeLayout>

@@ -12,7 +12,7 @@
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@android:color/white"
+        app:titleTextColor="@color/white"
         android:background="@color/colorPrimary">
     </androidx.appcompat.widget.Toolbar>
 
@@ -35,7 +35,7 @@
             android:id="@+id/searchCustomerList"
             android:layout_gravity="center_horizontal"
             android:textCursorDrawable="@null"
-            android:textColor="#575656"
+            android:textColor="@color/grey"
             android:singleLine="true"
             android:textSize="15dp" />
 

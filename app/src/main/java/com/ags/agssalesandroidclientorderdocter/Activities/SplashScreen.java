@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,7 @@ public class SplashScreen extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
     TextView splashTV, splashTV2;
     FirebaseAuth firebaseAuth;
+    SessionManager sessionManager;
     FirebaseAuth.AuthStateListener fbAuthListener;
     SessionManager session;
     Intent intent;
@@ -51,6 +53,13 @@ public class SplashScreen extends AppCompatActivity {
         new FontImprima(this, splashTV);
         new FontImprima(this, splashTV2);
         new FontImprima(this, poweredBy);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         loadBackgroundImage();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             poweredBy.setText(Html.fromHtml("<h6>Powered By<font color=#FF0000><u> Paxees Technologies </u></font> © 2025</h6>", Html.FROM_HTML_MODE_COMPACT));
@@ -82,6 +91,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
     }
+
     private void loadBackgroundImage() {
         String imageUrl = "https://mobile.agssukkur.com/Images/abcimage.png";
 
@@ -94,10 +104,14 @@ public class SplashScreen extends AppCompatActivity {
                 connection.connect();
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     // If you need to parse the response, handle it here
-                    runOnUiThread(() ->
-                            Glide.with(this)
-                                    .load(imageUrl) // Directly load the image
-                                    .into(splashLayout) // Your ImageView
+                    runOnUiThread(() -> {
+                                if (!isFinishing() || !isDestroyed()) {
+                                    Glide.with(this)
+                                            .load(imageUrl) // Directly load the image
+                                            .into(splashLayout); //
+                                    // Your ImageView
+                                }
+                            }
                     );
                 } else {
                     // Handle server error response

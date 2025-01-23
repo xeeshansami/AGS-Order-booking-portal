@@ -1,6 +1,7 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.model.response.ErrorResp
 import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -27,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class FeedbackFormActivity extends AppCompatActivity {
     private DatabaseHandler db;
+    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Utils utils;
     Button sendFeedback_btn;
@@ -41,6 +44,13 @@ public class FeedbackFormActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         ImageView cancel_button = findViewById(R.id.cancel_button);
         countWords = findViewById(R.id.countWords);
         txt_feeback = findViewById(R.id.txt_feeback);

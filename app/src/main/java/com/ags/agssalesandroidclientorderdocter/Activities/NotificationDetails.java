@@ -10,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ags.agssalesandroidclientorderdocter.Adapters.NotificationAdapter;
 import com.ags.agssalesandroidclientorderdocter.Models.Notifications;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -34,6 +36,7 @@ public class NotificationDetails extends AppCompatActivity {
     ImageView notification_image;
     Button order_from_notifications;
     SharedPreferenceHandler sp;
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,13 @@ public class NotificationDetails extends AppCompatActivity {
         setContentView(R.layout.notification_details);
         notificationsData = new Notifications();
         sp = new SharedPreferenceHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setTitle("Notifications Detail");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);

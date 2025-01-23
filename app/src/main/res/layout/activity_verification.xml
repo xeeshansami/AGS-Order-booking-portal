@@ -13,12 +13,14 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffff"
+          android:background="@color/white"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            app:subtitleTextColor="@color/colorPrimary"
+            app:titleTextColor="@color/colorPrimary"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -64,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="sans-serif-smallcaps"
+                    android:textColor="@color/grey"
                     android:text="User reset code for change the password" />
 
             </LinearLayout>
@@ -101,7 +104,7 @@
                     android:inputType="number"
                     android:maxLength="4"
                     android:singleLine="true"
-                    android:textColor="#575656"
+                    android:textColor="@color/grey"
                     android:textCursorDrawable="@null"
                     android:textSize="15dp" />
 

@@ -1,6 +1,7 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.model.response.ErrorResp
 import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.onItemClickListenerForNotifications;
 
@@ -30,6 +32,7 @@ public class NotificationActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     NotificationAdapter adapter;
     Utils utils;
+    SessionManager sessionManager;
     ArrayList<Notifications> notifications;
 
     @Override
@@ -48,6 +51,13 @@ public class NotificationActivity extends AppCompatActivity {
         });
         utils = new Utils(this);
         utils.showLoader(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         notifications = new ArrayList<>();
         AGSStore.getInstance().getNotifications(new callback() {
             @Override

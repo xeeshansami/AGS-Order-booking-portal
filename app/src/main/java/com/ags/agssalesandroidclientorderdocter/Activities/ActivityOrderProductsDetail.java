@@ -6,6 +6,7 @@ import com.ags.agssalesandroidclientorderdocter.Models.EntityOrder;
 import com.ags.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.onItemClickListener2;
 
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
     private ArrayList<EntityOrder> orderList;
     DatabaseHandler db;
     Integer orderId;
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,13 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
         getSupportActionBar().setTitle("View Order Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         orderList = new ArrayList<EntityOrder>();
         getData();
     }

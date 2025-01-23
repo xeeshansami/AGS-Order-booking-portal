@@ -2,6 +2,7 @@ package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import com.ags.agssalesandroidclientorderdocter.BuildConfig;
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
+import com.ags.agssalesandroidclientorderdocter.Models.EntityOrder;
 import com.ags.agssalesandroidclientorderdocter.Models.EntityOrderAndDetails;
 
 import com.ags.agssalesandroidclientorderdocter.Network.model.response.ErrorResponse;
@@ -47,6 +48,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -116,7 +118,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     DatabaseHandler db;
     SharedPreferenceHandler sp;
     SessionManager session;
-    TextView total_Orders_Count;
+    TextView total_Orders_Count,total_orders_of_customer,total_Amount_of_customer;
     TextView total_Amount;
     Utils utils;
     File file;
@@ -181,6 +183,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         }
     }
+
     private void AutostartDownload(final Button syncBtn) {
         if (utils.checkConnection(this)) {
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
@@ -198,6 +201,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }).execute();
         }
     }
+
     public void date2(Button syncBtn, String perviousDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
         try {
@@ -210,6 +214,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             e.printStackTrace();
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,11 +231,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED));
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
+            boolean isDarkMode = session.isDarkMode();
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             user_title = findViewById(R.id.user_title);
             toolbar.setTitle("Dashboard");
-            String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
-            user_title.setText(txt);
+            if (getIntent().hasExtra("isGuestAccount") || session.isGuestUserLoggedIn() && !session.isLoggedIn()) {
+                if (getIntent().getBooleanExtra("isGuestAccount", false) || session.isGuestUserLoggedIn() && !session.isLoggedIn()) {
+                    user_title.setText("Guest Account: You can Only 1 Order once in a day(24 hr's)");
+                }
+            } else {
+                String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
+                user_title.setText(txt);
+            }
             toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             setSupportActionBar(toolbar);
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -275,8 +292,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         .setAction("Action", null).show();*/
                 }
             });
-        }catch (Exception e){
-            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n"+e.getMessage(), "Yes", "Later", new setOnitemClickListner() {
+        } catch (Exception e) {
+            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n" + e.getMessage(), "Yes", "Later", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
@@ -301,14 +318,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
     private void populateDashboard() {
+        total_orders_of_customer = (TextView) findViewById(R.id.total_orders_of_customer);
+        total_Amount_of_customer = (TextView) findViewById(R.id.total_Amount_of_customer);
         total_Orders_Count = (TextView) findViewById(R.id.total_Orders_Count);
         total_Amount = (TextView) findViewById(R.id.total_Amount);
         total_Products_Count = (TextView) findViewById(R.id.total_Products_Count);
         total_Customer_Count = (TextView) findViewById(R.id.total_Customer_Count);
-        total_Orders_Count.setText(String.valueOf(db.getOrderCount()));
+        total_Orders_Count.setText(String.valueOf(db.getAllOrders("0").size()));
+        total_Amount_of_customer.setText(String.valueOf("Rs."+getAllOrdersAmount()));
+        total_orders_of_customer.setText(String.valueOf(db.getAllAmount().size()));
         total_Amount.setText(db.getTotalAmount());
         total_Products_Count.setText(String.valueOf(db.getProductCount()));
         total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
+        new FontImprima(this, total_Amount_of_customer);
+        new FontImprima(this, total_orders_of_customer);
         new FontImprima(this, total_Orders_Count);
         new FontImprima(this, total_Amount);
         new FontImprima(this, total_Products_Count);
@@ -318,6 +341,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         new FontImprima(this, total_Products_Count);
         new FontImprima(this, total_Customer_Count);
     }
+    public String getAllOrdersAmount(){
+        float grandTotal=0f;
+        for (EntityOrder order:db.getAllAmount()) {
+            grandTotal+=Float.valueOf(order.getNetTotal());
+        };
+       return String.valueOf(grandTotal);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -353,9 +384,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         builder.setMessage("Logout? Make sure that you have uploaded your data.");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                sp.clearAll();
-                db.clearAll();
+//                sp.clearAll();
+//                db.clearAll();
                 session.setLogin(false);
+                session.setGuestUserLogin(false);
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -535,6 +567,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         try {
                             JSONObject jObj = new JSONObject(responseData.substring(response.indexOf("{"), response.indexOf("}") + 1));
                             if (Integer.parseInt(jObj.get("status").toString()) == 1) {
+                                if(session.isGuestUserLoggedIn()){
+                                    DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+                                    String currentTime = df.format(Calendar.getInstance().getTime());
+                                    SharedPreferenceManager.getInstance(DashboardActivity.this).storeStringInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, currentTime);
+                                }
                                 db.ChangeStatusToPosted();
                                 ChangeSyncButtonState();
                                 populateDashboard();
@@ -557,7 +594,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.out.println("DashboardActivityCheck"+" : "+error.getMessage());
+                    System.out.println("DashboardActivityCheck" + " : " + error.getMessage());
                     syncBtn.setEnabled(true);
                     syncBtn.setClickable(true);
                     progressDialog.dismiss();
@@ -954,6 +991,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Snackbar.make(findViewById(android.R.id.content), "Feature come soon", 1000).show();
                 drawer.closeDrawers();
                 break;
+            case R.id.setting:
+                startActivity(new Intent(this, SettingsActivity.class));
+                drawer.closeDrawers();
+                break;
             default:
                 break;
         }
@@ -1234,6 +1275,46 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         if (view.getId() == R.id.syncNowBtn) {
             syncBtn.setEnabled(false);
             syncBtn.setClickable(false);
+            uploadSyncData();
+        }
+    }
+
+    public void uploadSyncData() {
+        if (session.isGuestUserLoggedIn()) {
+            String previousDate = SharedPreferenceManager.getInstance(DashboardActivity.this).getStringFromSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+            try {
+                String currentTime = simpleDateFormat.format(Calendar.getInstance().getTime());
+                Date startDate = simpleDateFormat.parse(currentTime);
+                Date endDate = simpleDateFormat.parse(previousDate);
+                Log.i("currentTime", endDate + " = " + startDate);
+                long different = endDate.getTime() - startDate.getTime();
+                System.out.println("startDate : " + startDate);
+                System.out.println("endDate : " + endDate);
+                System.out.println("different : " + different);
+                long secondsInMilli = 1000;
+                long minutesInMilli = secondsInMilli * 60;
+                long hoursInMilli = minutesInMilli * 60;
+                long daysInMilli = hoursInMilli * 24;
+                long elapsedDays = different / daysInMilli;
+                different = different % daysInMilli;
+                long elapsedHours = different / hoursInMilli;
+                different = different % hoursInMilli;
+                long elapsedMinutes = different / minutesInMilli;
+                different = different % minutesInMilli;
+                long elapsedSeconds = different / secondsInMilli;
+                System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+                if (elapsedDays > 0 || elapsedHours > 24) {
+                    utils.showLoader(this);
+                    uploadProductSyncData();
+                    SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, 1);
+                } else {
+                    Toast.makeText(this, "You can only an (1) order once in a day, you can try after 24 hrs or Next Day", Toast.LENGTH_SHORT).show();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
             UploadData();
         }
     }

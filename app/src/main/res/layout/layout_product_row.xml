@@ -11,6 +11,7 @@
         android:layout_weight=".75">
 
         <TextView
+            android:textColor="@color/grey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name"
@@ -18,12 +19,14 @@
             android:visibility="gone"/>
 
         <TextView
+            android:textColor="@color/grey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name"
             android:id="@+id/productName" />
 
         <TextView
+            android:textColor="@color/grey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Company"
@@ -73,6 +76,7 @@
             android:gravity="right">
 
             <TextView
+                android:textColor="@color/grey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Price"
@@ -80,6 +84,7 @@
                 android:textSize="10dp" />
 
             <TextView
+                android:textColor="@color/grey"
                 android:id="@+id/productSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

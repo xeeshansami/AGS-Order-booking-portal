@@ -2,6 +2,7 @@ package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import com.ags.agssalesandroidclientorderdocter.Network.model.response.ErrorResp
 import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -30,6 +32,7 @@ public class ForgetActivity extends AppCompatActivity {
     String SENT = "Code has been sent again, Please check your phone";
     String DELIVERED = "Code has not been send due to some problem occurred, please try again later.";
     private DatabaseHandler db;
+    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Utils utils;
     EditText txtUserName, txtUserNumber;
@@ -45,6 +48,13 @@ public class ForgetActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         txtUserName = findViewById(R.id.txtUserName);
         txtUserNumber = findViewById(R.id.txtUserNumber);

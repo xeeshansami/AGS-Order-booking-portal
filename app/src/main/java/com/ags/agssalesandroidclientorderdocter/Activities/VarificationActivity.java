@@ -12,10 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -25,6 +27,7 @@ import java.util.Random;
 
 public class VarificationActivity extends AppCompatActivity {
     private DatabaseHandler db;
+    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Utils utils;
     EditText txtUserNumber;
@@ -39,6 +42,13 @@ public class VarificationActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         sendCodeAgain = findViewById(R.id.sendCodeAgain);
         txtUserNumber = findViewById(R.id.txtUserName);

@@ -3,6 +3,7 @@ package com.ags.agssalesandroidclientorderdocter.Utils;
 public class Constant {
    public static final String signupTime="signup_time";
    public static final String AUTO_DOWNLOAD_IN_TIME="AUTO_DOWNLOAD_IN_TIME";
+   public static final String UPLOAD_DATA_ONLY_ONCE_TIME="UPLOAD_DATA_ONLY_ONCE_TIME";
    public static final String isAlreadyDownlaoded="isAlreadyDownlaoded";
    public static final String AUTO_DOWNLOAD_IN_Day="AUTO_DOWNLOAD_IN_Day";
    public static final String AUTO_DOWNLOAD_IN_Day_TXT="AUTO_DOWNLOAD_IN_Day_TXT";

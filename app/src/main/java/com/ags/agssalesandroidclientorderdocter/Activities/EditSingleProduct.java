@@ -1,6 +1,7 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import com.ags.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.ags.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 import com.google.android.material.snackbar.Snackbar;
@@ -23,6 +25,7 @@ public class EditSingleProduct extends AppCompatActivity implements View.OnClick
     Button updateBtn;
     Toolbar myToolbar;
     DatabaseHandler db;
+    SessionManager sessionManager;
     Utils utils;
 
     @Override
@@ -30,6 +33,13 @@ public class EditSingleProduct extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_single_product);
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         utils = new Utils(this);
         findViewByID();
         myToolbar.setSubtitle("Update");

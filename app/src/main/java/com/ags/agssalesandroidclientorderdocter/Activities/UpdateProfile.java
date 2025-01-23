@@ -10,12 +10,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ags.agssalesandroidclientorderdocter.Network.model.response.ErrorResponse;
 import com.ags.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -28,6 +30,7 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
     private AGSStore agsStore = AGSStore.getInstance();
     private Utils utils;
     private SharedPreferenceHandler sp;
+    private SessionManager sessionManager;
     EditText login_id,user_name,user_email,user_contact;
     Button update_btn,update_pwd_btn;
     @Override
@@ -55,7 +58,13 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
 
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
-
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         String username = sp.getusername();
         if (username != null) {
             login_id.setText(username);

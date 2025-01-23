@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/splashLayout"
@@ -11,6 +12,7 @@
         android:alpha="0.3"></ImageView>
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/welcome_img1"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -41,6 +43,7 @@
         android:layout_weight="0.1"
         android:fontFamily="sans-serif-smallcaps"
         android:text="@string/splashWelomeNote"
+        android:visibility="gone"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="40dp"
         android:textStyle="bold"
@@ -58,6 +61,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_weight="0.1"
+        android:visibility="gone"
         android:fontFamily="sans-serif-smallcaps"
         android:gravity="center"
         android:text="@string/splashWelomeNote2"
@@ -72,7 +76,6 @@
     <TextView
         android:layout_margin="3dp"
         android:id="@+id/poweredBy"
-
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"

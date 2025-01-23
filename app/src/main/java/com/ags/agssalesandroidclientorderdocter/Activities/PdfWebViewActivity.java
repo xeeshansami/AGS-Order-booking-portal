@@ -1,6 +1,7 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
@@ -13,16 +14,25 @@ import android.webkit.WebViewClient;
 
 import com.ags.agssalesandroidclientorderdocter.R;
 import com.ags.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 
 public class PdfWebViewActivity extends AppCompatActivity {
     Utils utils;
+    SessionManager sessionManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf_web_view);
         utils=new Utils(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setSubtitle("AGS - Manual Flow");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);

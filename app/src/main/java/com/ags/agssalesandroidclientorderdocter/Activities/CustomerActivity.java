@@ -9,6 +9,7 @@ import com.ags.agssalesandroidclientorderdocter.R;
 import android.app.Activity;
 
 import com.ags.agssalesandroidclientorderdocter.Adapters.CustomerListAdapter;
+import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,6 +25,7 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class CustomerActivity extends AppCompatActivity {
 
     private List<EntityCustomer> customersList = new ArrayList<EntityCustomer>();
     private DatabaseHandler db;
+    private SessionManager sessionManager;
     private ListView listView;
     private CustomerListAdapter adapter;
     private EditText txtCustomerSearch;
@@ -47,6 +50,13 @@ public class CustomerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customer);
 
         db = new DatabaseHandler(this);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         customersList = db.getAllCustomers();
         if (getIntent().hasExtra("selectedCustomer")) {
             EntityCustomer obj = (EntityCustomer) getIntent().getSerializableExtra("selectedCustomer");
