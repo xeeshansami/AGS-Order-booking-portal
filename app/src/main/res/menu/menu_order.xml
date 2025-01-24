@@ -5,7 +5,6 @@
         android:id="@+id/resetOrder"
         android:icon="@drawable/refresh"
         app:showAsAction="ifRoom"
-        android:onClick="ResetOrder"
         android:title="Reset Order">
     </item>
 
@@ -13,7 +12,6 @@
         android:id="@+id/saveOrder"
         android:icon="@drawable/save"
         app:showAsAction="ifRoom"
-        android:onClick="SaveOrder"
         android:title="Save Order">
     </item>
 
