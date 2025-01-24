@@ -104,6 +104,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -118,7 +119,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     DatabaseHandler db;
     SharedPreferenceHandler sp;
     SessionManager session;
-    TextView total_Orders_Count,total_orders_of_customer,total_Amount_of_customer;
+    TextView total_Orders_Count,total_orders_of_customer,total_Amount_of_customer,total_customer;
     TextView total_Amount;
     Utils utils;
     File file;
@@ -318,6 +319,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
     private void populateDashboard() {
+        total_customer = (TextView) findViewById(R.id.total_customer);
         total_orders_of_customer = (TextView) findViewById(R.id.total_orders_of_customer);
         total_Amount_of_customer = (TextView) findViewById(R.id.total_Amount_of_customer);
         total_Orders_Count = (TextView) findViewById(R.id.total_Orders_Count);
@@ -327,9 +329,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         total_Orders_Count.setText(String.valueOf(db.getAllOrders("0").size()));
         total_Amount_of_customer.setText(String.valueOf("Rs."+getAllOrdersAmount()));
         total_orders_of_customer.setText(String.valueOf(db.getAllAmount().size()));
-        total_Amount.setText(db.getTotalAmount());
+        total_customer.setText(String.valueOf(db.getAllCustomer().size()));
+        try {
+            total_Amount.setText("Rs. " + new DecimalFormat("#.0").format(Float.parseFloat(db.getTotalAmount().toString())));
+        } catch (NumberFormatException e) {
+            total_Amount.setText("Rs. 0.0");  // Default in case of error
+            e.printStackTrace();
+        }
         total_Products_Count.setText(String.valueOf(db.getProductCount()));
         total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
+        new FontImprima(this, total_customer);
         new FontImprima(this, total_Amount_of_customer);
         new FontImprima(this, total_orders_of_customer);
         new FontImprima(this, total_Orders_Count);
@@ -346,9 +355,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         for (EntityOrder order:db.getAllAmount()) {
             grandTotal+=Float.valueOf(order.getNetTotal());
         };
-       return String.valueOf(grandTotal);
+        DecimalFormat df = new DecimalFormat("#.0");
+        return df.format(grandTotal);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

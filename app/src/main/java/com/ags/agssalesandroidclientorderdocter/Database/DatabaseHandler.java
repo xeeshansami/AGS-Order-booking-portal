@@ -674,7 +674,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+    public ArrayList<EntityOrder> getAllCustomer() {
 
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<EntityOrder> order = new ArrayList<EntityOrder>();
+
+        String helloWorld = "SELECT *FROM order_list GROUP BY orderCustCode HAVING COUNT(*) > 0";
+
+        Cursor cursor = db.rawQuery(helloWorld, null);
+        Log.d("query", helloWorld);
+
+        if (cursor != null) {
+
+            if (cursor.moveToFirst()) {
+                do {
+                    EntityOrder singleOrder = new EntityOrder();
+
+                    singleOrder.setOrderId(cursor.getString(0));
+
+                    // return contact
+                    order.add(singleOrder);
+
+                } while (cursor.moveToNext());
+            }
+
+        }
+
+        return order;
+
+    }
     public int getAllOrdersCount() {
 
         String countQuery = "SELECT  * FROM " + TABLE_ORDER_LIST;
@@ -816,7 +844,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.moveToFirst();
 
-            return "Rs. "+cursor.getString(0);
+            return cursor.getString(0);
         } else {
             return "Rs. 0.00" ;
         }

@@ -83,7 +83,7 @@
                     android:layout_weight="0.40"
                     android:background="@color/colorPrimary"
                     android:padding="10dp"
-                    android:text="Current Orders"
+                    android:text="Pending Orders"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -111,7 +111,7 @@
                     android:layout_weight="0.40"
                     android:background="@color/colorPrimary"
                     android:padding="10dp"
-                    android:text="Current Amount"
+                    android:text="Pending Amount"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -170,6 +170,33 @@
 
                 <TextView
                     android:id="@+id/total_Amount_of_customer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".60"
+                    android:background="@color/grey"
+                    android:textColor="@color/white"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:background="@color/colorPrimary"
+                    android:padding="10dp"
+                    android:text="Total Customers"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/total_customer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".60"
