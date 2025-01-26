@@ -105,7 +105,7 @@ public class SplashScreen extends AppCompatActivity {
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     // If you need to parse the response, handle it here
                     runOnUiThread(() -> {
-                                if (!isFinishing() || !isDestroyed()) {
+                                if ( !isDestroyed()) {
                                     Glide.with(this)
                                             .load(imageUrl) // Directly load the image
                                             .into(splashLayout); //

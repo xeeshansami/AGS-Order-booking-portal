@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -92,7 +91,7 @@
                             android:includeFontPadding="false"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
-                            android:textColor="@color/grey"
+                            android:textColor="@color/colorBlack"
                             android:visibility="invisible" />
 
                         <Button
@@ -457,7 +456,7 @@
                         android:fontFamily="sans-serif-smallcaps"
                         android:singleLine="false"
                         android:text="Update"
-                        android:textColor="@color/colorGray" />
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
             </LinearLayout>

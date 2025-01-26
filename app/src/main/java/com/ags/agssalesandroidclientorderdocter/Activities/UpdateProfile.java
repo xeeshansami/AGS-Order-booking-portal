@@ -36,6 +36,13 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         setContentView(R.layout.activity_update_profile);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -58,13 +65,6 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
 
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
         String username = sp.getusername();
         if (username != null) {
             login_id.setText(username);

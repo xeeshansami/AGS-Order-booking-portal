@@ -53,6 +53,13 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sessionManager = new SessionManager(this);
+        boolean isDarkMode = sessionManager.isDarkMode();
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
         setContentView(R.layout.activity_update_customer_profile);
         toolbar=findViewById(R.id.toolbar);
         customer_date=findViewById(R.id.customer_date);
@@ -78,13 +85,6 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
         utils = new Utils(this);
         myCalendar = Calendar.getInstance();
         agsStore = AGSStore.getInstance();
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
         customer_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

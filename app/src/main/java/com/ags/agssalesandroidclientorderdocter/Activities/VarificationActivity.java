@@ -38,10 +38,6 @@ public class VarificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verification);
-        sp = new SharedPreferenceHandler(this);
-        utils = new Utils(this);
-        db = new DatabaseHandler(this);
         sessionManager = new SessionManager(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
@@ -49,6 +45,10 @@ public class VarificationActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+        setContentView(R.layout.activity_verification);
+        sp = new SharedPreferenceHandler(this);
+        utils = new Utils(this);
+        db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         sendCodeAgain = findViewById(R.id.sendCodeAgain);
         txtUserNumber = findViewById(R.id.txtUserName);
