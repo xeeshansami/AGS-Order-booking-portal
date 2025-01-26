@@ -99,7 +99,7 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     public void errorBox(String message) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this,R.style.AlertDialogButtonStyle);
         alertDialog.setTitle("SOMETHING WENT WRONG");
         alertDialog.setMessage(message);
         alertDialog.setCancelable(false);
@@ -233,7 +233,7 @@ public class OrderListActivity extends AppCompatActivity {
             LayoutInflater li = LayoutInflater.from(OrderListActivity.this);
             View promptsView = li.inflate(R.layout.layout_unport_password, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(OrderListActivity.this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(OrderListActivity.this,R.style.AlertDialogButtonStyle);
             // set prompts.xml to alertdialog builder
             alertDialogBuilder.setView(promptsView);
 

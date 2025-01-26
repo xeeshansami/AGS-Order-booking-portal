@@ -342,7 +342,7 @@ public class OrderBooking extends Fragment {
 
 
     public void SaveOrder() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle("Confirm");
         builder.setMessage("Do you want to save this order?");
@@ -568,7 +568,7 @@ public class OrderBooking extends Fragment {
     }
 
     public void ResetOrder() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
 
         builder.setTitle("Confirm");
@@ -735,7 +735,7 @@ public class OrderBooking extends Fragment {
         LayoutInflater li = LayoutInflater.from(getActivity());
         View promptsView = li.inflate(R.layout.layout_product_details, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
@@ -866,7 +866,7 @@ public class OrderBooking extends Fragment {
         LayoutInflater li = LayoutInflater.from(getActivity());
         View promptsView = li.inflate(R.layout.layout_product_details, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 

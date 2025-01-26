@@ -208,15 +208,18 @@ public class OrderFormActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        if (productsList.size() > 0) {
-//            utils.alertBox(this, "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
-//                @Override
-//                public void onClick(DialogInterface view, int i) {
-//                    finish();
-//                }
-//            });
-//        } else {
-//            finish();
-//        }
+        // Check if productsList size is greater than 0
+        if (viewPager.getCurrentItem()==0) {
+            utils.alertBox(this, "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
+                @Override
+                public void onClick(DialogInterface view, int i) {
+                    finish();
+                }
+            });
+        }else{
+            // Default back press behavior
+            super.onBackPressed();
+        }
     }
+
 }

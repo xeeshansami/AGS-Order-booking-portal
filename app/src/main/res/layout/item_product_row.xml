@@ -1,38 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="4dp">
+    android:background="@drawable/border_table">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp">
+     <TextView
+        android:fontFamily="@font/imprima"
+        android:id="@+id/productId"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="1" />
 
-        <TextView
-            android:id="@+id/productName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Product Name"
-            android:textSize="16sp" />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack" />
 
-        <TextView
-            android:id="@+id/productQuantity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Quantity"
-            android:textSize="16sp" />
+     <TextView
+        android:fontFamily="@font/imprima"
+        android:id="@+id/productName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="STONOTS TABS" />
 
-        <TextView
-            android:id="@+id/productPrice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Price"
-            android:textSize="16sp" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack" />
+
+     <TextView
+        android:fontFamily="@font/imprima"
+        android:id="@+id/productSize"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="1" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack" />
+
+     <TextView
+        android:fontFamily="@font/imprima"
+        android:id="@+id/productPrice"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="510.0" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack" />
+
+     <TextView
+        android:fontFamily="@font/imprima"
+        android:id="@+id/productCompany"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="89" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack" />
+
+     <TextView
+        android:fontFamily="@font/imprima"
+        android:id="@+id/productGroup"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="T.J. Pharma" />
+</TableRow>

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:background="@color/white"
@@ -13,9 +14,8 @@
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@color/colorPrimary"
-        app:subtitleTextColor="@color/colorPrimary"
-        android:background="@color/white">
+        app:titleTextColor="@color/white"
+        android:background="@color/colorPrimary">
     </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
@@ -51,6 +51,7 @@
         android:orientation="vertical">
 
         <ListView
+            tools:listitem="@layout/layout_product_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lstProducts" />

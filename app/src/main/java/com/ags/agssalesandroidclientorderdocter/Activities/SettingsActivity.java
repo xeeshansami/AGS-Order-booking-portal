@@ -60,6 +60,12 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         // Initialize views
         darkModeSwitch = findViewById(R.id.switch_dark_mode);
         chooseColorButton = findViewById(R.id.btn_choose_color);

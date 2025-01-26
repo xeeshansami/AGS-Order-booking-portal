@@ -387,7 +387,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void logout() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle("Confirm");
         builder.setMessage("Logout? Make sure that you have uploaded your data.");
@@ -1157,7 +1157,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void exportPdf(final List<EntityOrderAndDetails> allProdsAndDetails) {
         LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
         promptsView = li.inflate(R.layout.pdf_exporter, null);
-        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this,R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
@@ -1190,7 +1190,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void exportTxt(final List<EntityOrderAndDetails> allProdsAndDetails) {
         LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
         promptsView = li.inflate(R.layout.txt_exporter, null);
-        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this,R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
         // create alert dialog

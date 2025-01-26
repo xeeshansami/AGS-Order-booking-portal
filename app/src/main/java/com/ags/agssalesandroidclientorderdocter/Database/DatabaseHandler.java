@@ -210,6 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
     }
 
+
     public void getAllTotalOrders() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
@@ -1024,6 +1025,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String sqlDetail = "delete from " + TABLE_ORDER_LIST_DETAIL + " where orderListId = " + item + ";";
             db.execSQL(sqlDetail);
         }
+
+        return true;
+    }
+    public boolean deleteOldRecordOfOrders() {
+            SQLiteDatabase db = this.getReadableDatabase();
+            String sql = "delete from " + TABLE_ORDER_LIST;
+            db.execSQL(sql);
+            String sqlDetail = "delete from " + TABLE_ORDER_LIST_DETAIL;
+            db.execSQL(sqlDetail);
 
         return true;
     }
