@@ -87,7 +87,7 @@
                     android:textColor="@color/white" />
 
                 <TextView
-                    android:id="@+id/total_Orders_Count"
+                    android:id="@+id/pending_orders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".60"
@@ -115,7 +115,7 @@
                     android:textColor="@color/white" />
 
                 <TextView
-                    android:id="@+id/total_Amount"
+                    android:id="@+id/pending_Amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".60"
@@ -126,92 +126,225 @@
                     android:paddingBottom="10dp" />
 
             </LinearLayout>
-            <LinearLayout
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:text="Today's Booking Statistics"
+                />
+            <LinearLayout
+                android:weightSum="3"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <TextView
+                <LinearLayout
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.40"
-                    android:background="@color/colorPrimary"
-                    android:padding="10dp"
-                    android:text="Total Orders"
-                    android:textColor="@color/white" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/total_orders_of_customer"
+                    <TextView
+                        android:textSize="10sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.40"
+                        android:background="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:text="Todays Orders"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:id="@+id/todays_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".60"
+                        android:background="@color/grey"
+                        android:textColor="@color/white"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
+                <View android:layout_width="1dp"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".60"
-                    android:background="@color/grey"
-                    android:textColor="@color/white"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp" />
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.40"
+                        android:background="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:textSize="10sp"
+                        android:text="Todays Amount"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/todays_Amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".60"
+                        android:background="@color/grey"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
+                <View android:layout_width="1dp"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.40"
+                        android:background="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:text="Todays Customers"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:id="@+id/todays_customer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".60"
+                        android:background="@color/grey"
+                        android:textColor="@color/white"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
             </LinearLayout>
-            <LinearLayout
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:text="Month to Date Statistics"
+                />
+            <LinearLayout
+                android:weightSum="3"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <TextView
+                <LinearLayout
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.40"
-                    android:background="@color/colorPrimary"
-                    android:padding="10dp"
-                    android:text="Total Amount"
-                    android:textColor="@color/white" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/total_Amount_of_customer"
+                    <TextView
+                        android:textSize="10sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.40"
+                        android:background="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:text="MTD Orders"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:id="@+id/total_orders_of_mtd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".60"
+                        android:background="@color/grey"
+                        android:textColor="@color/white"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
+                <View android:layout_width="1dp"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".60"
-                    android:background="@color/grey"
-                    android:textColor="@color/white"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp" />
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.40"
+                        android:background="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:textSize="10sp"
+                        android:text="MTD Amount"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/total_Amount_of_mtd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".60"
+                        android:background="@color/grey"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
+                <View android:layout_width="1dp"
+                    android:layout_height="match_parent"></View>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.40"
+                        android:background="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:text="MTD Customers"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:id="@+id/total_customer_of_mtd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".60"
+                        android:background="@color/grey"
+                        android:textColor="@color/white"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+                </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.40"
-                    android:background="@color/colorPrimary"
-                    android:padding="10dp"
-                    android:text="Total Customers"
-                    android:textColor="@color/white" />
-
-                <TextView
-                    android:id="@+id/total_customer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".60"
-                    android:background="@color/grey"
-                    android:textColor="@color/white"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp" />
-
-            </LinearLayout>
 
             <LinearLayout
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <TextView

@@ -181,7 +181,7 @@ public class OrderFormActivity extends AppCompatActivity {
             }).attach();
         } catch (Exception e) {
             Log.i("Exceptions",e.getMessage());
-            utils.alertBox(this, "Alert", "Something went wrong", "Ok", new setOnitemClickListner() {
+            utils.alertBox(this, "Alert", "Something went wrong\n"+e.getMessage()+"\n"+e.getStackTrace(), "Ok", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     finish();

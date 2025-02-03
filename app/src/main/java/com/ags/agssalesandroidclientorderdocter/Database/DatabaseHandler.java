@@ -8,6 +8,7 @@ import com.ags.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.ags.agssalesandroidclientorderdocter.Models.EntitySalesman;
 import com.ags.agssalesandroidclientorderdocter.Models.User;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -637,6 +638,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+    @SuppressLint("Range")
     public ArrayList<EntityOrder> getAllAmount() {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -648,11 +650,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d("query", helloWorld);
 
         if (cursor != null) {
-
             if (cursor.moveToFirst()) {
                 do {
                     EntityOrder singleOrder = new EntityOrder();
-
                     singleOrder.setOrderId(cursor.getString(0));
                     singleOrder.setOrderSalName(cursor.getString(3));
                     singleOrder.setOrderCustName(cursor.getString(4));
@@ -660,6 +660,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     singleOrder.setNetTotal(cursor.getString(5));
                     singleOrder.setTotalUniqueProducts(cursor.getString(8));
                     singleOrder.setorderCreatedOn(cursor.getString(9));
+                    singleOrder.setOrderDate(cursor.getString(cursor.getColumnIndex("orderCreatedOn")));
 //                    singleOrder.setLocation(cursor.getString(15));
 //                    singleOrder.setLocation1(cursor.getString(16));
 //                    singleOrder.setOrderAddress(cursor.getString(17));
@@ -675,6 +676,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+    @SuppressLint("Range")
     public ArrayList<EntityOrder> getAllCustomer() {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -686,13 +688,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d("query", helloWorld);
 
         if (cursor != null) {
-
             if (cursor.moveToFirst()) {
                 do {
                     EntityOrder singleOrder = new EntityOrder();
-
                     singleOrder.setOrderId(cursor.getString(0));
-
+                    singleOrder.setOrderDate(cursor.getString(cursor.getColumnIndex("orderCreatedOn")));
                     // return contact
                     order.add(singleOrder);
 

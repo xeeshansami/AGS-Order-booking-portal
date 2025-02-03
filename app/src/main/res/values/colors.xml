@@ -13,6 +13,7 @@
     <color name="activieColorBg">#FFB2B2</color>
     <color name="table_header_bg">#778A35</color>
     <color name="table_left_column_bg">#31352E</color>
+    <color name="blue">#0024FF</color>
     <color name="feedback_bg">#659EB6E4</color>
     <color name="grey">#A5A2A2</color>
     <color name="green">#069319</color>

@@ -21,7 +21,7 @@ public class BaseHR extends RH<String> {
         if(response.isSuccessful()) {
             callBack.Success(response.body());
         }else{
-            Toast.makeText(myApplication.getBaseContext(), "something went wrong. from server, try again later.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(myApplication.getBaseContext(), "something went wrong. from server, try again later.\n"+response.message(), Toast.LENGTH_SHORT).show();
         }
     }
 

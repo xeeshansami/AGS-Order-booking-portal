@@ -119,8 +119,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     DatabaseHandler db;
     SharedPreferenceHandler sp;
     SessionManager session;
-    TextView total_Orders_Count,total_orders_of_customer,total_Amount_of_customer,total_customer;
-    TextView total_Amount;
+    TextView pending_orders, total_orders_of_mtd, total_Amount_of_mtd, total_customer_of_mtd;
+    TextView todays_order, todays_Amount, todays_customer;
+    TextView pending_Amount;
     Utils utils;
     File file;
     TextView total_Products_Count;
@@ -190,7 +191,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                 @Override
                 public void onConnectionSuccess() {
-                    if (sp.getpassword() != null && sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
+                    if (sp.getpassword() != null && !sp.getpassword().isEmpty() && !sp.getusername().isEmpty() && sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
                         date2(syncBtn, SharedPreferenceManager.getInstance(DashboardActivity.this).getStringFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME));
                     }
                 }
@@ -246,8 +247,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     user_title.setText("Guest Account: You can Only 1 Order once in a day(24 hr's)");
                 }
             } else {
-                String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
-                user_title.setText(txt);
+                if(sp.getrole()!=null && sp.getUser_Category()!=null) {
+                    String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
+                    user_title.setText(txt);
+                }
             }
             toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             setSupportActionBar(toolbar);
@@ -256,7 +259,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
             toggle.syncState();
-//        toolbar.setNavigationIcon(android.R.drawable);
+//          toolbar.setNavigationIcon(android.R.drawable);
             navigationView = (NavigationView) findViewById(R.id.nav_view);
             View hView = navigationView.getHeaderView(0);
             navigationView.setNavigationItemSelectedListener(this);
@@ -264,11 +267,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             TextView userid = hView.findViewById(R.id.header_userid);
             TextView usertitle = hView.findViewById(R.id.header_username);
             footar_version.setText(BuildConfig.VERSION_NAME);
-            if (sp.getrole().equalsIgnoreCase("Saleman")) {
-                showItem();
+            if(sp.getrole()!=null) {
+                userid.setText("As Role : " + sp.getrole());
+                if (sp.getrole().equalsIgnoreCase("Saleman")) {
+                    showItem();
+                }
             }
-            userid.setText("As Role : " + sp.getrole());
-            usertitle.setText("UserID: " + sp.getusername());
+            if(sp.getusername()!=null) {
+                usertitle.setText("UserID: " + sp.getusername());
+            }
             AutostartDownload(syncBtn);
             progressDialog = new ProgressDialog(this);
             progressDialog.setCanceledOnTouchOutside(false);
@@ -294,7 +301,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 }
             });
         } catch (Exception e) {
-            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n" + e.getMessage(), "Yes", "Later", new setOnitemClickListner() {
+            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n"+e.getMessage()+"\n"+e.getStackTrace(), "Yes", "Later", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
@@ -319,45 +326,137 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
     private void populateDashboard() {
-        total_customer = (TextView) findViewById(R.id.total_customer);
-        total_orders_of_customer = (TextView) findViewById(R.id.total_orders_of_customer);
-        total_Amount_of_customer = (TextView) findViewById(R.id.total_Amount_of_customer);
-        total_Orders_Count = (TextView) findViewById(R.id.total_Orders_Count);
-        total_Amount = (TextView) findViewById(R.id.total_Amount);
-        total_Products_Count = (TextView) findViewById(R.id.total_Products_Count);
-        total_Customer_Count = (TextView) findViewById(R.id.total_Customer_Count);
-        total_Orders_Count.setText(String.valueOf(db.getAllOrders("0").size()));
-        total_Amount_of_customer.setText(String.valueOf("Rs."+getAllOrdersAmount()));
-        total_orders_of_customer.setText(String.valueOf(db.getAllAmount().size()));
-        total_customer.setText(String.valueOf(db.getAllCustomer().size()));
         try {
-            total_Amount.setText("Rs. " + new DecimalFormat("#.0").format(Float.parseFloat(db.getTotalAmount().toString())));
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+            String currentDate = sdf.format(new Date());  // Current date in YYYY-MM-DD format
+            /*Todays Amount of Orders, Customer, Amount*/
+            todays_order = (TextView) findViewById(R.id.todays_order);
+            todays_Amount = (TextView) findViewById(R.id.todays_Amount);
+            todays_customer = (TextView) findViewById(R.id.todays_customer);
+            todays_Amount.setText(String.valueOf(getTodaysOrdersAmount(currentDate)));
+            todays_order.setText(String.valueOf(getTodaysOrders(currentDate)));
+            todays_customer.setText(String.valueOf(getTodaysCustomers(currentDate)));
+            /*Total Amount of Orders, Customer, Amount of MTD*/
+            total_orders_of_mtd = (TextView) findViewById(R.id.total_orders_of_mtd);
+            total_Amount_of_mtd = (TextView) findViewById(R.id.total_Amount_of_mtd);
+            total_customer_of_mtd = (TextView) findViewById(R.id.total_customer_of_mtd);
+            total_Amount_of_mtd.setText(String.valueOf("Rs." + getAllOrdersAmount()));
+            total_orders_of_mtd.setText(String.valueOf(db.getAllAmount().size()));
+            total_customer_of_mtd.setText(String.valueOf(db.getAllCustomer().size()));
+            /*total products and customers*/
+            total_Products_Count = (TextView) findViewById(R.id.total_Products_Count);
+            total_Customer_Count = (TextView) findViewById(R.id.total_Customer_Count);
+            total_Products_Count.setText(String.valueOf(db.getProductCount()));
+            total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
+            /*pending Orders and Amount*/
+            pending_Amount = (TextView) findViewById(R.id.pending_Amount);
+            pending_orders = (TextView) findViewById(R.id.pending_orders);
+            pending_orders.setText(String.valueOf(db.getAllOrders("0").size()));
+            pending_Amount.setText("Rs. " + new DecimalFormat("#.0").format(Float.parseFloat(db.getTotalAmount().toString())));
+            new FontImprima(this, total_customer_of_mtd);
+            new FontImprima(this, total_Amount_of_mtd);
+            new FontImprima(this, total_orders_of_mtd);
+            new FontImprima(this, pending_orders);
+            new FontImprima(this, pending_Amount);
+            new FontImprima(this, total_Products_Count);
+            new FontImprima(this, total_Customer_Count);
+            new FontImprima(this, pending_orders);
+            new FontImprima(this, pending_Amount);
+            new FontImprima(this, total_Products_Count);
+            new FontImprima(this, total_Customer_Count);
         } catch (NumberFormatException e) {
-            total_Amount.setText("Rs. 0.0");  // Default in case of error
+            pending_Amount.setText("Rs. 0.0");  // Default in case of error
             e.printStackTrace();
         }
-        total_Products_Count.setText(String.valueOf(db.getProductCount()));
-        total_Customer_Count.setText(String.valueOf(db.getCustomerCount()));
-        new FontImprima(this, total_customer);
-        new FontImprima(this, total_Amount_of_customer);
-        new FontImprima(this, total_orders_of_customer);
-        new FontImprima(this, total_Orders_Count);
-        new FontImprima(this, total_Amount);
-        new FontImprima(this, total_Products_Count);
-        new FontImprima(this, total_Customer_Count);
-        new FontImprima(this, total_Orders_Count);
-        new FontImprima(this, total_Amount);
-        new FontImprima(this, total_Products_Count);
-        new FontImprima(this, total_Customer_Count);
     }
-    public String getAllOrdersAmount(){
-        float grandTotal=0f;
-        for (EntityOrder order:db.getAllAmount()) {
-            grandTotal+=Float.valueOf(order.getNetTotal());
-        };
+
+    public String getAllOrdersAmount() {
+        float grandTotal = 0f;
+        for (EntityOrder order : db.getAllAmount()) {
+            grandTotal += Float.valueOf(order.getNetTotal());
+        }
         DecimalFormat df = new DecimalFormat("#.0");
         return df.format(grandTotal);
     }
+
+
+    public String getTodaysOrdersAmount(String currentDate) {
+        float grandTotal = 0f;
+        try {
+            // Define the date format to match "Jan 26, 2025 7:25:28 PM"
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+
+            // Parse the currentDate string into a Date object (in the correct format)
+            Date parsedCurrentDate = sdf.parse(currentDate);
+
+            // Loop through all orders
+            for (EntityOrder order : db.getAllAmount()) {
+                // Parse the order's date string into a Date object using the same format
+                Date orderDate = sdf.parse(order.getOrderDate());
+
+                // Compare only the date parts (ignoring time)
+                if (orderDate.equals(parsedCurrentDate)) {
+                    grandTotal += Float.valueOf(order.getNetTotal());
+                }
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Format the grandTotal to 1 decimal place
+        DecimalFormat df = new DecimalFormat("#.0");
+        return df.format(grandTotal);
+    }
+
+    public int getTodaysOrders(String currentDate) {
+        int grandTotal = 0;
+        try {
+            // Define the date format to match "Jan 26, 2025 7:25:28 PM"
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+
+            // Parse the currentDate string into a Date object (in the correct format)
+            Date parsedCurrentDate = sdf.parse(currentDate);
+
+            // Loop through all orders
+            for (EntityOrder order : db.getAllAmount()) {
+                // Parse the order's date string into a Date object using the same format
+                Date orderDate = sdf.parse(order.getOrderDate());
+
+                // Compare only the date parts (ignoring time)
+                if (orderDate.equals(parsedCurrentDate)) {
+                    grandTotal += 1;
+                }
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return grandTotal;
+    }
+
+    public int getTodaysCustomers(String currentDate) {
+        int grandTotal = 0;
+        try {
+            // Define the date format to match "Jan 26, 2025 7:25:28 PM"
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+
+            // Parse the currentDate string into a Date object (in the correct format)
+            Date parsedCurrentDate = sdf.parse(currentDate);
+
+            // Loop through all orders
+            for (EntityOrder order : db.getAllCustomer()) {
+                // Parse the order's date string into a Date object using the same format
+                Date orderDate = sdf.parse(order.getOrderDate());
+                // Compare only the date parts (ignoring time)
+                if (orderDate.equals(parsedCurrentDate)) {
+                    grandTotal += 1;
+                }
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return grandTotal;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -387,7 +486,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void logout() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle("Confirm");
         builder.setMessage("Logout? Make sure that you have uploaded your data.");
@@ -576,7 +675,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         try {
                             JSONObject jObj = new JSONObject(responseData.substring(response.indexOf("{"), response.indexOf("}") + 1));
                             if (Integer.parseInt(jObj.get("status").toString()) == 1) {
-                                if(session.isGuestUserLoggedIn()){
+                                if (session.isGuestUserLoggedIn()) {
                                     DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
                                     String currentTime = df.format(Calendar.getInstance().getTime());
                                     SharedPreferenceManager.getInstance(DashboardActivity.this).storeStringInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, currentTime);
@@ -1112,8 +1211,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 total_Products_Count.setText(String.valueOf(0));
                 total_Customer_Count.setText(String.valueOf(0));
             } else if (action.equals(Constant.SYNC_ORDERS_DATA)) {
-                total_Orders_Count.setText(String.valueOf(0));
-                total_Amount.setText(String.valueOf(0.00 + ".Rs"));
+                pending_orders.setText(String.valueOf(0));
+                pending_Amount.setText(String.valueOf(0.00 + ".Rs"));
                 if (db.getOrderCount() == 0) {
                     syncBtn.setTextColor(Color.BLACK);
                     syncBtn.setBackgroundResource(R.color.grey);
@@ -1157,7 +1256,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void exportPdf(final List<EntityOrderAndDetails> allProdsAndDetails) {
         LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
         promptsView = li.inflate(R.layout.pdf_exporter, null);
-        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this,R.style.AlertDialogButtonStyle);
+        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this, R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
         // create alert dialog
@@ -1190,7 +1289,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public void exportTxt(final List<EntityOrderAndDetails> allProdsAndDetails) {
         LayoutInflater li = LayoutInflater.from(DashboardActivity.this);
         promptsView = li.inflate(R.layout.txt_exporter, null);
-        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this,R.style.AlertDialogButtonStyle);
+        alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this, R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
         // create alert dialog

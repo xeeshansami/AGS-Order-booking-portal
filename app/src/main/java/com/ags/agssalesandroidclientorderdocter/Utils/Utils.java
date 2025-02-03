@@ -944,7 +944,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void failedDownload(String error, boolean isOccurred, final Button button) {
         if (isOccurred) {
-            alertBox(context, "Download failed", "Something went wrong, please try again to login", "Again", "No", "Later", new setOnitemClickListner() {
+            alertBox(context, "Download failed", "Something went wrong, please try again to login\n"+error, "Again", "No", "Later", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     db.deleteTable();
