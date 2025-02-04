@@ -636,8 +636,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
                 @Override
                 public void Failure(ErrorResponse response) {
-                    syncBtn.setEnabled(true);
-                    syncBtn.setClickable(true);
+                    if(syncBtn!=null) {
+                        syncBtn.setEnabled(true);
+                        syncBtn.setClickable(true);
+                    }
                     utils.hideLoader();
                     Toast.makeText(DashboardActivity.this, "Some error occurred in authentication. Kindly inform your administrator.", Toast.LENGTH_SHORT).show();
                 }

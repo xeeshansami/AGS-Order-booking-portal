@@ -156,6 +156,7 @@ public class OrderBooking extends Fragment {
                 if (resultCode == RESULT_OK) {
                     final int productId = Integer.parseInt(data.getStringExtra("productId"));
                     final EntityProduct product = db.getProduct(productId);
+                    db.updateSelectedProduct(productId);
                     ShowDialogForDetails(product);
                 }
                 if (resultCode == RESULT_CANCELED) {
@@ -327,6 +328,7 @@ public class OrderBooking extends Fragment {
                         utils.alertBox(getActivity(), "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
+                                db.resetAllProductsSelectedStatus();
                                 getActivity().finish();
                             }
                         });
@@ -353,6 +355,7 @@ public class OrderBooking extends Fragment {
                 utils.showLoader(getActivity());
                 createLocationRequest();
                 settingsCheck();
+                db.resetAllProductsSelectedStatus();
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GRANT_PERMISSION);
                     utils.hideLoader();
@@ -795,11 +798,11 @@ public class OrderBooking extends Fragment {
                 .setNeutralButton("Save & Add More",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                addProductToList();
+                                EntityProduct prod=addProductToList();
                                 Intent intent = new Intent(getActivity(), ProductActivity.class);
-                                if (productsList.size() != 0) {
-                                    String json = new Gson().toJson(productsList);
-                                    intent.putExtra("products", json);
+                                if (prod!=null) {
+                                    String json = new Gson().toJson(prod);
+                                    intent.putExtra("product", json);
                                 }
                                 startActivityForResult(intent, 2);
                                 new Handler().postDelayed(new Runnable() {
@@ -828,7 +831,7 @@ public class OrderBooking extends Fragment {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public void addProductToList() {
+    public EntityProduct addProductToList() {
         EntityProductDetails detailsProd;
         if (!productQty.getText().toString().trim().equals("")) {
 
@@ -860,6 +863,7 @@ public class OrderBooking extends Fragment {
             lp.height = 180 * productsList.size();
             listView.setLayoutParams(lp);
         }
+        return  product;
     }
 
     public void ShowDialogForDetails(final EntityProductDetails product, final int position) {

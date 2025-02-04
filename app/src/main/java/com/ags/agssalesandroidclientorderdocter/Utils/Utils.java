@@ -465,8 +465,10 @@ public class Utils implements IOnConnectionTimeoutListener {
             @Override
             public void Failure(ErrorResponse response) {
                 if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
-                    button.setEnabled(true);
-                    button.setClickable(true);
+                    if(button!=null) {
+                        button.setEnabled(true);
+                        button.setClickable(true);
+                    }
                 }
                 hideLoader();
                 Toast.makeText(context, "Some error occurred in authentication. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
@@ -489,8 +491,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if(button!=null) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
@@ -517,8 +521,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if(button!=null) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
             }
@@ -542,8 +548,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if(button!=null) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
@@ -578,8 +586,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if(button!=null) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
@@ -603,8 +613,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if(button!=null) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();
@@ -639,8 +651,10 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                button.setEnabled(true);
-                button.setClickable(true);
+                if(button!=null) {
+                    button.setEnabled(true);
+                    button.setClickable(true);
+                }
                 hideLoader();
                 Toast.makeText(context, response.getMessage(), Toast.LENGTH_SHORT).show();
                 hideLoader();

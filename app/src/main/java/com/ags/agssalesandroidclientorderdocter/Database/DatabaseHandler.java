@@ -9,6 +9,7 @@ import com.ags.agssalesandroidclientorderdocter.Models.EntitySalesman;
 import com.ags.agssalesandroidclientorderdocter.Models.User;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -62,6 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String productName = "productName";
     private static final String productSize = "productSize";
     private static final String productPrice = "productPrice";
+    private static final String productSelected = "productSelected";
     private static final String productCompany = "productCompany";
     private static final String Prod_Group_Name = "Prod_Group_Name";
 
@@ -137,6 +139,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + productName + " text, "
                 + productSize + " text,"
                 + productPrice + " text,"
+                + productSelected + " integer,"
                 + productCompany + " text,"
                 + Prod_Group_Name + " text)";
         db.execSQL(CREATE_TABLE_PRODUCT);
@@ -210,6 +213,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
     }
+
+    public void updateSelectedProduct(int prodID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Define the values to update
+        ContentValues values = new ContentValues();
+        values.put(productSelected, 1);  // Set the selected status to true
+
+        // Update the product with the matching productId
+        String whereClause = "productId = ?";
+        String[] whereArgs = new String[] { String.valueOf(prodID) };
+
+        // Perform the update operation
+        db.update(TABLE_PRODUCT, values, whereClause, whereArgs);
+    }
+    public void resetAllProductsSelectedStatus() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Define the values to update
+        ContentValues values = new ContentValues();
+        values.put(productSelected, 0);  // Set all selectedProduct statuses to false
+
+        // Update the table
+        db.update(TABLE_PRODUCT, values, null, null);  // This will update all rows in the table
+    }
+
 
 
     public void getAllTotalOrders() {
@@ -449,7 +478,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 //        for (EntityProduct product : allProducts) {
 
-        String sql = "insert into " + TABLE_PRODUCT + " values (" + product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', '" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
+        String sql = "insert into " + TABLE_PRODUCT + " values ("+ product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', 0,'" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
         db.execSQL(sql);
 //        }
     }
@@ -477,6 +506,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
     public List<EntityProduct> getAllProducts() {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -496,6 +526,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 product.setProductName(cursor.getString(1));
                 product.setProductSize(cursor.getString(2));
                 product.setProductPrice(Float.parseFloat(cursor.getString(3)));
+                product.setSelectedProduct(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productSelected")))));
                 product.setProductCompany(cursor.getString(4));
                 product.setProd_Group_Name(cursor.getString(5));
 

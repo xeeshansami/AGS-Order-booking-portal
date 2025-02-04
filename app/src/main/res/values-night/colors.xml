@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorAccent">#B0B0B0</color> <!-- Lighter gray accent -->
-    <color name="colorPrimary">#FFFFFF</color> <!-- Darker greenish-brown -->
+    <color name="colorPrimary">#4C5B26</color> <!-- Darker greenish-brown -->
     <color name="colorPrimaryDark">#2C2E1A</color> <!-- Very dark greenish-brown -->
     <color name="colorAccentLight">#FF5722</color> <!-- Darker orange -->
     <color name="colorGray">#707070</color> <!-- Dark gray -->

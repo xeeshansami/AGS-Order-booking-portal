@@ -10,6 +10,7 @@ import android.app.Activity;
 
 import com.ags.agssalesandroidclientorderdocter.Adapters.CustomerListAdapter;
 import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.ags.agssalesandroidclientorderdocter.interfaces.OnItemClickListenerCustomer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,6 +28,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +42,10 @@ public class CustomerActivity extends AppCompatActivity {
     private List<EntityCustomer> customersList = new ArrayList<EntityCustomer>();
     private DatabaseHandler db;
     private SessionManager sessionManager;
-    private ListView listView;
+    private RecyclerView listView;
     private CustomerListAdapter adapter;
     private EditText txtCustomerSearch;
-
+    int customerID=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,12 +63,7 @@ public class CustomerActivity extends AppCompatActivity {
         customersList = db.getAllCustomers();
         if (getIntent().hasExtra("selectedCustomer")) {
             EntityCustomer obj = (EntityCustomer) getIntent().getSerializableExtra("selectedCustomer");
-            for(int i=0;i<customersList.size();i++){
-                if(obj.getCustomerId()==customersList.get(i).getCustomerId()){
-                    customersList.get(i).setSelectedCustomer(true);
-                    Log.i("CustomerProd",obj.getCustomerId()+" checked "+customersList.get(i).getCustomerId());
-                }
-            }
+            customerID=obj.getCustomerId();
         }
         SetToolBar();
         BindSearchCustomerTextBox();
@@ -114,19 +112,18 @@ public class CustomerActivity extends AppCompatActivity {
 
     private void BindCustomersList() {
 
-        listView = (ListView) findViewById(R.id.lstCustomers);
-        adapter = new CustomerListAdapter(this, customersList);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView = (RecyclerView) findViewById(R.id.lstCustomers);
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new CustomerListAdapter(this, customerID,customersList, new OnItemClickListenerCustomer() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EntityCustomer entry = (EntityCustomer) parent.getAdapter().getItem(position);
+            public void onItemClick(EntityCustomer entry) {
                 Intent returnIntentToOrderForm = new Intent();
                 returnIntentToOrderForm.putExtra("customerId", String.valueOf(entry.getCustomerId()));
                 setResult(Activity.RESULT_OK, returnIntentToOrderForm);
                 finish();
             }
         });
+        listView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
     }

@@ -1,75 +1,82 @@
 package com.ags.agssalesandroidclientorderdocter.Adapters;
 
-import com.ags.agssalesandroidclientorderdocter.Models.EntityCustomer;
-
-import com.ags.agssalesandroidclientorderdocter.R;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
+import com.ags.agssalesandroidclientorderdocter.Models.EntityCustomer;
+import com.ags.agssalesandroidclientorderdocter.R;
+import com.ags.agssalesandroidclientorderdocter.interfaces.OnItemClickListenerCustomer;
 
 import java.util.List;
 
-/**
- * Created by Asad on 10/1/2016.
- */
-public class CustomerListAdapter extends BaseAdapter {
+public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapter.ViewHolder> {
 
     private Activity activity;
-    private LayoutInflater inflater;
     private List<EntityCustomer> customerItems;
+    private OnItemClickListenerCustomer listener;
+    int customerID=-1;
 
-    public CustomerListAdapter(Activity activity, List<EntityCustomer> customerItems){
-
+    // Constructor for the adapter
+    public CustomerListAdapter(Activity activity, int customerID,List<EntityCustomer> customerItems, OnItemClickListenerCustomer listener) {
         this.activity = activity;
         this.customerItems = customerItems;
-
+        this.listener = listener;
+        this.customerID=customerID;
     }
 
+    // Create ViewHolder
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_customer_row, parent, false);
+        return new ViewHolder(view);
+    }
+
+    // Bind data to the view
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        EntityCustomer customer = customerItems.get(position);
+
+        holder.customerId.setText(String.valueOf(customer.getCustomerId()));
+        holder.customerName.setText(customer.getCustomerName());
+        holder.customerBranch.setText(customer.getCustomerAddress());
+        holder.customerId.setTextColor(activity.getResources().getColor(R.color.grey)); // or the default color
+        holder.customerName.setTextColor(activity.getResources().getColor(R.color.grey)); // or the default color
+        holder.customerBranch.setTextColor(activity.getResources().getColor(R.color.grey)); // or the default color
+
+        // Change text color if the customer is selected
+        if (customer.getCustomerId()==customerID) {
+            holder.customerId.setTextColor(activity.getResources().getColor(R.color.green));
+            holder.customerName.setTextColor(activity.getResources().getColor(R.color.green));
+            holder.customerBranch.setTextColor(activity.getResources().getColor(R.color.green));
+        }
+
+        // Set an item click listener
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(customer); // Pass the selected customer to the listener
+            }
+        });
+    }
+
+    // Get the total number of items
+    @Override
+    public int getItemCount() {
         return customerItems.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return customerItems.get(position);
-    }
+    // ViewHolder class to hold the views
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView customerId, customerName, customerBranch;
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @SuppressLint("ResourceAsColor")
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (inflater == null)
-            inflater = (LayoutInflater) activity
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null)
-            convertView = inflater.inflate(R.layout.layout_customer_row, null);
-
-        TextView customerId = (TextView) convertView.findViewById(R.id.customerId);
-        TextView customerName = (TextView) convertView.findViewById(R.id.customerName);
-        TextView customerBranch = (TextView) convertView.findViewById(R.id.customerBranch);
-        EntityCustomer customer = customerItems.get(position);
-        if(customer.getSelectedCustomer() ){
-            Log.i("CustomerProd",customer.getCustomerId()+" Adapter ");
-            customerId.setTextColor(R.color.green);
-            customerName.setTextColor(R.color.green);
-            customerBranch.setTextColor(R.color.green);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            customerId = itemView.findViewById(R.id.customerId);
+            customerName = itemView.findViewById(R.id.customerName);
+            customerBranch = itemView.findViewById(R.id.customerBranch);
         }
-        customerId.setText(String.valueOf(customer.getCustomerId()));
-        customerName.setText(customer.getCustomerName());
-        customerBranch.setText(customer.getCustomerAddress());
-
-        return convertView;
     }
 }

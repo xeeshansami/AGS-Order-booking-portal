@@ -44,20 +44,11 @@
     </LinearLayout>
 
 
-
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:padding="3dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ListView
-            tools:listitem="@layout/layout_product_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lstProducts" />
-
-    </LinearLayout>
-
+        android:id="@+id/lstProducts" />
 
 
 </LinearLayout>

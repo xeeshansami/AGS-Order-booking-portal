@@ -5,10 +5,12 @@ import com.ags.agssalesandroidclientorderdocter.Models.EntityProduct;
 
 import com.ags.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.ags.agssalesandroidclientorderdocter.R;
+
 import android.app.Activity;
 
 import com.ags.agssalesandroidclientorderdocter.Adapters.ProductListAdapter;
 import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.ags.agssalesandroidclientorderdocter.interfaces.OnItemClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,6 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -24,6 +27,8 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +39,11 @@ public class ProductActivity extends AppCompatActivity {
     private SessionManager sessionManager;
 
     private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
-    private ListView listView;
+    private List<EntityProduct> productsListSP = new ArrayList<EntityProduct>();
+    private RecyclerView listView;
     private ProductListAdapter adapter;
     private EditText txtProductSearch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +59,6 @@ public class ProductActivity extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         productsList = db.getAllProducts();
-        if(getIntent().hasExtra("products")){
-            List<EntityProductDetails> list = new Gson().fromJson(
-                    getIntent().getStringExtra("products"),
-                    new TypeToken<List<EntityProductDetails>>(){}.getType()
-            );
-            for(EntityProductDetails s : list){
-                for(int i=0;i<productsList.size();i++){
-                    if(s.getProductId()==productsList.get(i).getProductId()){
-                        productsList.get(i).setSelectedProduct(true);
-                    }
-                }
-
-            }
-        }
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activities window.
@@ -77,7 +70,7 @@ public class ProductActivity extends AppCompatActivity {
         BindProductsList();
     }
 
-    private  void BindSearchProductTextBox(){
+    private void BindSearchProductTextBox() {
         txtProductSearch = (EditText) findViewById(R.id.searchProductList);
 
         txtProductSearch.addTextChangedListener(new TextWatcher() {
@@ -103,28 +96,21 @@ public class ProductActivity extends AppCompatActivity {
         });
     }
 
-    private void BindProductsList(){
+    private void BindProductsList() {
 
-        listView = (ListView) findViewById(R.id.lstProducts);
-        adapter = new ProductListAdapter(this, productsList);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView = (RecyclerView) findViewById(R.id.lstProducts);
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ProductListAdapter(this, productsList, new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                EntityProduct entry= (EntityProduct) parent.getAdapter().getItem(position);
+            public void onItemClick(EntityProduct entry) {
                 /*Toast.makeText(ProductActivity.this, entry.getName(), Toast.LENGTH_SHORT).show();*/
-
                 Intent returnIntent = new Intent();
-
                 returnIntent.putExtra("productId", String.valueOf(entry.getProductId()));
-
-                setResult(Activity.RESULT_OK,returnIntent);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         });
-
+        listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 }

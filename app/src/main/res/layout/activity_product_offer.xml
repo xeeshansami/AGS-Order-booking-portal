@@ -64,13 +64,13 @@
 
             </LinearLayout>
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:scrollbars="vertical"
                 android:scrollbarThumbVertical="@color/colorPrimary"
                 android:scrollbarSize="2dp"
                 android:padding="@dimen/unit_10"
                 android:id="@+id/product_offer_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></ListView>
+                android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
 </RelativeLayout>

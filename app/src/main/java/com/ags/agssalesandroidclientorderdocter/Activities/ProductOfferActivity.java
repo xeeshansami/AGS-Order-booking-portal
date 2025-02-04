@@ -3,6 +3,8 @@ package com.ags.agssalesandroidclientorderdocter.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.ags.agssalesandroidclientorderdocter.Utils.Utils;
 import com.ags.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
+import com.ags.agssalesandroidclientorderdocter.interfaces.OnItemClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +39,7 @@ public class ProductOfferActivity extends AppCompatActivity {
     private SharedPreferenceHandler sp;
     Utils utils;
     SessionManager sessionManager;
-    ListView product_offer_recycler_view;
+    RecyclerView product_offer_recycler_view;
     private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
     private ProductListAdapter adapter;
 
@@ -121,7 +124,13 @@ public class ProductOfferActivity extends AppCompatActivity {
                         product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
                         productsList.add(product);
                     }
-                    adapter = new ProductListAdapter(ProductOfferActivity.this, productsList);
+                    product_offer_recycler_view.setLayoutManager(new LinearLayoutManager(ProductOfferActivity.this));
+                    adapter = new ProductListAdapter(ProductOfferActivity.this, productsList, new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(EntityProduct product) {
+
+                        }
+                    });
                     product_offer_recycler_view.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
