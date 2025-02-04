@@ -19,8 +19,8 @@
         android:layout_gravity="start"
         android:background="@drawable/bg_app"
         app:headerLayout="@layout/nav_header"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/colorPrimary"
+        app:itemTextColor="@color/colorPrimary"
         app:menu="@menu/drawer_menu">
 
         <RelativeLayout

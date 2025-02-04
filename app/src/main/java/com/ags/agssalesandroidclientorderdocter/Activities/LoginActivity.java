@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        AutostartDownload();
+//        AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         as_guest__button = findViewById(R.id.as_guest__button);
         forget_pwd_txt = findViewById(R.id.forget_pwd_txt);

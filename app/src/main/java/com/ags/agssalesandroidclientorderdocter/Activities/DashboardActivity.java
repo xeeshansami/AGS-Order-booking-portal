@@ -276,7 +276,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             if(sp.getusername()!=null) {
                 usertitle.setText("UserID: " + sp.getusername());
             }
-            AutostartDownload(syncBtn);
+            if(session.isLoggedIn() || session.isGuestUserLoggedIn()){
+                AutostartDownload(syncBtn);
+            }
             progressDialog = new ProgressDialog(this);
             progressDialog.setCanceledOnTouchOutside(false);
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -296,8 +298,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         });
                     }
 
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
                 }
             });
         } catch (Exception e) {
