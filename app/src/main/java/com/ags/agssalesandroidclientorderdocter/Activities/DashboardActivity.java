@@ -11,7 +11,6 @@ import com.ags.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.ags.agssalesandroidclientorderdocter.R;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 
 import com.ags.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.ags.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
@@ -24,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,7 +42,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -126,7 +125,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     File file;
     TextView total_Products_Count;
     TextView total_Customer_Count;
-    ProgressDialog progressDialog;
     DrawerLayout drawer;
     JSONArray jsonArrayForCustomers, jsonArrayForProducts, jsonArrayForSalesman;
     AlertDialog.Builder alertDialogBuilder;
@@ -247,7 +245,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     user_title.setText("Guest Account: You can Only 1 Order once in a day(24 hr's)");
                 }
             } else {
-                if(sp.getrole()!=null && sp.getUser_Category()!=null) {
+                if (sp.getrole() != null && sp.getUser_Category() != null) {
                     String txt = sp.getrole().toString().toLowerCase() + ": " + sp.getUser_Category().toString().toLowerCase();
                     user_title.setText(txt);
                 }
@@ -267,20 +265,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             TextView userid = hView.findViewById(R.id.header_userid);
             TextView usertitle = hView.findViewById(R.id.header_username);
             footar_version.setText(BuildConfig.VERSION_NAME);
-            if(sp.getrole()!=null) {
+            if (sp.getrole() != null) {
                 userid.setText("As Role : " + sp.getrole());
                 if (sp.getrole().equalsIgnoreCase("Saleman")) {
                     showItem();
                 }
             }
-            if(sp.getusername()!=null) {
+            if (sp.getusername() != null) {
                 usertitle.setText("UserID: " + sp.getusername());
             }
-            if(session.isLoggedIn() || session.isGuestUserLoggedIn()){
+            if (session.isLoggedIn() || session.isGuestUserLoggedIn()) {
                 AutostartDownload(syncBtn);
             }
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setCanceledOnTouchOutside(false);
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -298,12 +294,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         });
                     }
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
             });
         } catch (Exception e) {
-            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n"+e.getMessage()+"\n"+e.getStackTrace(), "Yes", "Later", new setOnitemClickListner() {
+            utils.alertBox(DashboardActivity.this, "Alert", "Something went wrong, please clear the cache of your application\n" + e.getMessage() + "\n" + e.getStackTrace(), "Yes", "Later", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
@@ -636,12 +632,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
                 @Override
                 public void Failure(ErrorResponse response) {
-                    if(syncBtn!=null) {
+                    if (syncBtn != null) {
                         syncBtn.setEnabled(true);
                         syncBtn.setClickable(true);
                     }
                     utils.hideLoader();
-                    Toast.makeText(DashboardActivity.this, "Some error occurred in authentication. Kindly inform your administrator.", Toast.LENGTH_SHORT).show();
+                    utils.showMessage(DashboardActivity.this,"Some error occurred in authentication. Kindly inform your administrator.");
                 }
             });
         } else {
@@ -658,12 +654,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void uploadProductSyncData() {
-        progressDialog.setTitle("Sync in progress");
-        progressDialog.setMessage("Please wait while we upload your data ...");
-        progressDialog.show();
-        progressDialog.setTitle("Sync in progress");
-        progressDialog.setMessage("Please wait while we upload your data ...");
-        progressDialog.show();
+        utils.showLoader(this);
+        utils.showDialogUpdateMessage("Sync in progress\nPlease wait while we upload your data ...");
         RequestQueue queue = Volley.newRequestQueue(this);
         List<EntityOrderAndDetails> allProdsAndDetails = db.getOrderAndDetails(sp.getbranch());
         if (allProdsAndDetails.size() > 0) {
@@ -687,19 +679,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                 db.ChangeStatusToPosted();
                                 ChangeSyncButtonState();
                                 populateDashboard();
-                                progressDialog.dismiss();
-                                Toast.makeText(DashboardActivity.this, "Sync Successful", Toast.LENGTH_SHORT).show();
+                                utils.hideLoader();
+                                utils.showMessage(DashboardActivity.this,"Sync Successful");
+                                new productReset(DashboardActivity.this, db, utils).execute();
                             } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(DashboardActivity.this, "Sync Failed" + response, Toast.LENGTH_SHORT).show();
+                                utils.hideLoader();
+                                utils.showMessage(DashboardActivity.this,"Sync Failed");
                             }
                         } catch (JSONException e) {
-                            progressDialog.dismiss();
+                            utils.hideLoader();
                             e.printStackTrace();
                         }
 
                     } catch (UnsupportedEncodingException e) {
-                        progressDialog.dismiss();
+                        utils.hideLoader();
                         e.printStackTrace();
                     }
                 }
@@ -709,7 +702,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     System.out.println("DashboardActivityCheck" + " : " + error.getMessage());
                     syncBtn.setEnabled(true);
                     syncBtn.setClickable(true);
-                    progressDialog.dismiss();
+                    utils.hideLoader();
                     utils.alertBox(DashboardActivity.this, "Sync Failed", "Do you want to share with pdf?", "Yes", "No", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -748,8 +741,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else {
             syncBtn.setEnabled(true);
             syncBtn.setClickable(true);
-            Toast.makeText(DashboardActivity.this, "All data is already uploaded.", Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
+            this.utils.showMessage(DashboardActivity.this,"All data is already uploaded.");
+            utils.hideLoader();
         }
 
         ChangeSyncButtonState();
@@ -795,7 +788,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             writer.append(text);
             writer.flush();
             writer.close();
-            Toast.makeText(this, "Saved your text file in AGS folder", Toast.LENGTH_LONG).show();
+            this.utils.showMessage(DashboardActivity.this,"Saved your text file in AGS folder");
         } catch (Exception e) {
             return;
         } finally {
@@ -947,7 +940,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } catch (Exception e) {
             return;
         } finally {
-            Toast.makeText(this, "Saved your pdf file in AGS folder", Toast.LENGTH_LONG).show();
+            this.utils.showMessage(DashboardActivity.this,"Saved your pdf file in AGS folder");
             utils.alertBox(DashboardActivity.this, "Export PDF File", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -1019,6 +1012,48 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
 
     }
+
+    public class productReset extends AsyncTask<Void, Void, Integer> {
+        DatabaseHandler db;
+        Utils utils;
+        private Context context;
+
+        public productReset(Context context, DatabaseHandler db, Utils utils) {
+            super();
+            this.context = context;
+            this.db = db;
+            this.utils = utils;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Show the loader and the message before executing the task
+            this.utils.showLoader(context);
+            this.utils.showDialogUpdateMessage("Please wait\nUpdating records...");
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            int count = 0;
+            try {
+                count = this.db.resetAllProductsSelectedStatus(); // Get the count of updated records
+                count = this.db.resetAllCustomersSelectedStatus(); // Get the count of updated records
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return count;
+        }
+
+        @Override
+        protected void onPostExecute(Integer count) {
+            super.onPostExecute(count);
+            this.utils.hideLoader();
+            Log.i("CountOfProducts", "Updated " + count + " products");
+            this.utils.showMessage(context,"Sync Successfully");
+        }
+    }
+
 
 
     @Override
@@ -1378,7 +1413,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             intentUrl.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intentUrl);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(DashboardActivity.this, "No PDF Viewer Installed", Toast.LENGTH_LONG).show();
+            this.utils.showMessage(DashboardActivity.this,"No PDF Viewer Installed");
         }
     }
 
@@ -1421,7 +1456,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     uploadProductSyncData();
                     SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, 1);
                 } else {
-                    Toast.makeText(this, "You can only an (1) order once in a day, you can try after 24 hrs or Next Day", Toast.LENGTH_SHORT).show();
+                    utils.showMessage(DashboardActivity.this,"You can only an (1) order once in a day, you can try after 24 hrs or Next Day");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();

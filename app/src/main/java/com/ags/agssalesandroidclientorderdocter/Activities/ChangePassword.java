@@ -1,6 +1,5 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,13 +39,9 @@ public class ChangePassword extends AppCompatActivity {
     EditText txtPassword;
     EditText txtRePassword;
     ImageView hideImage1, hideimage2;
-    ProgressDialog progressDialog;
     boolean showHide = true, showHide2 = true;
     Utils utils;
 
-    public void HideDialog() {
-        progressDialog.dismiss();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +68,6 @@ public class ChangePassword extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCanceledOnTouchOutside(false);
         hideImage1 = (ImageView) findViewById(R.id.hideshow_img);
         hideimage2 = (ImageView) findViewById(R.id.hideshow_img2);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
@@ -164,15 +157,10 @@ public class ChangePassword extends AppCompatActivity {
     }
 
     private void ShowRequestDialog() {
-        ShowDialog("Requesting", "Sending request to administrator");
+        utils.showLoader(this);
+        utils.showDialogUpdateMessage("Requesting\nSending request to administrator ...");
     }
 
-    private void ShowDialog(String title, String message) {
-        progressDialog.setTitle(title);
-        progressDialog.setMessage(message);
-        progressDialog.show();
-
-    }
 
     public boolean validation() {
         String pwd = txtPassword.getText().toString().trim();

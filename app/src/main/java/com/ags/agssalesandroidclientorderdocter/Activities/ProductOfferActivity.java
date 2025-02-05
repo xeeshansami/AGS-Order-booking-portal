@@ -130,6 +130,11 @@ public class ProductOfferActivity extends AppCompatActivity {
                         public void onItemClick(EntityProduct product) {
 
                         }
+
+                        @Override
+                        public void onItemLongClick(EntityProduct product) {
+
+                        }
                     });
                     product_offer_recycler_view.setAdapter(adapter);
                     adapter.notifyDataSetChanged();

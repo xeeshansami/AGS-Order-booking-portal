@@ -1,6 +1,5 @@
 package com.ags.agssalesandroidclientorderdocter.Activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -60,14 +59,10 @@ public class SignupActivity extends AppCompatActivity {
     EditText txtRePassword;
     EditText txtCity;
     ImageView hideImage1, hideimage2;
-    ProgressDialog progressDialog;
     boolean showHide = true, showHide2 = true;
     String usernumberReplac;
     Utils utils;
 
-    public void HideDialog() {
-        progressDialog.dismiss();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +89,6 @@ public class SignupActivity extends AppCompatActivity {
                 finish();
             }
         });
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCanceledOnTouchOutside(false);
-
         hideImage1 = (ImageView) findViewById(R.id.hideshow_img);
         hideimage2 = (ImageView) findViewById(R.id.hideshow_img2);
         txtFullName = (EditText) findViewById(R.id.txtFullName);
@@ -192,15 +184,10 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void ShowRequestDialog() {
-        ShowDialog("Requesting", "Sending request to administrator");
+        utils.showLoader(this);
+        utils.showDialogUpdateMessage("Requesting\nSending request to administrator ...");
     }
 
-    private void ShowDialog(String title, String message) {
-        progressDialog.setTitle(title);
-        progressDialog.setMessage(message);
-        progressDialog.show();
-
-    }
 
     public boolean validation() {
         String fullname = txtFullName.getText().toString().trim();
@@ -241,12 +228,12 @@ public class SignupActivity extends AppCompatActivity {
             txtNumber.setError("Contact number starts with 92 format like this 923412030258");
             Snackbar.make(findViewById(android.R.id.content), "Contact number starts with 92 format like this 923412030258", 1000).show();
             return false;
-        } */else if (TextUtils.isEmpty(uid)) {
+        } */ else if (TextUtils.isEmpty(uid)) {
             txtUserID.setFocusable(true);
             txtUserID.setError("Username should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "Username should not be empty", 1000).show();
             return false;
-        }else if (TextUtils.isEmpty(city)) {
+        } else if (TextUtils.isEmpty(city)) {
             txtCity.setFocusable(true);
             txtCity.setError("City should not be empty");
             Snackbar.make(findViewById(android.R.id.content), "City should should not be empty", 1000).show();
@@ -285,7 +272,7 @@ public class SignupActivity extends AppCompatActivity {
             usernumberReplac = usernumber.replace("03", "923");
         }
         String url = url_Signup
-                + "?fullname=" + txtFullName.getText().toString().trim() +" "+txtCity.getText().toString().trim()
+                + "?fullname=" + txtFullName.getText().toString().trim() + " " + txtCity.getText().toString().trim()
                 + "&email=" + txtEmail.getText().toString().trim()
                 + "&contact=" + usernumberReplac
                 + "&uid=" + txtUserID.getText().toString().trim()
@@ -303,7 +290,8 @@ public class SignupActivity extends AppCompatActivity {
 //                                sp.setContact(jsonObject.getString("contact"));
                                 sp.setuserid((String) jsonObject.get("uid"));
 //                                sp.setpassword(txtPassword.getText().toString());
-                                ShowDialog("Signup", "your account successfully created!!!");
+                                utils.showLoader(SignupActivity.this);
+                                utils.showDialogUpdateMessage("Signup\nyour account successfully created!!!");
                                 DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss"); // Format time
                                 String currentTime = df.format(Calendar.getInstance().getTime());
 //                                String temptime="09/4/2020 04:40:00";
@@ -319,7 +307,7 @@ public class SignupActivity extends AppCompatActivity {
                                 });
                             }
                         } catch (JSONException e) {
-                            HideDialog();
+                            utils.hideLoader();
                             Toast.makeText(SignupActivity.this, "Some error occurred. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
@@ -327,7 +315,7 @@ public class SignupActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                HideDialog();
+                utils.hideLoader();
                 Toast.makeText(SignupActivity.this, "Some error occurred. Kindly inform administrator.", Toast.LENGTH_SHORT).show();
             }
         });

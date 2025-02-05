@@ -48,7 +48,7 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
         holder.customerBranch.setTextColor(activity.getResources().getColor(R.color.grey)); // or the default color
 
         // Change text color if the customer is selected
-        if (customer.getCustomerId()==customerID) {
+        if (customer.getSelectedCustomer()==1) {
             holder.customerId.setTextColor(activity.getResources().getColor(R.color.green));
             holder.customerName.setTextColor(activity.getResources().getColor(R.color.green));
             holder.customerBranch.setTextColor(activity.getResources().getColor(R.color.green));

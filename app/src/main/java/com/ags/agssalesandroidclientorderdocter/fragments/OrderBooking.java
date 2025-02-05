@@ -101,7 +101,7 @@ public class OrderBooking extends Fragment {
     Spinner spinnerSalesMan;
     TextView textViewCustomer, customer_selection_lbl;
     TextView textViewCustomerTown;
-    Button btnSelectCustomer,txtSelectProduct;
+    Button btnSelectCustomer, txtSelectProduct;
     TextView txtNetTotal;
     EditText txtRemarks;
     Button btnSetDate;
@@ -275,8 +275,6 @@ public class OrderBooking extends Fragment {
     }
 
 
-
-
     protected void BindListViewForEdit() {
 /*        listView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -328,7 +326,6 @@ public class OrderBooking extends Fragment {
                         utils.alertBox(getActivity(), "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
-                                db.resetAllProductsSelectedStatus();
                                 getActivity().finish();
                             }
                         });
@@ -344,7 +341,7 @@ public class OrderBooking extends Fragment {
 
 
     public void SaveOrder() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle("Confirm");
         builder.setMessage("Do you want to save this order?");
@@ -355,7 +352,6 @@ public class OrderBooking extends Fragment {
                 utils.showLoader(getActivity());
                 createLocationRequest();
                 settingsCheck();
-                db.resetAllProductsSelectedStatus();
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GRANT_PERMISSION);
                     utils.hideLoader();
@@ -533,24 +529,23 @@ public class OrderBooking extends Fragment {
                 order.setOrderAddress(address);
                 // old saleman logic below
                 ///order.setOrderSalName(spinnerSalesMan.getSelectedItem().toString().substring(spinnerSalesMan.getSelectedItem().toString().indexOf("]") + 2));
-
                 // new saleman logic as defined in ticket Task 15
                 EntitySalesman salesManEntity = db.getSalesMan(Integer.parseInt(order.getSaleMenCode()));
                 order.setOrderSalName(salesManEntity.getSalesman_Name());
-
                 order.setOrderCustName(selectedCustomer.getCustomerName());
                 order.setOrderCustAddress(selectedCustomer.getCustomerAddress());
                 order.setorderCreatedOn(DateFormat.getDateTimeInstance().format(new Date()));
                 order.setAllProducts(productsList);
                 db.CreateOrder(order);
-                Toast.makeText(getActivity(), "Order created Successfully", Toast.LENGTH_SHORT).show();
+                db.updateSelectedCustomer(selectedCustomer.getCustomerId());
+                this.utils.showMessage(getActivity(), "Order created Successfully");
                 Intent intent = new Intent(getActivity(), DashboardActivity.class);
                 startActivity(intent);
                 utils.hideLoader();
                 getActivity().finish();
             } else {
                 utils.hideLoader();
-                Toast.makeText(getActivity(), "Select customer or add atleast 1 product", Toast.LENGTH_SHORT).show();
+                this.utils.showMessage(getActivity(), "Select customer or add atleast 1 product");
             }
         } catch (Exception e) {
             utils.alertBox(getActivity(), "Error", e.getMessage(), "Ok", new setOnitemClickListner() {
@@ -571,7 +566,7 @@ public class OrderBooking extends Fragment {
     }
 
     public void ResetOrder() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
 
         builder.setTitle("Confirm");
@@ -738,7 +733,7 @@ public class OrderBooking extends Fragment {
         LayoutInflater li = LayoutInflater.from(getActivity());
         View promptsView = li.inflate(R.layout.layout_product_details, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
@@ -798,9 +793,9 @@ public class OrderBooking extends Fragment {
                 .setNeutralButton("Save & Add More",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                EntityProduct prod=addProductToList();
+                                EntityProduct prod = addProductToList();
                                 Intent intent = new Intent(getActivity(), ProductActivity.class);
-                                if (prod!=null) {
+                                if (prod != null) {
                                     String json = new Gson().toJson(prod);
                                     intent.putExtra("product", json);
                                 }
@@ -863,14 +858,14 @@ public class OrderBooking extends Fragment {
             lp.height = 180 * productsList.size();
             listView.setLayoutParams(lp);
         }
-        return  product;
+        return product;
     }
 
     public void ShowDialogForDetails(final EntityProductDetails product, final int position) {
         LayoutInflater li = LayoutInflater.from(getActivity());
         View promptsView = li.inflate(R.layout.layout_product_details, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogButtonStyle);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 

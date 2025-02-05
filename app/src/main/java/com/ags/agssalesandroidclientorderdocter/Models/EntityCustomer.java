@@ -9,15 +9,15 @@ public class EntityCustomer implements Serializable {
 
     private int customerId;
 
-    public boolean getSelectedCustomer() {
+    public int getSelectedCustomer() {
         return selectedCustomer;
     }
 
-    public void setSelectedCustomer(boolean selectedCustomer) {
+    public void setSelectedCustomer(int selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
     }
 
-    private boolean selectedCustomer;
+    private int selectedCustomer;
     private String customerName;
     private String customerBranch;
 

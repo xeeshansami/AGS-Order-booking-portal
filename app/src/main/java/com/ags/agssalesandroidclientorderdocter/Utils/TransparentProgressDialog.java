@@ -3,10 +3,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.ags.agssalesandroidclientorderdocter.R;
 
 public class TransparentProgressDialog extends Dialog {
+    TextView textView;
     public TransparentProgressDialog(Context context) {
         super(context, R.style.Loader);
         Window window = getWindow();
@@ -17,5 +19,9 @@ public class TransparentProgressDialog extends Dialog {
         setCancelable(false);
         setOnCancelListener(null);
         setContentView(R.layout.loader_dialog);
+        textView = getWindow().findViewById(R.id.loaderText);
+    }
+    public void updateMessage(String newMessage) {
+        textView.setText(newMessage);
     }
 }

@@ -39,6 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String customerName = "customerName";
     private static final String customerBranch = "customerBranch";
     private static final String customerAddress = "customerAddress";
+    private static final String customerSelected = "customerSelected";
 
     // endregion
 
@@ -132,6 +133,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + customerId + " integer primary key, "
                 + customerName + " text, "
                 + customerAddress + " text, "
+                + customerSelected + " integer, "
                 + customerBranch + " text" + ")";
         db.execSQL(CREATE_TABLE_CUSTOMER);
         String CREATE_TABLE_PRODUCT = "create table " + TABLE_PRODUCT + "("
@@ -214,6 +216,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("update " + TABLE_ORDER_LIST + " set " + orderStatus + " = '1'");
     }
 
+    public void updateSelectedCustomer(int custID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Define the values to update
+        ContentValues values = new ContentValues();
+        values.put(customerSelected, 1);  // Set the selected status to true
+
+        // Update the product with the matching productId
+        String whereClause = "customerId = ?";
+        String[] whereArgs = new String[]{String.valueOf(custID)};
+
+        // Perform the update operation
+        db.update(TABLE_CUSTOMER, values, whereClause, whereArgs);
+    }
+
+    public int resetAllCustomersSelectedStatus() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Set the productSelected to 0 (unselected)
+        ContentValues values = new ContentValues();
+        values.put(customerSelected, 0);  // Set selected status to false (0)
+        int rowsUpdated = db.update(TABLE_CUSTOMER, values, null, null); // null means update all rows
+        return rowsUpdated;  // Return the number of updated rows
+    }
+
     public void updateSelectedProduct(int prodID) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -223,22 +249,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Update the product with the matching productId
         String whereClause = "productId = ?";
-        String[] whereArgs = new String[] { String.valueOf(prodID) };
+        String[] whereArgs = new String[]{String.valueOf(prodID)};
 
         // Perform the update operation
         db.update(TABLE_PRODUCT, values, whereClause, whereArgs);
     }
-    public void resetAllProductsSelectedStatus() {
+
+    public int resetAllProductsSelectedStatus() {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        // Define the values to update
+        // Set the productSelected to 0 (unselected)
         ContentValues values = new ContentValues();
-        values.put(productSelected, 0);  // Set all selectedProduct statuses to false
-
-        // Update the table
-        db.update(TABLE_PRODUCT, values, null, null);  // This will update all rows in the table
+        values.put(productSelected, 0);  // Set selected status to false (0)
+        int rowsUpdated = db.update(TABLE_PRODUCT, values, null, null); // null means update all rows
+        return rowsUpdated;  // Return the number of updated rows
     }
-
 
 
     public void getAllTotalOrders() {
@@ -257,7 +281,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void addAllCustomers(EntityCustomer allCustomers) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" +allCustomers.getCustomerAddress() + "','" + allCustomers.getCustomerBranch() + "');";
+        String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" + allCustomers.getCustomerAddress() + "',0,'" + allCustomers.getCustomerBranch() + "');";
         db.execSQL(sql);
     }
 
@@ -284,6 +308,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    @SuppressLint("Range")
     public List<EntityCustomer> getAllCustomers() {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -303,6 +328,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 customer.setCustomerName(cursor.getString(1));
                 customer.setCustomerAddress(cursor.getString(2));
                 customer.setCustomerBranch(cursor.getString(3));
+                customer.setSelectedCustomer(Integer.parseInt((cursor.getString(cursor.getColumnIndex("customerSelected")))));
 
                 // Adding contact to list
                 customerList.add(customer);
@@ -465,6 +491,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("delete from " + TABLE_SALEMAN);
         db.execSQL("delete from " + TABLE_CUSTOMER);
     }
+
     public void deleteUser() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from " + TABLE_USER_INFO);
@@ -478,7 +505,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 //        for (EntityProduct product : allProducts) {
 
-        String sql = "insert into " + TABLE_PRODUCT + " values ("+ product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', 0,'" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
+        String sql = "insert into " + TABLE_PRODUCT + " values (" + product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', 0,'" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
         db.execSQL(sql);
 //        }
     }
@@ -669,6 +696,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+
     @SuppressLint("Range")
     public ArrayList<EntityOrder> getAllAmount() {
 
@@ -707,6 +735,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+
     @SuppressLint("Range")
     public ArrayList<EntityOrder> getAllCustomer() {
 
@@ -735,6 +764,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return order;
 
     }
+
     public int getAllOrdersCount() {
 
         String countQuery = "SELECT  * FROM " + TABLE_ORDER_LIST;
@@ -878,7 +908,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             return cursor.getString(0);
         } else {
-            return "Rs. 0.00" ;
+            return "Rs. 0.00";
         }
     }
 
@@ -1059,12 +1089,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return true;
     }
+
     public boolean deleteOldRecordOfOrders() {
-            SQLiteDatabase db = this.getReadableDatabase();
-            String sql = "delete from " + TABLE_ORDER_LIST;
-            db.execSQL(sql);
-            String sqlDetail = "delete from " + TABLE_ORDER_LIST_DETAIL;
-            db.execSQL(sqlDetail);
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "delete from " + TABLE_ORDER_LIST;
+        db.execSQL(sql);
+        String sqlDetail = "delete from " + TABLE_ORDER_LIST_DETAIL;
+        db.execSQL(sqlDetail);
 
         return true;
     }

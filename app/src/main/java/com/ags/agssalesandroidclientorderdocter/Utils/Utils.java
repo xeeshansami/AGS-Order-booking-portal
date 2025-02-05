@@ -98,7 +98,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public static void errorBox(final Context context, String message) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         alertDialog.setTitle("SOMETHING WENT WRONG");
         alertDialog.setMessage(context.getClass().getSimpleName() + " class error \n" + message);
         alertDialog.setCancelable(false);
@@ -112,7 +112,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void alertBox(Context context, String title, String msg, String btn1, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle(title);
         builder.setMessage(msg);
@@ -128,7 +128,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void alertBox(Context context, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle(title);
         builder.setMessage(msg);
@@ -151,7 +151,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     public void alertBox(Context context, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener, setOnitemClickListner OnClickListener2) {
         listener = OnClickListener;
         listener2 = OnClickListener2;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle(title);
         builder.setMessage(msg);
@@ -173,7 +173,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void alertBox(Context context, final Button button, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle(title);
         builder.setMessage(msg);
@@ -197,7 +197,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void alertBox(Context context, final TextView button, String title, String msg, String btn1, String btn2, setOnitemClickListner OnClickListener) {
         listener = OnClickListener;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle(title);
         builder.setMessage(msg);
@@ -222,7 +222,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     public void alertBox(Context context, String title, String msg, String btn1, String btn2, String btn3, setOnitemClickListner btn1ClickListner, setOnitemClickListner btn2ClickListner) {
         listener = btn1ClickListner;
         listener3 = btn2ClickListner;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle(title);
         builder.setMessage(msg);
@@ -251,9 +251,15 @@ public class Utils implements IOnConnectionTimeoutListener {
         if (mProgressDialog == null) {
             mProgressDialog = new TransparentProgressDialog(context);
         }
-        if(!mProgressDialog.isShowing()) {
+        if (!mProgressDialog.isShowing()) {
             mProgressDialog.setCancelable(false);
             mProgressDialog.show();
+        }
+    }
+
+    public void showDialogUpdateMessage(String updateMesssage) {
+        if (mProgressDialog != null) {
+            mProgressDialog.updateMessage(updateMesssage);
         }
     }
 
@@ -339,7 +345,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public void update(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogButtonStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
         builder.setTitle(context.getString(R.string.up_title));
         builder.setMessage(context.getString(R.string.up_mes));
         builder.setCancelable(false);
@@ -465,7 +471,7 @@ public class Utils implements IOnConnectionTimeoutListener {
             @Override
             public void Failure(ErrorResponse response) {
                 if (((Activity) context).getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
-                    if(button!=null) {
+                    if (button != null) {
                         button.setEnabled(true);
                         button.setClickable(true);
                     }
@@ -491,7 +497,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                if(button!=null) {
+                if (button != null) {
                     button.setEnabled(true);
                     button.setClickable(true);
                 }
@@ -521,7 +527,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                if(button!=null) {
+                if (button != null) {
                     button.setEnabled(true);
                     button.setClickable(true);
                 }
@@ -548,7 +554,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                if(button!=null) {
+                if (button != null) {
                     button.setEnabled(true);
                     button.setClickable(true);
                 }
@@ -586,7 +592,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                if(button!=null) {
+                if (button != null) {
                     button.setEnabled(true);
                     button.setClickable(true);
                 }
@@ -613,7 +619,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                if(button!=null) {
+                if (button != null) {
                     button.setEnabled(true);
                     button.setClickable(true);
                 }
@@ -651,7 +657,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
             @Override
             public void Failure(ErrorResponse response) {
-                if(button!=null) {
+                if (button != null) {
                     button.setEnabled(true);
                     button.setClickable(true);
                 }
@@ -709,6 +715,9 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
+    public void showMessage(Context context,String message){
+        Snackbar.make(((Activity) context).findViewById(android.R.id.content), message, 2000).show();
+    }
     public class Downloading extends AsyncTask<Void, Integer, String> {
         Button button;
         int inWhich = 0;
@@ -958,7 +967,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void failedDownload(String error, boolean isOccurred, final Button button) {
         if (isOccurred) {
-            alertBox(context, "Download failed", "Something went wrong, please try again to login\n"+error, "Again", "No", "Later", new setOnitemClickListner() {
+            alertBox(context, "Download failed", "Something went wrong, please try again to login\n" + error, "Again", "No", "Later", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
                     db.deleteTable();
