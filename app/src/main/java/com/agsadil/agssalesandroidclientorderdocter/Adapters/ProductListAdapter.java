@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductViewHolder> {
-
     private List<EntityProduct> productItems;
     private OnItemClickListener onItemClickListener;
     private Context context;
@@ -50,8 +50,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             productCompany = view.findViewById(R.id.productCompany);
             bonusLayout = view.findViewById(R.id.bonusLayout);
             bonusImage = view.findViewById(R.id.bonusImage);
-
-            // Set item click listener
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,33 +81,17 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         EntityProduct product = productItems.get(position);
-        // Check if the product is selected, and set the text color accordingly
-//        holder.productId.setTextColor(context.getResources().getColor(R.color.grey));
-//        holder.productName.setTextColor(context.getResources().getColor(R.color.grey));
-//        holder.productSize.setTextColor(context.getResources().getColor(R.color.grey));
-//        holder.productCompany.setTextColor(context.getResources().getColor(R.color.grey));
-//        holder.productPrice.setTextColor(context.getResources().getColor(R.color.grey));
-        /*if (product.isSelectedProduct()==1) {
-            Log.i("chckZeeshan",product.isSelectedProduct()+" for product id "+product.getProductId());
-            holder.productId.setTextColor(context.getResources().getColor(R.color.green));
-            holder.productName.setTextColor(context.getResources().getColor(R.color.green));
-            holder.productSize.setTextColor(context.getResources().getColor(R.color.green));
-            holder.productCompany.setTextColor(context.getResources().getColor(R.color.green));
-            holder.productPrice.setTextColor(context.getResources().getColor(R.color.green));
-//            holder.bonusLayout.setVisibility(View.VISIBLE);
-//            holder.bonusRate.setText(String.valueOf(product.getProductId()));x`
-        }*/ /*else {
-            holder.bonusLayout.setVisibility(View.GONE); // Hide bonusLayout if not selected
-        }*/
-
-        // Set the product details
-
+        holder.productId.setText(String.valueOf(product.getProductId()));
+        holder.productName.setText(product.getProductName());
+        holder.productSize.setText("Size: " + product.getProductSize());
+        holder.productPrice.setText(String.valueOf("Price: " + product.getProductPrice()));
+        holder.productCompany.setText("Company:" + product.getProd_Group_Name());
         String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
         try {
             Date offerDate = sdf.parse(offerLimit); // Convert string to Date
             Date today = new Date(); // Get today's date
-            if (offerDate.after(today)) { // Check if offer is in the future (upcoming)
+            if (offerDate != null && offerDate.after(today)) { // Check if offer is in the future (upcoming)
                 holder.productId.setTextColor(context.getResources().getColor(R.color.green));
                 holder.productName.setTextColor(context.getResources().getColor(R.color.green));
                 holder.productSize.setTextColor(context.getResources().getColor(R.color.green));
@@ -124,25 +106,24 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.bonusLayout.setVisibility(View.GONE); // Hide bonusLayout if not selected
             }
         } catch (Exception e) {
+            Log.i("CrashOnProducts",e.getMessage());
+            holder.bonusLayout.setVisibility(View.GONE); // Hide bonusLayout if not selected
             e.printStackTrace(); // Handle parsing error
         }
-        holder.productId.setText(String.valueOf(product.getProductId()));
-        holder.productName.setText(product.getProductName());
-        holder.productSize.setText("Size: " + product.getProductSize());
-        holder.productPrice.setText(String.valueOf("Price: " + product.getProductPrice()));
-        holder.productCompany.setText("Company:" + product.getProd_Group_Name());
     }
 
     @Override
     public long getItemId(int position) {
         return super.getItemId(position);
     }
+    public void updateList(List<EntityProduct> newList) {
+        productItems.clear();
+        productItems.addAll(newList);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {
         return productItems.size();
     }
-
-    // Define the interface for item click listener
-
 }

@@ -89,12 +89,11 @@ public class ProductActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 String getText = txtProductSearch.getText().toString();
-
-                productsList = db.getAllProducts(getText);
-                BindProductsList();
-
+                List<EntityProduct> newProductsList = db.getAllProducts(getText);
+                if (adapter != null) {
+                    adapter.updateList(newProductsList);
+                }
             }
 
             @Override
@@ -105,7 +104,6 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void BindProductsList() {
-
         listView = (RecyclerView) findViewById(R.id.lstProducts);
         listView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ProductListAdapter(this, productsList, new OnItemClickListener() {
@@ -139,7 +137,7 @@ public class ProductActivity extends AppCompatActivity {
             }
         });
         listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+
     }
 
     private void showProductSchemeDialog(EntityProduct product) {

@@ -2,11 +2,12 @@ apply plugin: 'com.android.library'
 //apply from: 'maven-push.gradle'
 
 android {
-  compileSdkVersion 33
+  compileSdkVersion 34
 
   defaultConfig {
-      minSdkVersion 19
-      targetSdkVersion 33
+      minSdkVersion 21
+      //noinspection EditedTargetSdkVersion
+      targetSdkVersion 34
 
       testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }

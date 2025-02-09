@@ -67,7 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String productName = "productName";
     private static final String productSize = "productSize";
     private static final String productPrice = "productPrice";
-//    private static final String productSelected = "productSelected";
+    //    private static final String productSelected = "productSelected";
     private static final String productOffer = "productOffer";
     private static final String productSalesTax = "productSalesTax";
     private static final String productOfferLimit = "productOfferLimit";
@@ -514,7 +514,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + product.getProductId() + ", '"
                 + product.getProductName() + "','"
                 + product.getProductSize() + "', '"
-                + product.getProductPrice()+ "', '"
+                + product.getProductPrice() + "', '"
                 + product.getProd_Offer() + "', '"
                 + product.getProd_salestax() + "', '"
                 + product.getProd_OfferLimit() + "', '"
@@ -548,7 +548,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } else {
                 product.setProd_Offer("");
             }
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             product.setProd_Offer("");
         }
         product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
@@ -590,7 +590,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     } else {
                         product.setProd_Offer("");
                     }
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     product.setProd_Offer("");
                 }
                 product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
@@ -621,10 +621,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<EntityProduct> productList = new ArrayList<EntityProduct>();
 
         // Select all query
-        String selectQuery = "select * from " + TABLE_PRODUCT + " where (productName || ' ' || productSize || ' ' || productPrice || ' ' || productCompany || ' ' || Prod_Group_Name) like '%" + hint + "%' order by productName";
+        String selectQuery = "select * from " + TABLE_PRODUCT + " where (productName || ' ' || productSize || ' ' || productPrice || ' ' ||productOffer || ' ' ||productSalesTax || ' ' ||productOfferLimit || ' ' || productCompany || ' ' || Prod_Group_Name) like '%" + hint + "%' order by productName";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -636,10 +635,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 product.setProductPrice(Float.parseFloat((cursor.getString(cursor.getColumnIndex("productPrice")))));
                 product.setProductCompany((cursor.getString(cursor.getColumnIndex("productCompany"))));
                 product.setProd_Group_Name((cursor.getString(cursor.getColumnIndex("Prod_Group_Name"))));
-//                product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
-//                product.setProd_salestax(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
-//                product.setProd_OfferLimit(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOfferLimit"))))));
-//                // Adding contact to list
+                try {
+                    if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
+                        product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+                    } else {
+                        product.setProd_Offer("");
+                    }
+                } catch (NumberFormatException e) {
+                    product.setProd_Offer("");
+                }
+                product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+                String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
+                SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy hh:mm:ss a"); // Adjust format as per your DB
+                try {
+                    Date date = sdf.parse(dateString);
+                    product.setProd_OfferLimit(date.toString()); // Or format it as needed
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 productList.add(product);
             } while (cursor.moveToNext());
         }
