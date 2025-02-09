@@ -3,12 +3,13 @@
     android:layout_height="wrap_content"
     android:background="@drawable/border_table">
 
-     <TextView
-        android:fontFamily="@font/imprima"
+    <TextView
+        android:textColor="@color/colorBlack"
         android:id="@+id/productId"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/imprima"
         android:gravity="center"
         android:padding="8dp"
         android:text="1" />
@@ -18,27 +19,29 @@
         android:layout_height="match_parent"
         android:background="@color/colorBlack" />
 
-     <TextView
-        android:fontFamily="@font/imprima"
+    <TextView
         android:id="@+id/productName"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/imprima"
         android:gravity="center"
         android:padding="8dp"
-        android:text="STONOTS TABS" />
+        android:text="STONOTS TABS"
+        android:textColor="@color/colorBlack" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/colorBlack" />
 
-     <TextView
-        android:fontFamily="@font/imprima"
+    <TextView
+        android:textColor="@color/colorBlack"
         android:id="@+id/productSize"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/imprima"
         android:gravity="center"
         android:padding="8dp"
         android:text="1" />
@@ -48,12 +51,14 @@
         android:layout_height="match_parent"
         android:background="@color/colorBlack" />
 
-     <TextView
-        android:fontFamily="@font/imprima"
+
+    <TextView
+        android:textColor="@color/colorBlack"
         android:id="@+id/productPrice"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/imprima"
         android:gravity="center"
         android:padding="8dp"
         android:text="510.0" />
@@ -63,12 +68,13 @@
         android:layout_height="match_parent"
         android:background="@color/colorBlack" />
 
-     <TextView
-        android:fontFamily="@font/imprima"
+    <TextView
+        android:textColor="@color/colorBlack"
         android:id="@+id/productCompany"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/imprima"
         android:gravity="center"
         android:padding="8dp"
         android:text="89" />
@@ -78,12 +84,13 @@
         android:layout_height="match_parent"
         android:background="@color/colorBlack" />
 
-     <TextView
-        android:fontFamily="@font/imprima"
+    <TextView
+        android:textColor="@color/colorBlack"
         android:id="@+id/productGroup"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/imprima"
         android:gravity="center"
         android:padding="8dp"
         android:text="T.J. Pharma" />

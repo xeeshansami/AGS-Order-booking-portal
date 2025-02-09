@@ -17,7 +17,7 @@
             android:gravity="center"
             android:padding="2dp"
             android:text="Product ID"
-            android:textColor="@color/white"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <View
@@ -33,7 +33,7 @@
             android:gravity="center"
             android:padding="2dp"
             android:text="Product Name"
-            android:textColor="@color/white"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <View
@@ -49,7 +49,7 @@
             android:gravity="center"
             android:padding="2dp"
             android:text="Size"
-            android:textColor="@color/white"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <View
@@ -65,7 +65,7 @@
             android:gravity="center"
             android:padding="2dp"
             android:text="Price"
-            android:textColor="@color/white"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <View
@@ -81,7 +81,7 @@
             android:gravity="center"
             android:padding="2dp"
             android:text="Product Company"
-            android:textColor="@color/white"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <View
@@ -97,7 +97,7 @@
             android:gravity="center"
             android:padding="2dp"
             android:text="Group Name"
-            android:textColor="@color/white"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
     </TableRow>
 </LinearLayout>

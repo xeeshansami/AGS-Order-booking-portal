@@ -13,9 +13,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        app:titleTextColor="@android:color/white"></androidx.appcompat.widget.Toolbar>
+        app:titleTextColor="@color/toolBarTextColor"
+        app:subtitleTextColor="@color/toolBarTextColor"
+        android:background="@color/toolBarBackground"
+        android:minHeight="?attr/actionBarSize"></androidx.appcompat.widget.Toolbar>
 
     <!-- TabLayout for switching between "Order Booking" and "History" -->
     <com.google.android.material.tabs.TabLayout
@@ -23,7 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabGravity="fill"
-        app:tabMode="fixed" />
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/colorBlack"
+        app:tabTextColor="@color/colorPrimary"></com.google.android.material.tabs.TabLayout>
 
     <!-- ViewPager2 to hold the tab content -->
     <androidx.viewpager2.widget.ViewPager2

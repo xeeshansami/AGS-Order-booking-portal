@@ -1,0 +1,87 @@
+package com.agsadil.agssalesandroidclientorderdocter.fragments;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.agsadil.agssalesandroidclientorderdocter.Adapters.ProductAdapter;
+import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
+import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProduct;
+import com.agsadil.agssalesandroidclientorderdocter.Models.Product;
+import com.agsadil.agssalesandroidclientorderdocter.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class HistoryFragment extends Fragment {
+    private DatabaseHandler db;
+    private RecyclerView recyclerView;
+    private LinearLayout product_row_header;
+    private ProductAdapter adapter;
+    private List<Product> products;
+    private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
+
+    public HistoryFragment() {
+        // Required empty public constructor
+    }
+
+    @SuppressLint("MissingInflatedId")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+
+        product_row_header = rootView.findViewById(R.id.product_row_header);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        db = new DatabaseHandler(getActivity());
+        productsList = db.getAllProducts();
+        EditText searchInput = rootView.findViewById(R.id.searchInput);
+        TextView noDataMessage = rootView.findViewById(R.id.noDataMessage);
+        searchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Filter the adapter when text changes
+                adapter.filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+        // Set up the adapter
+        adapter = new ProductAdapter(productsList);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnDataChangedListener(isEmpty -> {
+            if (isEmpty) {
+                product_row_header.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                product_row_header.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
+                noDataMessage.setVisibility(View.GONE);
+            }
+        });
+
+        return rootView;
+    }
+}

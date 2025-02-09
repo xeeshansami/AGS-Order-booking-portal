@@ -12,14 +12,15 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            app:subtitleTextColor="@color/colorPrimary"
-            app:titleTextColor="@color/colorPrimary"
+            app:titleTextColor="@color/toolBarTextColor"
+            app:subtitleTextColor="@color/toolBarTextColor"
+            android:background="@color/toolBarBackground"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

@@ -61,11 +61,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Order Summary"
+                    android:textColor="@color/colorBlack"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorBlack"
                     android:text="Below is the summary which shows all created orders count and sync status."
                     android:textSize="10dp" />
 
@@ -348,15 +350,15 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:textColor="@color/colorBlack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Configuration Data"
-                    android:textColor="@color/grey"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/colorBlack"
                     android:layout_height="wrap_content"
                     android:text="Below is the summary which shows configuration data summary."
                     android:textSize="10dp" />

@@ -5,13 +5,15 @@
         android:visible="false"
         android:id="@+id/allOrders"
         android:icon="@drawable/list"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
+        android:iconTint="@color/white"
         android:onClick="LoadAllOrders"
         android:title="Logout">
     </item>
 
     <item
         android:id="@+id/logOut"
+        android:iconTint="@color/white"
         android:icon="@drawable/logout"
         app:showAsAction="ifRoom"
         android:onClick="LogOut"

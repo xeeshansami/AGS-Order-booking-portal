@@ -4,76 +4,92 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/add"
+            android:iconTint="@color/white"
             android:icon="@mipmap/ic_add_orders"
             android:title="@string/add" />
 
         <item
+            android:iconTint="@color/white"
             android:id="@+id/download"
             android:icon="@mipmap/ic_download"
             android:title="@string/download" />
 
         <item
+            android:iconTint="@color/white"
             android:id="@+id/orderForm"
             android:icon="@drawable/ic_order_form"
             android:title="@string/orderForm"
             android:visible="false" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/orderPdf"
             android:icon="@mipmap/ic_text_file"
             android:title="@string/exportPDF" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/update"
             android:icon="@mipmap/ic_all_orders"
             android:title="@string/update" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/clearOrders"
             android:icon="@drawable/ic_delete_orders"
             android:title="@string/clearOrders"
             android:visible="false" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/clearMaster"
             android:icon="@drawable/ic_delete_master_data"
             android:title="@string/clearMasterData"
             android:visible="false" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/productOffer"
             android:icon="@mipmap/ic_product_offers"
             android:title="@string/productOffer" />
 
         <item
+            android:iconTint="@color/white"
             android:visible="false"
             android:id="@+id/orderStatistics"
             android:icon="@mipmap/ic_order_statistics"
             android:title="@string/orderStatistics" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/notifications"
             android:icon="@android:drawable/ic_menu_info_details"
             android:title="@string/notifications" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/updateProfile"
             android:icon="@mipmap/ic_profile_update"
             android:title="@string/updateProfile" />
 
         <item
+            android:iconTint="@color/white"
             android:visible="false"
             android:id="@+id/updateCustomerProfile"
             android:icon="@mipmap/ic_profile_update"
             android:title="@string/updateCustomerProfile" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/resetPassword"
             android:icon="@drawable/ic_lock"
             android:title="@string/resetPassword" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/sendFeedback"
             android:icon="@mipmap/ic_feedback"
             android:title="@string/sendFeedback" />
         <item
+            android:iconTint="@color/white"
             android:id="@+id/setting"
             android:icon="@drawable/ic_setting"
             android:title="@string/setting" />
 
 
         <item
+            android:iconTint="@color/white"
             android:id="@+id/logout"
             android:icon="@mipmap/ic_logout"
             android:title="@string/logout" />

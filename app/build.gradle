@@ -5,10 +5,10 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.ags.agssalesandroidclientorderdocter"
+        applicationId "com.agsadil.agssalesandroidclientorderdocter"
         minSdkVersion 19
         targetSdkVersion 32
-        versionCode 13
+        versionCode 15
         versionName "15.1.0"
         multiDexEnabled true
     }

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="toolBarBackground">#778A35</color>
+    <color name="toolBarTextColor">#FFFFFF</color>
     <color name="colorAccent">#B0B0B0</color> <!-- Lighter gray accent -->
     <color name="colorPrimary">#4C5B26</color> <!-- Darker greenish-brown -->
-    <color name="colorPrimaryDark">#2C2E1A</color> <!-- Very dark greenish-brown -->
+    <color name="colorPrimaryDark">#FFFFFF</color> <!-- Very dark greenish-brown -->
     <color name="colorAccentLight">#FF5722</color> <!-- Darker orange -->
-    <color name="colorGray">#707070</color> <!-- Dark gray -->
-    <color name="colorBlack">#000000</color> <!-- Black -->
+    <color name="colorGray">#A5A3A3</color> <!-- Dark gray -->
+    <color name="colorBlack">#FFFFFF</color> <!-- Black -->
     <color name="bgzColor">#212121</color> <!-- Dark background -->
-    <color name="disableColor">#585858</color> <!-- Dark disabled gray -->
+    <color name="disableColor">#919090</color> <!-- Dark disabled gray -->
     <color name="activeColor">#FF4500</color> <!-- Darker red -->
     <color name="white">#1C1C1C</color> <!-- Very dark gray (almost black) -->
     <color name="activieColorBg">#FF8C8C</color> <!-- Darker light red/pink -->
     <color name="table_header_bg">#4C5B26</color> <!-- Darker greenish-brown -->
     <color name="table_left_column_bg">#2C2E1A</color> <!-- Dark greenish-gray -->
     <color name="feedback_bg">#3A4F64</color> <!-- Darker blue with transparency -->
-    <color name="grey">#595959</color> <!-- Dark gray -->
+    <color name="grey">#BDBCBC</color> <!-- Dark gray -->
     <color name="green">#2C7A1D</color> <!-- Darker green -->
 </resources>

@@ -5,7 +5,24 @@
     android:layout_height="wrap_content"
     android:id="@+id/mainLayout_products"
     android:padding="10dp">
+    <LinearLayout
+        android:id="@+id/bonusLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="10dp"
+        android:gravity="left">
 
+        <ImageView
+            android:id="@+id/bonusImage"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/bonus"></ImageView>
+
+
+
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,34 +59,7 @@
         android:orientation="horizontal"
         android:layout_weight=".25"
         android:gravity="right">
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/bonusLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight=".25"
-            android:gravity="center">
 
-            <ImageView
-                android:id="@+id/bonusImage"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:tint="@color/activeColor"
-                android:src="@drawable/ic_bonus"></ImageView>
-
-            <TextView
-                android:textColor="@color/activeColor"
-                android:gravity="center"
-                android:id="@+id/bonusRate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="%0"
-                android:textSize="10dp" />
-
-
-
-        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

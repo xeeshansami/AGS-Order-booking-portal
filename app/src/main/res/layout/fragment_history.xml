@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="1dp"
     android:orientation="vertical">
 
@@ -25,9 +26,10 @@
             android:fontFamily="@font/imprima"
             android:hint="Search by Product Name or ID"
             android:inputType="text"
+            android:textColorHint="@color/grey"
             android:padding="8dp"
             android:singleLine="true"
-            android:textColor="@color/grey"
+            android:textColor="@color/colorBlack"
             android:textSize="15dp" />
 
     </LinearLayout>
@@ -45,11 +47,12 @@
 
             <include  layout="@layout/item_product_header"></include>
 
-
             <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/colorBlack"
+                tools:listitem="@layout/item_product_row"
                 android:layout_alignParentTop="true" />
 
             <TextView
