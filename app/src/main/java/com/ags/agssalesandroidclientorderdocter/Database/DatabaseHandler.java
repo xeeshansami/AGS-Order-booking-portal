@@ -16,7 +16,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,7 +67,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String productName = "productName";
     private static final String productSize = "productSize";
     private static final String productPrice = "productPrice";
-    private static final String productSelected = "productSelected";
+//    private static final String productSelected = "productSelected";
+    private static final String productOffer = "productOffer";
+    private static final String productSalesTax = "productSalesTax";
+    private static final String productOfferLimit = "productOfferLimit";
     private static final String productCompany = "productCompany";
     private static final String Prod_Group_Name = "Prod_Group_Name";
 
@@ -141,7 +147,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + productName + " text, "
                 + productSize + " text,"
                 + productPrice + " text,"
-                + productSelected + " integer,"
+//                + productSelected + " integer,"
+                + productOffer + " text,"
+                + productSalesTax + " text,"
+                + productOfferLimit + " text,"
                 + productCompany + " text,"
                 + Prod_Group_Name + " text)";
         db.execSQL(CREATE_TABLE_PRODUCT);
@@ -240,29 +249,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return rowsUpdated;  // Return the number of updated rows
     }
 
-    public void updateSelectedProduct(int prodID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Define the values to update
-        ContentValues values = new ContentValues();
-        values.put(productSelected, 1);  // Set the selected status to true
-
-        // Update the product with the matching productId
-        String whereClause = "productId = ?";
-        String[] whereArgs = new String[]{String.valueOf(prodID)};
-
-        // Perform the update operation
-        db.update(TABLE_PRODUCT, values, whereClause, whereArgs);
-    }
-
-    public int resetAllProductsSelectedStatus() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Set the productSelected to 0 (unselected)
-        ContentValues values = new ContentValues();
-        values.put(productSelected, 0);  // Set selected status to false (0)
-        int rowsUpdated = db.update(TABLE_PRODUCT, values, null, null); // null means update all rows
-        return rowsUpdated;  // Return the number of updated rows
-    }
+//    public void updateSelectedProduct(int prodID) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//        // Define the values to update
+//        ContentValues values = new ContentValues();
+//        values.put(productSelected, 1);  // Set the selected status to true
+//
+//        // Update the product with the matching productId
+//        String whereClause = "productId = ?";
+//        String[] whereArgs = new String[]{String.valueOf(prodID)};
+//
+//        // Perform the update operation
+//        db.update(TABLE_PRODUCT, values, whereClause, whereArgs);
+//    }
+//
+//    public int resetAllProductsSelectedStatus() {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        // Set the productSelected to 0 (unselected)
+//        ContentValues values = new ContentValues();
+//        values.put(productSelected, 0);  // Set selected status to false (0)
+//        int rowsUpdated = db.update(TABLE_PRODUCT, values, null, null); // null means update all rows
+//        return rowsUpdated;  // Return the number of updated rows
+//    }
 
 
     public void getAllTotalOrders() {
@@ -498,18 +507,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void addAllProducts(EntityProduct product) {
-
         SQLiteDatabase db = this.getWritableDatabase();
-
 //        db.execSQL("delete from " + TABLE_PRODUCT);
-
 //        for (EntityProduct product : allProducts) {
-
-        String sql = "insert into " + TABLE_PRODUCT + " values (" + product.getProductId() + ", '" + product.getProductName() + "','" + product.getProductSize() + "', '" + product.getProductPrice() + "', 0,'" + product.getProductCompany() + "', '" + product.getProd_Group_Name() + "');";
+        String sql = "insert into " + TABLE_PRODUCT + " values ("
+                + product.getProductId() + ", '"
+                + product.getProductName() + "','"
+                + product.getProductSize() + "', '"
+                + product.getProductPrice()+ "', '"
+                + product.getProd_Offer() + "', '"
+                + product.getProd_salestax() + "', '"
+                + product.getProd_OfferLimit() + "', '"
+                + product.getProductCompany() + "', '"
+                + product.getProd_Group_Name() + "');";
         db.execSQL(sql);
 //        }
     }
 
+    @SuppressLint("Range")
     public EntityProduct getProduct(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -521,14 +536,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         EntityProduct product = new EntityProduct();
 
-        product.setProductId(Integer.parseInt(cursor.getString(0)));
-        product.setProductName(cursor.getString(1));
-        product.setProductSize(cursor.getString(2));
-        product.setProductPrice(Float.parseFloat(cursor.getString(3)));
-        product.setProductCompany(cursor.getString(4));
-        product.setProd_Group_Name(cursor.getString(5));
-
-        // return contact
+        product.setProductId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("productId"))));
+        product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
+        product.setProductSize(cursor.getString(cursor.getColumnIndex("productSize")));
+        product.setProductPrice(Float.parseFloat(cursor.getString(cursor.getColumnIndex("productPrice"))));
+        product.setProductCompany(cursor.getString(cursor.getColumnIndex("productCompany")));
+        product.setProd_Group_Name(cursor.getString(cursor.getColumnIndex("Prod_Group_Name")));
+        try {
+            if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
+                product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+            } else {
+                product.setProd_Offer("");
+            }
+        }catch (NumberFormatException e){
+            product.setProd_Offer("");
+        }
+        product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+        String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
+        SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy hh:mm:ss a"); // Adjust format as per your DB
+        try {
+            Date date = sdf.parse(dateString);
+            product.setProd_OfferLimit(date.toString()); // Or format it as needed
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }  // return contact
         return product;
 
     }
@@ -548,14 +579,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 EntityProduct product = new EntityProduct();
-
-                product.setProductId(Integer.parseInt(cursor.getString(0)));
-                product.setProductName(cursor.getString(1));
-                product.setProductSize(cursor.getString(2));
-                product.setProductPrice(Float.parseFloat(cursor.getString(3)));
-                product.setSelectedProduct(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productSelected")))));
-                product.setProductCompany(cursor.getString(4));
-                product.setProd_Group_Name(cursor.getString(5));
+                product.setProductId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("productId"))));
+                product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
+                product.setProductSize(cursor.getString(cursor.getColumnIndex("productSize")));
+                product.setProductPrice(Float.parseFloat(cursor.getString(cursor.getColumnIndex("productPrice"))));
+//                product.setSelectedProduct(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productSelected")))));
+                try {
+                    if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
+                        product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+                    } else {
+                        product.setProd_Offer("");
+                    }
+                }catch (NumberFormatException e){
+                    product.setProd_Offer("");
+                }
+                product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+                String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
+                SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy hh:mm:ss a"); // Adjust format as per your DB
+                try {
+                    Date date = sdf.parse(dateString);
+                    product.setProd_OfferLimit(date.toString()); // Or format it as needed
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                product.setProductCompany(cursor.getString(cursor.getColumnIndex("productCompany")));
+                product.setProd_Group_Name(cursor.getString(cursor.getColumnIndex("Prod_Group_Name")));
 
                 // Adding contact to list
                 productList.add(product);
@@ -566,6 +614,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
     public List<EntityProduct> getAllProducts(String hint) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -581,13 +630,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do {
                 EntityProduct product = new EntityProduct();
 
-                product.setProductId(Integer.parseInt(cursor.getString(0)));
-                product.setProductName(cursor.getString(1));
-                product.setProductSize(cursor.getString(2));
-                product.setProductPrice(Float.parseFloat(cursor.getString(3)));
-                product.setProductCompany(cursor.getString(4));
-                product.setProd_Group_Name(cursor.getString(5));
-
+                product.setProductId(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productId")))));
+                product.setProductName((cursor.getString(cursor.getColumnIndex("productName"))));
+                product.setProductSize((cursor.getString(cursor.getColumnIndex("productSize"))));
+                product.setProductPrice(Float.parseFloat((cursor.getString(cursor.getColumnIndex("productPrice")))));
+                product.setProductCompany((cursor.getString(cursor.getColumnIndex("productCompany"))));
+                product.setProd_Group_Name((cursor.getString(cursor.getColumnIndex("Prod_Group_Name"))));
+                product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+                product.setProd_salestax(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+                product.setProd_OfferLimit(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOfferLimit"))))));
                 // Adding contact to list
                 productList.add(product);
             } while (cursor.moveToNext());

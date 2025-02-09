@@ -40,8 +40,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductActivity extends AppCompatActivity {
 
@@ -122,54 +125,63 @@ public class ProductActivity extends AppCompatActivity {
 
             @Override
             public void onItemLongClick(EntityProduct product) {
-                showProductSchemeDialog(product.getProductName(), product.getProductPrice(), product.getProductSize(), product.getProductCompany(), "50%");
+                String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+                try {
+                    Date offerDate = sdf.parse(offerLimit); // Convert string to Date
+                    Date today = new Date(); // Get today's date
+                    if (offerDate.after(today)) { // Check if offer is in the future (upcoming)
+                        showProductSchemeDialog(product);
+                    }else{
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("productId", String.valueOf(product.getProductId()));
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace(); // Handle parsing error
+                }
             }
         });
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-    private void showProductSchemeDialog(String productName, float productPrice, String productSize, String schemeDescription, String discount) {
+    private void showProductSchemeDialog(EntityProduct product) {
         // Inflate the dialog layout
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_product_scheme, null);
-
         // Get the dialog views
         TextView productNameTextView = dialogView.findViewById(R.id.productName);
-        TextView schemeDescriptionTextView = dialogView.findViewById(R.id.schemDesction);
-        TextView schemeDiscountTextView = dialogView.findViewById(R.id.schemDiscpount);
+        TextView schemLimiteDate = dialogView.findViewById(R.id.schemLimiteDate);
         TextView schemProductPrice = dialogView.findViewById(R.id.schemProductPrice);
         TextView schemProductSize = dialogView.findViewById(R.id.schemProductSize);
-
+        TextView schemeCompany = dialogView.findViewById(R.id.schemeCompany);
+        TextView schemGroup = dialogView.findViewById(R.id.schemGroup);
         Button applyButton = dialogView.findViewById(R.id.applyButton);
         // Set values in the dialog
-        productNameTextView.setText(productName);
-        schemeDescriptionTextView.setText(schemeDescription);
-        schemProductSize.setText(productSize);
-        schemProductPrice.setText(String.valueOf(productPrice + " PKR"));
-        schemeDiscountTextView.setText(discount);
-
-        TextView schemAfterDiscpount = dialogView.findViewById(R.id.schemAfterDiscpount);
-        // Assuming the original price and the discounted price are already calculated
-        double originalPrice = Float.parseFloat(String.valueOf(productPrice));
-        double discountCalculation = originalPrice * 0.5;  // 50% discount
-        // Set the discounted price (change color for discounted price)
-        schemAfterDiscpount.setText(String.valueOf(discountCalculation)+" PKR");
-        schemAfterDiscpount.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
-        // Create a SpannableString to apply a strikethrough to the original price and change color
-        SpannableString spannableString = new SpannableString(String.valueOf(originalPrice));
-        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        // Set color for the original price (crossed out)
+        productNameTextView.setText(product.getProductName());
+        String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
+        // Step 1: Parse the original format
+        SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        try {
+            Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
+            String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
+            schemLimiteDate.setText(formattedDate); // Set the formatted date to TextView
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle parsing error
+        }
+        schemProductSize.setText(product.getProductSize());
+        schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
+        schemGroup.setText(String.valueOf("("+product.getProductCompany())+")");
+        schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
+        SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
+//        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#B0BEC5")), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  // Grey color for original price
-        // Assuming you have a TextView for displaying the original price (crossed out)
-        TextView originalPriceTextView = dialogView.findViewById(R.id.originalPriceTextView);
-        // Set the strikethrough price
-        originalPriceTextView.setText(spannableString);
-        // Center the text inside the TextViews
-        originalPriceTextView.setGravity(Gravity.CENTER);
-        schemAfterDiscpount.setGravity(Gravity.CENTER);
-        // Optional: you can also apply other text styles (e.g., bold) for both prices if needed.
-        // Create and show the dialog
+        schemeCompany.setText(spannableString);
+        schemeCompany.setGravity(Gravity.CENTER);
+        schemeCompany.setGravity(Gravity.CENTER);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView)
                 .setCancelable(false) // Prevent dialog from closing when tapping outside
@@ -183,6 +195,10 @@ public class ProductActivity extends AppCompatActivity {
         // Optional: Handle Apply button logic
         applyButton.setOnClickListener(v -> {
             // Logic to apply the scheme or any further action
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("productId", String.valueOf(product.getProductId()));
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
             dialog.dismiss(); // Close the dialog after applying
         });
     }

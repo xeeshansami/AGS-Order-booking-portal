@@ -814,6 +814,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                         product.setProductName(jObject.get("prod_name").toString());
                         product.setProductSize(jObject.get("prod_size").toString());
                         product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProd_salestax(jObject.get("prod_salestax").toString());
+                        product.setProd_OfferLimit(jObject.get("prod_OfferLimit").toString());
+                        product.setProd_Offer(jObject.get("prod_Offer").toString());
                         product.setProductCompany(jObject.get("prod_company").toString());
                         product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
                         db.addAllProducts(product);
@@ -887,8 +890,11 @@ public class Utils implements IOnConnectionTimeoutListener {
                         product.setProductId(Integer.parseInt(jObject.get("prod_id").toString()));
                         product.setProductName(jObject.get("prod_name").toString());
                         product.setProductSize(jObject.get("prod_size").toString());
-                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
                         product.setProductCompany(jObject.get("prod_company").toString());
+                        product.setProductPrice(Float.parseFloat(jObject.get("prod_tp").toString()));
+                        product.setProd_salestax(jObject.get("prod_salestax").toString());
+                        product.setProd_OfferLimit(jObject.get("prod_OfferLimit").toString());
+                        product.setProd_Offer(jObject.get("prod_Offer").toString());
                         product.setProd_Group_Name(jObject.get("Prod_Group_Name").toString());
                         db.addAllProducts(product);
                     }

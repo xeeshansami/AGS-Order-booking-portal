@@ -76,12 +76,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         EntityProduct product = productItems.get(position);
         // Check if the product is selected, and set the text color accordingly
-        holder.productId.setTextColor(context.getResources().getColor(R.color.grey));
-        holder.productName.setTextColor(context.getResources().getColor(R.color.grey));
-        holder.productSize.setTextColor(context.getResources().getColor(R.color.grey));
-        holder.productCompany.setTextColor(context.getResources().getColor(R.color.grey));
-        holder.productPrice.setTextColor(context.getResources().getColor(R.color.grey));
-        if (product.isSelectedProduct()==1) {
+//        holder.productId.setTextColor(context.getResources().getColor(R.color.grey));
+//        holder.productName.setTextColor(context.getResources().getColor(R.color.grey));
+//        holder.productSize.setTextColor(context.getResources().getColor(R.color.grey));
+//        holder.productCompany.setTextColor(context.getResources().getColor(R.color.grey));
+//        holder.productPrice.setTextColor(context.getResources().getColor(R.color.grey));
+        /*if (product.isSelectedProduct()==1) {
             Log.i("chckZeeshan",product.isSelectedProduct()+" for product id "+product.getProductId());
             holder.productId.setTextColor(context.getResources().getColor(R.color.green));
             holder.productName.setTextColor(context.getResources().getColor(R.color.green));
@@ -90,7 +90,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             holder.productPrice.setTextColor(context.getResources().getColor(R.color.green));
 //            holder.bonusLayout.setVisibility(View.VISIBLE);
 //            holder.bonusRate.setText(String.valueOf(product.getProductId()));
-        } /*else {
+        }*/ /*else {
             holder.bonusLayout.setVisibility(View.GONE); // Hide bonusLayout if not selected
         }*/
 
@@ -98,8 +98,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         holder.productId.setText(String.valueOf(product.getProductId()));
         holder.productName.setText(product.getProductName());
         holder.productSize.setText("Size: " + product.getProductSize());
-        holder.productPrice.setText(String.valueOf(product.getProductPrice()));
-        holder.productCompany.setText(product.getProd_Group_Name());
+        holder.productPrice.setText(String.valueOf("Price: "+product.getProductPrice()));
+        holder.productCompany.setText("Company:"+product.getProductCompany());
     }
 
     @Override

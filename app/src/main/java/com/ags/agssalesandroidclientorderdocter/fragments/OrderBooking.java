@@ -156,7 +156,7 @@ public class OrderBooking extends Fragment {
                 if (resultCode == RESULT_OK) {
                     final int productId = Integer.parseInt(data.getStringExtra("productId"));
                     final EntityProduct product = db.getProduct(productId);
-                    db.updateSelectedProduct(productId);
+//                    db.updateSelectedProduct(productId);
                     ShowDialogForDetails(product);
                 }
                 if (resultCode == RESULT_CANCELED) {

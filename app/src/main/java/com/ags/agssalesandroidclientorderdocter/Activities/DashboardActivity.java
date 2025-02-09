@@ -436,10 +436,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         try {
             // Define the date format to match "Jan 26, 2025 7:25:28 PM"
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-
             // Parse the currentDate string into a Date object (in the correct format)
             Date parsedCurrentDate = sdf.parse(currentDate);
-
             // Loop through all orders
             for (EntityOrder order : db.getAllCustomer()) {
                 // Parse the order's date string into a Date object using the same format
@@ -1037,7 +1035,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         protected Integer doInBackground(Void... voids) {
             int count = 0;
             try {
-                count = this.db.resetAllProductsSelectedStatus(); // Get the count of updated records
+//                count = this.db.resetAllProductsSelectedStatus(); // Get the count of updated records
                 count = this.db.resetAllCustomersSelectedStatus(); // Get the count of updated records
             } catch (Exception e) {
                 e.printStackTrace();
