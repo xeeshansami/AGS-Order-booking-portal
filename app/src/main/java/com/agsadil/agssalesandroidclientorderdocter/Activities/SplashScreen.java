@@ -36,6 +36,7 @@ public class SplashScreen extends AppCompatActivity {
     Intent intent;
     TextView poweredBy;
     ImageView splashLayout;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

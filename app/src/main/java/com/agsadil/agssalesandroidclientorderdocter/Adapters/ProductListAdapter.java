@@ -8,25 +8,35 @@ import com.bumptech.glide.Glide;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductViewHolder> {
     private List<EntityProduct> productItems;
     private OnItemClickListener onItemClickListener;
     private Context context;
+    int filterType = 3;
 
     // Constructor to pass context as well
     public ProductListAdapter(Context context, List<EntityProduct> productItems, OnItemClickListener onItemClickListener) {
@@ -81,45 +91,85 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         EntityProduct product = productItems.get(position);
+        // Set product details
         holder.productId.setText(String.valueOf(product.getProductId()));
         holder.productName.setText(product.getProductName());
         holder.productSize.setText("Size: " + product.getProductSize());
-        holder.productPrice.setText(String.valueOf("Price: " + product.getProductPrice()));
-        holder.productCompany.setText("Company:" + product.getProd_Group_Name());
-        String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        holder.productPrice.setText("Price: " + product.getProductPrice());
+        holder.productCompany.setText("Company: " + product.getProd_Group_Name());
+        String offerLimit = product.getProd_OfferLimit();
         try {
-            Date offerDate = sdf.parse(offerLimit); // Convert string to Date
-            Date today = new Date(); // Get today's date
-            if (offerDate != null && offerDate.after(today)) { // Check if offer is in the future (upcoming)
-                holder.productId.setTextColor(context.getResources().getColor(R.color.green));
-                holder.productName.setTextColor(context.getResources().getColor(R.color.green));
-                holder.productSize.setTextColor(context.getResources().getColor(R.color.green));
-                holder.productCompany.setTextColor(context.getResources().getColor(R.color.green));
-                holder.productPrice.setTextColor(context.getResources().getColor(R.color.green));
+            SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.ENGLISH);
+            Date offerDate = inputFormat.parse(offerLimit); // Parse using correct format
+            // Handle Date Parsing
+            SimpleDateFormat todaysDate = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a"); // Adjust format as needed
+            String todayDate = todaysDate.format(new Date());
+            Date todays = todaysDate.parse(todayDate); // Parse using correct format
+            if (offerDate.after(todays)) { // Check if the offer is upcoming
+                int greenColor = ContextCompat.getColor(context, R.color.green);
+                holder.productId.setTextColor(greenColor);
+                holder.productName.setTextColor(greenColor);
+                holder.productSize.setTextColor(greenColor);
+                holder.productCompany.setTextColor(greenColor);
+                holder.productPrice.setTextColor(greenColor);
                 holder.bonusLayout.setVisibility(View.VISIBLE);
                 Glide.with(context)
-                        .asGif()  // Explicitly tell Glide to load the image as a GIF
-                        .load(R.drawable.bonus)  // Replace with your GIF resource or URL
+                        .asGif()
+                        .load(R.drawable.bonus)
                         .into(holder.bonusImage);
             } else {
-                holder.bonusLayout.setVisibility(View.GONE); // Hide bonusLayout if not selected
+                int greenColor = ContextCompat.getColor(context, R.color.grey);
+                holder.productId.setTextColor(greenColor);
+                holder.productName.setTextColor(greenColor);
+                holder.productSize.setTextColor(greenColor);
+                holder.productCompany.setTextColor(greenColor);
+                holder.productPrice.setTextColor(greenColor);
+                holder.bonusLayout.setVisibility(View.GONE);
             }
-        } catch (Exception e) {
-            Log.i("CrashOnProducts",e.getMessage());
-            holder.bonusLayout.setVisibility(View.GONE); // Hide bonusLayout if not selected
-            e.printStackTrace(); // Handle parsing error
+        } catch (ParseException e) {
+            holder.bonusLayout.setVisibility(View.GONE);
+            Log.e("DateParseError", "Failed to parse date: " + offerLimit, e);
         }
     }
+
 
     @Override
     public long getItemId(int position) {
         return super.getItemId(position);
     }
-    public void updateList(List<EntityProduct> newList) {
+
+    public void updateList(ArrayList<EntityProduct> newList) {
         productItems.clear();
         productItems.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    public void updateList(final ArrayList<EntityProduct> newList, int filterType, final ProgressBar progressBar, final String searchQuery) {
+        // Show the progress bar
+        progressBar.setVisibility(View.VISIBLE);
+        executorService.execute(() -> {
+            ArrayList<EntityProduct> filteredList = new ArrayList<>();
+            this.filterType = filterType;
+            for (EntityProduct product : newList) {
+                try {
+                    if (product.getProductName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                        filteredList.add(product);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            mainHandler.post(() -> {
+                progressBar.setVisibility(View.GONE);
+                productItems.clear();
+                productItems.addAll(filteredList);
+                Log.i("checkProductsSize", "Count = " + filteredList.size());
+                notifyDataSetChanged();
+            });
+        });
     }
 
     @Override

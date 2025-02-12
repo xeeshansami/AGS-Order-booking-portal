@@ -10,7 +10,7 @@ android {
         //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
         versionCode 21
-        versionName "20.2.0"
+        versionName "15.1.0"
         multiDexEnabled true
     }
     useLibrary 'org.apache.http.legacy'

@@ -14,7 +14,10 @@ import com.bumptech.glide.Glide;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -23,9 +26,12 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -40,18 +46,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProductActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
     private SessionManager sessionManager;
 
-    private List<EntityProduct> productsList = new ArrayList<EntityProduct>();
+    private ArrayList<EntityProduct> productsList = new ArrayList<EntityProduct>();
     private List<EntityProduct> productsListSP = new ArrayList<EntityProduct>();
     private RecyclerView listView;
     private ProductListAdapter adapter;
     private EditText txtProductSearch;
-
+    EditText searchProductList;
+    RadioGroup filterGroup;
+    ProgressBar progressBar;
+    ExecutorService executorService;
+    Handler mainHandler;
+    ImageView searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +79,13 @@ public class ProductActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+        searchProductList = findViewById(R.id.searchProductList);
+        searchButton = findViewById(R.id.searchButton);
+        filterGroup = findViewById(R.id.filterRadioGroup);
+        progressBar = findViewById(R.id.progressBar);
         productsList = db.getAllProducts();
+        executorService = Executors.newSingleThreadExecutor();
+        mainHandler = new Handler(Looper.getMainLooper());
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activities window.
@@ -74,13 +93,102 @@ public class ProductActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Select Product");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        BindSearchProductTextBox();
+//        BindSearchProductTextBox();
         BindProductsList();
+        filters();
     }
+
+    private void performSearch() {
+        String searchQuery = searchProductList.getText().toString().trim();
+        if (searchQuery.isEmpty()) return; // Avoid unnecessary queries
+        progressBar.setVisibility(View.VISIBLE);
+        executorService.execute(() -> {
+            ArrayList<EntityProduct> filteredProducts = db.getFilteredProducts(getSelectedFilter(filterGroup));
+            mainHandler.post(() -> {
+                if (adapter != null && !searchQuery.isEmpty()) {
+                    adapter.updateList(filteredProducts, getSelectedFilter(filterGroup), progressBar, searchQuery);
+                } else {
+                    adapter.updateList(filteredProducts, getSelectedFilter(filterGroup), progressBar, searchQuery);
+                    searchProductList.setError("Please enter product name");
+                    searchProductList.requestFocus();
+                }
+                progressBar.setVisibility(View.GONE);
+            });
+        });
+    }
+
+    private void filters() {
+        EditText searchProductList = findViewById(R.id.searchProductList);
+        RadioGroup filterGroup = findViewById(R.id.filterRadioGroup);
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        searchProductList.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
+                performSearch();
+                return true; // Consume the event
+            }
+            return false;
+        });
+        searchButton.setOnClickListener(view -> performSearch());
+        searchProductList.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                if (searchProductList.getText().length() == 0) {
+                    String searchQuery = charSequence.toString();
+                    progressBar.setVisibility(View.VISIBLE);
+                    executorService.execute(() -> {
+                        mainHandler.post(() -> {
+                            if (adapter != null) {
+                                adapter.updateList(db.getFilteredProducts(getSelectedFilter(filterGroup)), getSelectedFilter(filterGroup), progressBar, searchQuery);
+                            }
+                            progressBar.setVisibility(View.GONE);
+                        });
+                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        filterGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            int selectedFilterType = getSelectedFilter(filterGroup);
+            String searchQuery = searchProductList.getText().toString();
+            progressBar.setVisibility(View.VISIBLE);
+            executorService.execute(() -> {
+                mainHandler.post(() -> {
+                    if (adapter != null) {
+                        adapter.updateList(db.getFilteredProducts(selectedFilterType), getSelectedFilter(filterGroup), progressBar, searchQuery);
+                    }
+                    progressBar.setVisibility(View.GONE);
+                });
+            });
+        });
+    }
+
+    private int getSelectedFilter(RadioGroup filterGroup) {
+        int selectedFilterType = 3; // Default: All Products
+        switch (filterGroup.getCheckedRadioButtonId()) {
+            case R.id.radioUpcoming:
+                selectedFilterType = 1;
+                break;
+            case R.id.radioExpired:
+                selectedFilterType = 2;
+                break;
+            case R.id.radioAll:
+                selectedFilterType = 3;
+                break;
+        }
+        return selectedFilterType;
+    }
+
 
     private void BindSearchProductTextBox() {
         txtProductSearch = (EditText) findViewById(R.id.searchProductList);
-
         txtProductSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,7 +198,7 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String getText = txtProductSearch.getText().toString();
-                List<EntityProduct> newProductsList = db.getAllProducts(getText);
+                ArrayList<EntityProduct> newProductsList = db.getAllProducts(getText);
                 if (adapter != null) {
                     adapter.updateList(newProductsList);
                 }
@@ -119,13 +227,13 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public void onItemLongClick(EntityProduct product) {
                 String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
                 try {
                     Date offerDate = sdf.parse(offerLimit); // Convert string to Date
                     Date today = new Date(); // Get today's date
                     if (offerDate.after(today)) { // Check if offer is in the future (upcoming)
                         showProductSchemeDialog(product);
-                    }else{
+                    } else {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("productId", String.valueOf(product.getProductId()));
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -161,8 +269,8 @@ public class ProductActivity extends AppCompatActivity {
         productNameTextView.setText(product.getProductName());
         String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
         // Step 1: Parse the original format
-        SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
         try {
             Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
             String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
@@ -172,7 +280,7 @@ public class ProductActivity extends AppCompatActivity {
         }
         schemProductSize.setText(product.getProductSize());
         schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
-        schemGroup.setText(String.valueOf("("+product.getProductCompany())+")");
+        schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
         schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
         SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
 //        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

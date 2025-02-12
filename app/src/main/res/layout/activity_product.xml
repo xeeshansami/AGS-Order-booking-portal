@@ -1,55 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
     android:background="@color/white"
-    android:focusableInTouchMode="true">
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@color/toolBarTextColor"
+        android:background="@color/toolBarBackground"
+        android:minHeight="?attr/actionBarSize"
         app:subtitleTextColor="@color/toolBarTextColor"
-        android:background="@color/toolBarBackground">
-    </androidx.appcompat.widget.Toolbar>
+        app:titleTextColor="@color/toolBarTextColor" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_vertical"
+        android:orientation="vertical"
         android:padding="10dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Search Product"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/imprima"
+            android:text="Now, Search your desired products here."
             android:textColor="@color/colorPrimary" />
 
-        <EditText
+        <LinearLayout
+            android:layout_marginTop="@dimen/unit_5"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/searchProductList"
-            android:layout_gravity="center_horizontal"
-            android:textCursorDrawable="@null"
-            android:textColor="@color/grey"
-            android:singleLine="true"
-            android:textSize="15dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@android:color/transparent">
+
+            <!-- Search Input Field -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:background="@drawable/search_background"
+               >
+
+                <!-- Search Icon Inside EditText -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_menu_search"
+                    android:tint="@color/colorBlack"
+                    android:layout_marginEnd="8dp"/>
+
+                <EditText
+                    android:id="@+id/searchProductList"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Search by product name..."
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:textCursorDrawable="@null"/>
+
+            </LinearLayout>
+
+            <!-- Search Button -->
+            <ImageView
+                android:id="@+id/searchButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/search_button_background"
+                android:padding="10dp"
+                android:src="@android:drawable/ic_menu_search"
+                android:tint="@color/white"/>
+        </LinearLayout>
+        <!-- Radio Group for Filters -->
+        <RadioGroup
+            android:id="@+id/filterRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="All Products" />
+
+            <RadioButton
+                android:id="@+id/radioExpired"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="Expired Offers" />
+
+            <RadioButton
+                android:id="@+id/radioUpcoming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="Offers" />
+        </RadioGroup>
 
     </LinearLayout>
 
+    <!-- Progress Bar (Initially invisible) -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:padding="3dp"
+        android:id="@+id/lstProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/lstProducts" />
-
-
+        android:padding="3dp" />
 </LinearLayout>

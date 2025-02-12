@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Asad on 10/6/2016.
@@ -553,10 +554,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
         String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
-        SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy hh:mm:ss a"); // Adjust format as per your DB
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); // Adjust format as per your DB
         try {
             Date date = sdf.parse(dateString);
-            product.setProd_OfferLimit(date.toString()); // Or format it as needed
+            product.setProd_OfferLimit(dateString); // Or format it as needed
         } catch (ParseException e) {
             e.printStackTrace();
         }  // return contact
@@ -565,10 +566,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public List<EntityProduct> getAllProducts() {
+    public ArrayList<EntityProduct> getAllProducts() {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        List<EntityProduct> productList = new ArrayList<EntityProduct>();
+        ArrayList<EntityProduct> productList = new ArrayList<EntityProduct>();
 
         // Select all query
         String selectQuery = "select * from " + TABLE_PRODUCT + "  order by productName";
@@ -595,10 +596,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 }
                 product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
                 String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
-                SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy hh:mm:ss a"); // Adjust format as per your DB
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); // Adjust format as per your DB
                 try {
                     Date date = sdf.parse(dateString);
-                    product.setProd_OfferLimit(date.toString()); // Or format it as needed
+                    product.setProd_OfferLimit(dateString); // Or format it as needed
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -615,10 +616,82 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public List<EntityProduct> getAllProducts(String hint) {
+    public ArrayList<EntityProduct> getFilteredProducts(int filterType) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<EntityProduct> productList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_PRODUCT + " ORDER BY productName";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.i("CursorQuery", selectQuery);
+
+        // Date formatter for stored date format
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
+        Date currentDate = new Date(); // Today's date
+
+        if (cursor.moveToFirst()) {
+            do {
+                EntityProduct product = new EntityProduct();
+                product.setProductId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("productId"))));
+                product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
+                product.setProductSize(cursor.getString(cursor.getColumnIndex("productSize")));
+                product.setProductPrice(Float.parseFloat(cursor.getString(cursor.getColumnIndex("productPrice"))));
+
+                try {
+                    if (cursor.getString(cursor.getColumnIndex("productOffer")) != null &&
+                            !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
+                        product.setProd_Offer(String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex("productOffer")))));
+                    } else {
+                        product.setProd_Offer("");
+                    }
+                } catch (NumberFormatException e) {
+                    product.setProd_Offer("");
+                }
+
+                product.setProd_salestax(String.valueOf(Double.parseDouble(cursor.getString(cursor.getColumnIndex("productSalesTax")))));
+                product.setProductCompany(cursor.getString(cursor.getColumnIndex("productCompany")));
+                product.setProd_Group_Name(cursor.getString(cursor.getColumnIndex("Prod_Group_Name")));
+
+                // Handling productOfferLimit date conversion
+                String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
+                try {
+                    Date offerDate = sdf.parse(dateString);
+                    product.setProd_OfferLimit(sdf.format(offerDate)); // Store formatted date
+
+                    // Calculate difference in days
+                    long diff = offerDate.getTime() - currentDate.getTime();
+                    long daysDifference = diff / (1000 * 60 * 60 * 24);
+
+                    // Determine the filter flag
+                    int filterFlag = (daysDifference > 0) ? 1 : 2; // 1 for upcoming, 2 for expired
+//                    product.setFilterFlag(filterFlag);
+
+                    // Apply filtering logic
+                    if (filterType == 1 && filterFlag != 1) continue; // Skip expired
+                    if (filterType == 2 && filterFlag != 2) continue; // Skip upcoming
+                    // If filterType == 3, return both (no filtering needed)
+
+                    productList.add(product);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    product.setProd_OfferLimit(""); // Set as empty if parsing fails
+//                    product.setFilterFlag(0); // Default flag for unprocessed data
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return productList;
+    }
+
+
+    @SuppressLint("Range")
+    public ArrayList<EntityProduct> getAllProducts(String hint) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        List<EntityProduct> productList = new ArrayList<EntityProduct>();
+        ArrayList<EntityProduct> productList = new ArrayList<EntityProduct>();
 
         // Select all query
         String selectQuery = "select * from " + TABLE_PRODUCT + " where (productName || ' ' || productSize || ' ' || productPrice || ' ' ||productOffer || ' ' ||productSalesTax || ' ' ||productOfferLimit || ' ' || productCompany || ' ' || Prod_Group_Name) like '%" + hint + "%' order by productName";
@@ -646,10 +719,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 }
                 product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
                 String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
-                SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy hh:mm:ss a"); // Adjust format as per your DB
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); // Adjust format as per your DB
                 try {
                     Date date = sdf.parse(dateString);
-                    product.setProd_OfferLimit(date.toString()); // Or format it as needed
+                    product.setProd_OfferLimit(dateString); // Or format it as needed
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
