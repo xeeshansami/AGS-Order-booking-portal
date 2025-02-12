@@ -15,11 +15,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -56,11 +58,18 @@ import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 import com.agsadil.agssalesandroidclientorderdocter.interfaces.OnItemClickListener;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -89,6 +98,7 @@ public class ProductOfferActivity extends AppCompatActivity {
     EntityCustomer selectedCustomer;
     private static final int REQUEST_CHECK_SETTINGS = 3;
     private static final int REQUEST_GRANT_PERMISSION = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +117,7 @@ public class ProductOfferActivity extends AppCompatActivity {
         product_offer_recycler_view = findViewById(R.id.product_offer_recycler_view);
         myToolbar.setSubtitle("Product Offers");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,6 +127,7 @@ public class ProductOfferActivity extends AppCompatActivity {
 //        downloadMasterData();
         BindProductsList();
     }
+
     public void downloadMasterData() {
         if (utils.checkConnection(this)) {
             new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
@@ -150,6 +162,7 @@ public class ProductOfferActivity extends AppCompatActivity {
             });
         }
     }
+
     private void BindProductsList() {
 //        utils.showLoader(this);
 //        AGSStore.getInstance().getProductOffers(sp.getbranch(), new callback() {
@@ -228,7 +241,7 @@ public class ProductOfferActivity extends AppCompatActivity {
 //                utils.hideLoader();
 //            }
 //        });
-        productsList2=db.getFilteredProducts(1);
+        productsList2 = db.getFilteredProducts(1);
         product_offer_recycler_view.setLayoutManager(new LinearLayoutManager(ProductOfferActivity.this));
         adapter = new ProductListAdapter(ProductOfferActivity.this, productsList2, new OnItemClickListener() {
             @Override
@@ -241,7 +254,7 @@ public class ProductOfferActivity extends AppCompatActivity {
                     Date today = new Date(); // Get today's date
                     if (offerDate.after(today)) { // Check if offer is in the future (upcoming)
                         showProductSchemeDialog(product);
-                    }else{
+                    } else {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("productId", String.valueOf(product.getProductId()));
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -261,7 +274,7 @@ public class ProductOfferActivity extends AppCompatActivity {
                     Date today = new Date(); // Get today's date
                     if (offerDate.after(today)) { // Check if offer is in the future (upcoming)
                         showProductSchemeDialog(product);
-                    }else{
+                    } else {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("productId", String.valueOf(product.getProductId()));
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -271,10 +284,16 @@ public class ProductOfferActivity extends AppCompatActivity {
                     e.printStackTrace(); // Handle parsing error
                 }
             }
-        });
+        }){
+            @Override
+            public void onNoProductsFound(int count,String searchQuery) {
+//                Toast.makeText(ProductOfferActivity.this, "No Product Found", Toast.LENGTH_SHORT).show();
+            }
+        };;
         product_offer_recycler_view.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
     private void showProductSchemeDialog(EntityProduct product) {
         // Inflate the dialog layout
         LayoutInflater inflater = getLayoutInflater();
@@ -296,8 +315,8 @@ public class ProductOfferActivity extends AppCompatActivity {
         productNameTextView.setText(product.getProductName());
         String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
         // Step 1: Parse the original format
-        SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.ENGLISH);
         try {
             Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
             String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
@@ -307,7 +326,7 @@ public class ProductOfferActivity extends AppCompatActivity {
         }
         schemProductSize.setText(product.getProductSize());
         schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
-        schemGroup.setText(String.valueOf("("+product.getProductCompany())+")");
+        schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
         schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
         SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
 //        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -328,10 +347,8 @@ public class ProductOfferActivity extends AppCompatActivity {
         // Optional: Handle Apply button logic
         applyButton.setOnClickListener(v -> {
             // Logic to apply the scheme or any further action
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("productId", String.valueOf(product.getProductId()));
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+            final EntityProduct prodObj = db.getProduct(product.getProductId());
+            ShowDialogForDetails(prodObj);
             dialog.dismiss(); // Close the dialog after applying
         });
     }
@@ -343,7 +360,8 @@ public class ProductOfferActivity extends AppCompatActivity {
             if (requestCode == 1) {
                 if (resultCode == RESULT_OK) {
                     int customerId = Integer.parseInt(data.getStringExtra("customerId"));
-
+                    selectedCustomer = db.getCustomer(customerId);
+                    SaveOrder();
                 }
                 if (resultCode == RESULT_CANCELED) {
                     utils.hideLoader();
@@ -361,12 +379,13 @@ public class ProductOfferActivity extends AppCompatActivity {
                 getCurrentLocation();
             if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_CANCELED)
                 utils.hideLoader();
-//                Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             utils.hideLoader();
             utils.errorBox(this, "GPS enabling please restart the application");
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -374,6 +393,7 @@ public class ProductOfferActivity extends AppCompatActivity {
             getCurrentLocation();
         }
     }
+
     public void getCurrentLocation() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -411,11 +431,12 @@ public class ProductOfferActivity extends AppCompatActivity {
             }
         }, 3000);
     }
+
     public void saveDataSuccessFullyInDB(double latitude, double longitude, String address) {
         try {
             if (SaveOrderValidate()) {
                 EntityOrder order = new EntityOrder();
-                String date="";
+                String date = "";
                 Calendar dateSelected = Calendar.getInstance();
                 int mYear = dateSelected.get(Calendar.YEAR);
                 int mMonth = dateSelected.get(Calendar.MONTH);
@@ -425,10 +446,10 @@ public class ProductOfferActivity extends AppCompatActivity {
                 if (db.getAllSalesman().size() == 1) {
                     order.setSaleMenCode(String.valueOf(db.getAllSalesman().get(0).getSalesman_Id()));
                 }
-                order.setNetTotal(txtNetTotal.getText().toString());
+                order.setNetTotal(txtNetTotal);
                 order.setBranch(selectedCustomer.getCustomerBranch());
 //                order.setBranch(sp.getbranch());
-                order.setRemarks(txtRemarks.getText().toString());
+                order.setRemarks("Offer Product");
                 order.setLocation(String.valueOf(latitude));
                 order.setLocation1(String.valueOf(longitude));
                 order.setOrderAddress(address);
@@ -443,11 +464,27 @@ public class ProductOfferActivity extends AppCompatActivity {
                 order.setAllProducts(productsList);
                 db.CreateOrder(order);
                 db.updateSelectedCustomer(selectedCustomer.getCustomerId());
-                this.utils.showMessage(ProductOfferActivity.this, "Order created Successfully");
-                Intent intent = new Intent(ProductOfferActivity.this, DashboardActivity.class);
-                startActivity(intent);
+                if (productsList != null && productsList.size()!=0) {
+                    String message = "You have created the offer product successfully\n\n"
+                            + "Product Name: " + productsList.get(0).getProductName()
+                            + "\nQuantity: " + productsList.get(0).getProductQty()
+                            + "\nDiscount: " + productsList.get(0).getProductDiscount() + "%"
+                            + "\nNet Total: " + productsList.get(0).getItemValue()
+                            + "\nSalesman: " + salesManEntity.getSalesman_Name()
+                            + "\nCustomer: " + selectedCustomer.getCustomerName();
+                    utils.alertBox(ProductOfferActivity.this, "Congratulations",message, "Done", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            finish();
+                        }
+                    });
+                } else {
+                    this.utils.showMessage(ProductOfferActivity.this, "Order created Successfully");
+                }
+//                Intent intent = new Intent(ProductOfferActivity.this, DashboardActivity.class);
+//                startActivity(intent);
                 utils.hideLoader();
-                ProductOfferActivity.this.finish();
+//                ProductOfferActivity.this.finish();
             } else {
                 utils.hideLoader();
                 this.utils.showMessage(ProductOfferActivity.this, "Select customer or add atleast 1 product");
@@ -461,6 +498,108 @@ public class ProductOfferActivity extends AppCompatActivity {
             });
         }
     }
+
+    public void SaveOrder() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogButtonStyle);
+        builder.setCancelable(false);
+        builder.setTitle("Confirm");
+        builder.setMessage("Do you want to save this order?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                /*Save data in db*/
+                dialog.dismiss();
+                utils.showLoader(ProductOfferActivity.this);
+                createLocationRequest();
+                settingsCheck();
+                if (ActivityCompat.checkSelfPermission(ProductOfferActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ProductOfferActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GRANT_PERMISSION);
+                    utils.hideLoader();
+                    return;
+                }
+                if (locationCallback == null)
+                    buildLocationCallback();
+                if (currentLocation == null)
+                    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                utils.hideLoader();
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    protected void createLocationRequest() {
+        try {
+            locationRequest = LocationRequest.create();
+            locationRequest.setInterval(10000);
+            locationRequest.setFastestInterval(5000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        } catch (Exception e1) {
+            utils.errorBox(ProductOfferActivity.this, e1.getMessage());
+        }
+    }
+
+    public void settingsCheck() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        SettingsClient client = LocationServices.getSettingsClient(ProductOfferActivity.this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        task.addOnSuccessListener(ProductOfferActivity.this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                Log.d("TAG", "onSuccess: settingsCheck");
+                try {
+                    getCurrentLocation();
+                } catch (Exception e1) {
+                    utils.hideLoader();
+                    utils.errorBox(ProductOfferActivity.this, e1.getMessage());
+                }
+            }
+        });
+
+        task.addOnFailureListener(ProductOfferActivity.this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                try {
+                    if (e instanceof ResolvableApiException) {
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        Log.d("TAG", "onFailure: settingsCheck");
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            utils.hideLoader();
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult(ProductOfferActivity.this, REQUEST_CHECK_SETTINGS);
+                            utils.showLoader(ProductOfferActivity.this);
+                        } catch (IntentSender.SendIntentException sendEx) {
+                            utils.hideLoader();
+                            // Ignore the error.
+                        } catch (Exception e1) {
+                            utils.hideLoader();
+                            utils.errorBox(ProductOfferActivity.this, e1.getMessage());
+                        }
+                    }
+                } catch (Exception e1) {
+                    utils.hideLoader();
+                    utils.errorBox(ProductOfferActivity.this, e1.getMessage());
+                }
+            }
+        });
+    }
+
+
     public boolean SaveOrderValidate() {
         if (selectedCustomer != null && productsList.size() > 0) {
             return true;
@@ -498,17 +637,19 @@ public class ProductOfferActivity extends AppCompatActivity {
             utils.errorBox(ProductOfferActivity.this, e.getMessage());
         }
     }
+
     EntityProduct product = null;
     EditText productName = null;
     EditText productQty = null;
     EditText productBonus = null;
     EditText productDiscount = null;
 
-    TextView txtNetTotal;
+    String txtNetTotal;
     EditText txtRemarks;
     private List<EntityProductDetails> productsList = new ArrayList<EntityProductDetails>();
     private List<EntityProduct> productsList2 = new ArrayList<EntityProduct>();
     private ListView listView;
+
     public void ShowDialogForDetails(final EntityProduct product) {
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.layout_product_details, null);
@@ -581,16 +722,13 @@ public class ProductOfferActivity extends AppCompatActivity {
     public EntityProduct addProductToList() {
         EntityProductDetails detailsProd;
         if (!productQty.getText().toString().trim().equals("")) {
-
             detailsProd = new EntityProductDetails();
-
             detailsProd.setProductId(product.getProductId());
             detailsProd.setProductName(product.getProductName());
             detailsProd.setProductSize(product.getProductSize());
             detailsProd.setProductPrice(product.getProductPrice());
             detailsProd.setProductPrice(product.getProductPrice());
             detailsProd.setProductSelected(true);
-
             detailsProd.setProductQty(Integer.parseInt(productQty.getText().toString()));
             detailsProd.setProductBonus(productBonus.getText().toString().trim().equals("") != true ? Integer.parseInt(productBonus.getText().toString()) : 0);
             detailsProd.setProductDiscount(productDiscount.getText().toString().trim().equals("") != true ? Integer.parseInt(productDiscount.getText().toString()) : 0);
@@ -598,13 +736,14 @@ public class ProductOfferActivity extends AppCompatActivity {
 //            detailsProd.setLongitude(String.valueOf(longitude));
 //            detailsProd.setProductEnrtyFromAddress(address);
             productsList.add(detailsProd);
-            float oldValue = Float.parseFloat(txtNetTotal.getText().toString());
-            txtNetTotal.setText(String.valueOf(oldValue + detailsProd.getItemValue()));
+            txtNetTotal = (String.valueOf(detailsProd.getItemValue()));
 
             adapter.notifyDataSetChanged();
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) listView.getLayoutParams();
-            lp.height = 180 * productsList.size();
-            listView.setLayoutParams(lp);
+//            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) listView.getLayoutParams();
+//            lp.height = 180 * productsList.size();
+//            listView.setLayoutParams(lp);
+            Intent intent = new Intent(this, CustomerActivity.class);
+            startActivityForResult(intent, 1);
         }
         return product;
     }

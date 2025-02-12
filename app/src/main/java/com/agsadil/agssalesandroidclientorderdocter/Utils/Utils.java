@@ -716,6 +716,9 @@ public class Utils implements IOnConnectionTimeoutListener {
     public void showMessage(Context context,String message){
         Snackbar.make(((Activity) context).findViewById(android.R.id.content), message, 2000).show();
     }
+    public void showMessage(Context context,String message,int duration){
+        Snackbar.make(((Activity) context).findViewById(android.R.id.content), message, duration).show();
+    }
     public class Downloading extends AsyncTask<Void, Integer, String> {
         Button button;
         int inWhich = 0;

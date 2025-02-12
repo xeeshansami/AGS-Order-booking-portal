@@ -32,11 +32,14 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductViewHolder> {
+public abstract class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductViewHolder> {
     private List<EntityProduct> productItems;
     private OnItemClickListener onItemClickListener;
     private Context context;
     int filterType = 3;
+
+    // Abstract method to handle case when no products are found
+    public abstract void onNoProductsFound(int count,String searchQuery);
 
     // Constructor to pass context as well
     public ProductListAdapter(Context context, List<EntityProduct> productItems, OnItemClickListener onItemClickListener) {
@@ -151,6 +154,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         // Show the progress bar
         progressBar.setVisibility(View.VISIBLE);
         executorService.execute(() -> {
+
             ArrayList<EntityProduct> filteredList = new ArrayList<>();
             this.filterType = filterType;
             for (EntityProduct product : newList) {
@@ -167,6 +171,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 productItems.clear();
                 productItems.addAll(filteredList);
                 Log.i("checkProductsSize", "Count = " + filteredList.size());
+                onNoProductsFound(filteredList.size(),searchQuery); // This will call the method in MainActivity
                 notifyDataSetChanged();
             });
         });

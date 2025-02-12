@@ -125,7 +125,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone" />
-
+    <TextView
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:id="@+id/noProductFound"
+        android:layout_gravity="center"
+        android:textColor="@color/activeColor"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/imprima"
+        android:layout_height="wrap_content"></TextView>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstProducts"
         android:layout_width="match_parent"

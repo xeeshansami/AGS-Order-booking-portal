@@ -44,6 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.agsadil.agssalesandroidclientorderdocter.Activities.CustomerActivity;
 import com.agsadil.agssalesandroidclientorderdocter.Activities.DashboardActivity;
@@ -160,7 +161,7 @@ public class OrderBooking extends Fragment {
                 getCurrentLocation();
             if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_CANCELED)
                 utils.hideLoader();
-//                Toast.makeText(this, "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             utils.hideLoader();
             utils.errorBox(getActivity(), "GPS enabling please restart the application");

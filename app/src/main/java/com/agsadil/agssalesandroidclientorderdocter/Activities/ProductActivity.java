@@ -23,6 +23,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +42,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,6 +69,7 @@ public class ProductActivity extends AppCompatActivity {
     ExecutorService executorService;
     Handler mainHandler;
     ImageView searchButton;
+    TextView noProductFound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +218,7 @@ public class ProductActivity extends AppCompatActivity {
 
     private void BindProductsList() {
         listView = (RecyclerView) findViewById(R.id.lstProducts);
+        noProductFound = (TextView) findViewById(R.id.noProductFound);
         listView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ProductListAdapter(this, productsList, new OnItemClickListener() {
             @Override
@@ -243,7 +249,19 @@ public class ProductActivity extends AppCompatActivity {
                     e.printStackTrace(); // Handle parsing error
                 }
             }
-        });
+        }) {
+            @Override
+            public void onNoProductsFound(int count,String searchQuery) {
+                if (count == 0) {
+                    listView.setVisibility(View.GONE);
+                    noProductFound.setVisibility(View.VISIBLE);
+                    noProductFound.setText("There is no product of this name "+searchQuery);
+                } else {
+                    listView.setVisibility(View.VISIBLE);
+                    noProductFound.setVisibility(View.GONE);
+                }
+            }
+        };
         listView.setAdapter(adapter);
 
     }
