@@ -159,7 +159,12 @@ public abstract class ProductListAdapter extends RecyclerView.Adapter<ProductLis
             this.filterType = filterType;
             for (EntityProduct product : newList) {
                 try {
-                    if (product.getProductName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    if (product.getProductName().toLowerCase().contains(searchQuery.toLowerCase())
+                            || product.getProductCompany().toLowerCase().contains(searchQuery.toLowerCase())
+                            || product.getProd_Group_Name().toLowerCase().contains(searchQuery.toLowerCase())
+                            || product.getProductSize().toLowerCase().contains(searchQuery.toLowerCase())
+                            || product.getProd_Offer().toLowerCase().contains(searchQuery.toLowerCase())
+                    ) {
                         filteredList.add(product);
                     }
                 } catch (Exception e) {

@@ -61,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
+                android:textStyle="bold"
                 android:textColor="#555555"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -85,6 +86,31 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
+                android:textStyle="bold"
+                android:textColor="#555555"
+                android:textSize="16sp" />
+        </LinearLayout>
+        <!-- Product Size -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Product Offer:"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/schemProductOffer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text=""
+                android:textStyle="bold"
                 android:textColor="#555555"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -108,6 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
+                android:textStyle="bold"
                 android:textColor="#555555"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -127,6 +154,29 @@
 
             <TextView
                 android:id="@+id/schemLimiteDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text=""
+                android:textColor="#FF5722"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Product SaleTax:"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/schemSalesTax"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -156,19 +206,23 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:text=""
+                android:textStyle="bold"
                 android:textColor="#FF0000"
                 android:textSize="16sp" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/schemGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text=""
+                android:textStyle="bold"
                 android:textColor="#FF5722"
                 android:textSize="18sp" />
 
         </LinearLayout>
+
 
         <Button
             android:id="@+id/applyButton"

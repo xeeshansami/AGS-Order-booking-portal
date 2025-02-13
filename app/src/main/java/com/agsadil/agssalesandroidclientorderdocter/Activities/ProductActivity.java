@@ -275,8 +275,10 @@ public class ProductActivity extends AppCompatActivity {
         TextView schemLimiteDate = dialogView.findViewById(R.id.schemLimiteDate);
         TextView schemProductPrice = dialogView.findViewById(R.id.schemProductPrice);
         TextView schemProductSize = dialogView.findViewById(R.id.schemProductSize);
+        TextView schemProductOffer = dialogView.findViewById(R.id.schemProductOffer);
         TextView schemeCompany = dialogView.findViewById(R.id.schemeCompany);
         TextView schemGroup = dialogView.findViewById(R.id.schemGroup);
+        TextView schemSalesTax = dialogView.findViewById(R.id.schemSalesTax);
         Button applyButton = dialogView.findViewById(R.id.applyButton);
         ImageView backgroundImage = dialogView.findViewById(R.id.bonusImage);
         Glide.with(this)
@@ -288,7 +290,7 @@ public class ProductActivity extends AppCompatActivity {
         String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
         // Step 1: Parse the original format
         SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MMM/yyyy", Locale.US);
         try {
             Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
             String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
@@ -296,6 +298,8 @@ public class ProductActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace(); // Handle parsing error
         }
+        schemSalesTax.setText(product.getProd_salestax());
+        schemProductOffer.setText(product.getProd_Offer());
         schemProductSize.setText(product.getProductSize());
         schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
         schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");

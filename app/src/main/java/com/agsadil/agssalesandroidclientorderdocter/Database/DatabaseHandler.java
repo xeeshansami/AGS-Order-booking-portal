@@ -381,7 +381,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<EntityCustomer> customerList = new ArrayList<EntityCustomer>();
 
         // Select all query
-        String selectQuery = "select * from " + TABLE_CUSTOMER + " where (customerName || ' ' || customerBranch) like '%" + hint + "%'";
+        String selectQuery = "select * from " + TABLE_CUSTOMER + " where (customerName || ' ' || customerBranch || ' ' || customerAddress) like '%" + hint + "%'";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -545,14 +545,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         product.setProd_Group_Name(cursor.getString(cursor.getColumnIndex("Prod_Group_Name")));
         try {
             if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
-                product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+                product.setProd_Offer(String.valueOf(((cursor.getString(cursor.getColumnIndex("productOffer"))))));
             } else {
                 product.setProd_Offer("");
             }
         } catch (NumberFormatException e) {
             product.setProd_Offer("");
         }
-        product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+        product.setProd_salestax(String.valueOf(((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
         String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); // Adjust format as per your DB
         try {
@@ -587,14 +587,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //                product.setSelectedProduct(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productSelected")))));
                 try {
                     if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
-                        product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+                        product.setProd_Offer(String.valueOf(((cursor.getString(cursor.getColumnIndex("productOffer"))))));
                     } else {
                         product.setProd_Offer("");
                     }
                 } catch (NumberFormatException e) {
                     product.setProd_Offer("");
                 }
-                product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+                product.setProd_salestax(String.valueOf(((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
                 String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); // Adjust format as per your DB
                 try {
@@ -637,9 +637,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 product.setProductPrice(Float.parseFloat(cursor.getString(cursor.getColumnIndex("productPrice"))));
 
                 try {
-                    if (cursor.getString(cursor.getColumnIndex("productOffer")) != null &&
-                            !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
-                        product.setProd_Offer(String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex("productOffer")))));
+                    if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
+                        product.setProd_Offer(cursor.getString(cursor.getColumnIndex("productOffer")));
                     } else {
                         product.setProd_Offer("");
                     }
@@ -647,7 +646,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     product.setProd_Offer("");
                 }
 
-                product.setProd_salestax(String.valueOf(Double.parseDouble(cursor.getString(cursor.getColumnIndex("productSalesTax")))));
+                product.setProd_salestax(String.valueOf(cursor.getString(cursor.getColumnIndex("productSalesTax"))));
                 product.setProductCompany(cursor.getString(cursor.getColumnIndex("productCompany")));
                 product.setProd_Group_Name(cursor.getString(cursor.getColumnIndex("Prod_Group_Name")));
 
@@ -710,14 +709,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 product.setProd_Group_Name((cursor.getString(cursor.getColumnIndex("Prod_Group_Name"))));
                 try {
                     if (cursor.getString(cursor.getColumnIndex("productOffer")) != null && !cursor.getString(cursor.getColumnIndex("productOffer")).isEmpty()) {
-                        product.setProd_Offer(String.valueOf(Integer.parseInt((cursor.getString(cursor.getColumnIndex("productOffer"))))));
+                        product.setProd_Offer(String.valueOf(((cursor.getString(cursor.getColumnIndex("productOffer"))))));
                     } else {
                         product.setProd_Offer("");
                     }
                 } catch (NumberFormatException e) {
                     product.setProd_Offer("");
                 }
-                product.setProd_salestax(String.valueOf(Double.valueOf((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
+                product.setProd_salestax(String.valueOf(((cursor.getString(cursor.getColumnIndex("productSalesTax"))))));
                 String dateString = cursor.getString(cursor.getColumnIndex("productOfferLimit"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd"); // Adjust format as per your DB
                 try {

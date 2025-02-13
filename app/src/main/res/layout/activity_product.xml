@@ -66,7 +66,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="Search by product name..."
+                    android:hint="Search by product &amp; comapny name..."
                     android:textColor="@color/colorBlack"
                     android:textSize="16sp"
                     android:singleLine="true"
@@ -102,6 +102,7 @@
                 android:text="All Products" />
 
             <RadioButton
+                android:visibility="gone"
                 android:id="@+id/radioExpired"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="Offers" />
+                android:text="Upcoming Offers" />
         </RadioGroup>
 
     </LinearLayout>

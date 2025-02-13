@@ -305,8 +305,10 @@ public class ProductOfferActivity extends AppCompatActivity {
         TextView schemProductSize = dialogView.findViewById(R.id.schemProductSize);
         TextView schemeCompany = dialogView.findViewById(R.id.schemeCompany);
         TextView schemGroup = dialogView.findViewById(R.id.schemGroup);
+        TextView schemSalesTax = dialogView.findViewById(R.id.schemSalesTax);
         Button applyButton = dialogView.findViewById(R.id.applyButton);
         ImageView backgroundImage = dialogView.findViewById(R.id.bonusImage);
+        TextView schemProductOffer = dialogView.findViewById(R.id.schemProductOffer);
         Glide.with(this)
                 .asGif()  // Explicitly tell Glide to load the image as a GIF
                 .load(R.drawable.bonus)  // Replace with your GIF resource or URL
@@ -316,7 +318,7 @@ public class ProductOfferActivity extends AppCompatActivity {
         String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
         // Step 1: Parse the original format
         SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.ENGLISH);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MMM/yyyy", Locale.ENGLISH);
         try {
             Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
             String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
@@ -324,6 +326,8 @@ public class ProductOfferActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace(); // Handle parsing error
         }
+        schemSalesTax.setText(product.getProd_salestax());
+        schemProductOffer.setText(product.getProd_Offer());
         schemProductSize.setText(product.getProductSize());
         schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
         schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
