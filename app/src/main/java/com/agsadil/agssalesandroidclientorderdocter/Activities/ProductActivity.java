@@ -70,7 +70,9 @@ public class ProductActivity extends AppCompatActivity {
     Handler mainHandler;
     ImageView searchButton;
     TextView noProductFound;
-
+    private static final long DEBOUNCE_DELAY = 500; // milliseconds
+    private Handler debounceHandler = new Handler();
+    private Runnable debounceRunnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +136,8 @@ public class ProductActivity extends AppCompatActivity {
             return false;
         });
         searchButton.setOnClickListener(view -> performSearch());
+
+
         searchProductList.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -141,23 +145,34 @@ public class ProductActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (searchProductList.getText().length() == 0) {
-                    String searchQuery = charSequence.toString();
-                    progressBar.setVisibility(View.VISIBLE);
-                    executorService.execute(() -> {
-                        mainHandler.post(() -> {
-                            if (adapter != null) {
-                                adapter.updateList(db.getFilteredProducts(getSelectedFilter(filterGroup)), getSelectedFilter(filterGroup), progressBar, searchQuery);
-                            }
-                            progressBar.setVisibility(View.GONE);
-                        });
-                    });
+                // Cancel any previous search if it exists
+                if (debounceRunnable != null) {
+                    debounceHandler.removeCallbacks(debounceRunnable);
                 }
+
+                // Create a new runnable for the delayed search
+                debounceRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        String searchQuery = charSequence.toString();
+                        progressBar.setVisibility(View.VISIBLE);
+                        executorService.execute(() -> {
+                            mainHandler.post(() -> {
+                                if (adapter != null) {
+                                    adapter.updateList(db.getFilteredProducts(getSelectedFilter(filterGroup)), getSelectedFilter(filterGroup), progressBar, searchQuery);
+                                }
+                                progressBar.setVisibility(View.GONE);
+                            });
+                        });
+                    }
+                };
+
+                // Execute the runnable after a delay (debounce)
+                debounceHandler.postDelayed(debounceRunnable, DEBOUNCE_DELAY);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
         filterGroup.setOnCheckedChangeListener((group, checkedId) -> {
