@@ -73,6 +73,7 @@ public class ProductActivity extends AppCompatActivity {
     private static final long DEBOUNCE_DELAY = 500; // milliseconds
     private Handler debounceHandler = new Handler();
     private Runnable debounceRunnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -266,11 +267,11 @@ public class ProductActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public void onNoProductsFound(int count,String searchQuery) {
+            public void onNoProductsFound(int count, String searchQuery) {
                 if (count == 0) {
                     listView.setVisibility(View.GONE);
                     noProductFound.setVisibility(View.VISIBLE);
-                    noProductFound.setText("There is no product of this name "+searchQuery);
+                    noProductFound.setText("There is no product of this name " + searchQuery);
                 } else {
                     listView.setVisibility(View.VISIBLE);
                     noProductFound.setVisibility(View.GONE);
@@ -304,12 +305,17 @@ public class ProductActivity extends AppCompatActivity {
         productNameTextView.setText(product.getProductName());
         String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
         // Step 1: Parse the original format
-        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MMM/yyyy", Locale.US);
         try {
-            Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
-            String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
-            schemLimiteDate.setText(formattedDate); // Set the formatted date to TextView
+            SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.ENGLISH);
+            Date offerDate = inputFormat.parse(offerLimit); // Parse using correct format
+            SimpleDateFormat todaysDate = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a"); // Adjust format as needed
+            String todayDate = todaysDate.format(new Date());
+            Date todays = todaysDate.parse(todayDate); // Parse using correct format
+            if (offerDate.after(todays)) { // Check if the offer is upcoming
+                schemLimiteDate.setText(offerLimit);
+            } else {
+                schemLimiteDate.setText("--");
+            }
         } catch (Exception e) {
             e.printStackTrace(); // Handle parsing error
         }

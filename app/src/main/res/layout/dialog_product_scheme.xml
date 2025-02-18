@@ -41,7 +41,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Product Name -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,7 +110,6 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
-        <!-- Product Size -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,7 +133,6 @@
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
         </LinearLayout>
-        <!-- Product Size -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -159,9 +156,6 @@
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
         </LinearLayout>
-        <!-- Product Size -->
-
-        <!-- Discount with Enhanced Styling -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -185,8 +179,6 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
-
-        <!-- Discount with Enhanced Styling -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
