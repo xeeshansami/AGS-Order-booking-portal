@@ -86,7 +86,7 @@
                     android:background="@color/colorPrimary"
                     android:padding="10dp"
                     android:text="Pending Orders"
-                    android:textColor="@color/white" />
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/pending_orders"
@@ -114,7 +114,7 @@
                     android:background="@color/colorPrimary"
                     android:padding="10dp"
                     android:text="Pending Amount"
-                    android:textColor="@color/white" />
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/pending_Amount"
@@ -157,7 +157,7 @@
                         android:background="@color/colorPrimary"
                         android:padding="10dp"
                         android:text="Todays Orders"
-                        android:textColor="@color/white" />
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:textSize="10sp"
@@ -188,7 +188,7 @@
                         android:padding="10dp"
                         android:textSize="10sp"
                         android:text="Todays Amount"
-                        android:textColor="@color/white" />
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:id="@+id/todays_Amount"
@@ -219,7 +219,7 @@
                         android:background="@color/colorPrimary"
                         android:padding="10dp"
                         android:text="Todays Customers"
-                        android:textColor="@color/white" />
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:textSize="10sp"
@@ -264,7 +264,7 @@
                         android:background="@color/colorPrimary"
                         android:padding="10dp"
                         android:text="MTD Orders"
-                        android:textColor="@color/white" />
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:textSize="10sp"
@@ -295,7 +295,7 @@
                         android:padding="10dp"
                         android:textSize="10sp"
                         android:text="MTD Amount"
-                        android:textColor="@color/white" />
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:id="@+id/total_Amount_of_mtd"
@@ -326,7 +326,7 @@
                         android:background="@color/colorPrimary"
                         android:padding="10dp"
                         android:text="MTD Customers"
-                        android:textColor="@color/white" />
+                        android:textColor="#FFFFFF" />
 
                     <TextView
                         android:textSize="10sp"
@@ -387,7 +387,7 @@
                     android:layout_weight=".60"
                     android:background="@color/grey"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/white"
+                    android:textColor="#FFFFFF"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp" />
 
@@ -413,7 +413,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".60"
-                    android:textColor="@color/white"
+                    android:textColor="#FFFFFF"
                     android:background="@color/grey"
                     android:gravity="center_horizontal"
                     android:paddingTop="10dp"

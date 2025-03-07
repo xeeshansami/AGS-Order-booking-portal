@@ -295,9 +295,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             }
                         });
                     }
-
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
                 }
             });
         } catch (Exception e) {
