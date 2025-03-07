@@ -955,7 +955,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
         utils.hideLoader();
     }
-
     public PdfPCell createCellForHeader(String content, int colspan, int rowspan, int border, Font font, int Align) {
         PdfPCell cell = new PdfPCell(new Phrase(content, font));
         cell.setColspan(colspan);
