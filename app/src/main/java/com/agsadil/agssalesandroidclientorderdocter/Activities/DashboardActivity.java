@@ -633,7 +633,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         syncBtn.setClickable(true);
                     }
                     utils.hideLoader();
-                    utils.showMessage(DashboardActivity.this,"Some error occurred in authentication. Kindly inform your administrator.");
+                    utils.showMessage(DashboardActivity.this, "Some error occurred in authentication. Kindly inform your administrator.");
                 }
             });
         } else {
@@ -676,11 +676,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                 ChangeSyncButtonState();
                                 populateDashboard();
                                 utils.hideLoader();
-                                utils.showMessage(DashboardActivity.this,"Sync Successful");
+                                utils.showMessage(DashboardActivity.this, "Sync Successful");
                                 new productReset(DashboardActivity.this, db, utils).execute();
                             } else {
                                 utils.hideLoader();
-                                utils.showMessage(DashboardActivity.this,"Sync Failed");
+                                utils.showMessage(DashboardActivity.this, "Sync Failed");
                             }
                         } catch (JSONException e) {
                             utils.hideLoader();
@@ -737,7 +737,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else {
             syncBtn.setEnabled(true);
             syncBtn.setClickable(true);
-            this.utils.showMessage(DashboardActivity.this,"All data is already uploaded.");
+            this.utils.showMessage(DashboardActivity.this, "All data is already uploaded.");
             utils.hideLoader();
         }
 
@@ -784,7 +784,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             writer.append(text);
             writer.flush();
             writer.close();
-            this.utils.showMessage(DashboardActivity.this,"Saved your text file in AGS folder");
+            this.utils.showMessage(DashboardActivity.this, "Saved your text file in AGS folder");
         } catch (Exception e) {
             return;
         } finally {
@@ -936,7 +936,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } catch (Exception e) {
             return;
         } finally {
-            this.utils.showMessage(DashboardActivity.this,"Saved your pdf file in AGS folder");
+            this.utils.showMessage(DashboardActivity.this, "Saved your pdf file in AGS folder");
             utils.alertBox(DashboardActivity.this, "Export PDF File", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
@@ -1046,10 +1046,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             super.onPostExecute(count);
             this.utils.hideLoader();
             Log.i("CountOfProducts", "Updated " + count + " products");
-            this.utils.showMessage(context,"Sync Successfully");
+            this.utils.showMessage(context, "Sync Successfully");
         }
     }
-
 
 
     @Override
@@ -1409,7 +1408,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             intentUrl.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intentUrl);
         } catch (ActivityNotFoundException e) {
-            this.utils.showMessage(DashboardActivity.this,"No PDF Viewer Installed");
+            this.utils.showMessage(DashboardActivity.this, "No PDF Viewer Installed");
         }
     }
 
@@ -1452,7 +1451,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     uploadProductSyncData();
                     SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, 1);
                 } else {
-                    utils.showMessage(DashboardActivity.this,"You can only an (1) order once in a day, you can try after 24 hrs or Next Day");
+                    utils.showMessage(DashboardActivity.this, "You can only an (1) order once in a day, you can try after 24 hrs or Next Day");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
