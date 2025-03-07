@@ -106,9 +106,11 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -807,36 +809,49 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         utils.hideLoader();
     }
 
+
+    @SuppressLint("StaticFieldLeak")
     public void createPdf(List<EntityOrderAndDetails> allProdsAndDetails, final String filename) {
-        try {
-            String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
-            file = new File(dir);
-            if (!file.exists()) {
-                file.mkdirs();
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                utils.showLoader(DashboardActivity.this);
+                utils.showMessage(DashboardActivity.this, "Creating PDF...");
             }
-            File file = new File(dir, filename + ".pdf");
-            Document document = new Document();  // create the document
-            PdfWriter.getInstance(document, new FileOutputStream(file));
-            document.open();
 
-            Font head1Font = FontFactory.getFont(FontFactory.HELVETICA, 23f);
-            Font head2Font = FontFactory.getFont(FontFactory.HELVETICA, 10f);
-            Font head3Font = FontFactory.getFont(FontFactory.HELVETICA, 10f);
+            @SuppressLint("NewApi")
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
+                    file = new File(dir);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    File file = new File(dir, filename + ".pdf");
+                    Document document = new Document();  // create the document
+                    PdfWriter.getInstance(document, new FileOutputStream(file));
+                    document.open();
 
-            Paragraph p1 = new Paragraph();
-            Paragraph p2 = new Paragraph();
-            Paragraph p3 = new Paragraph();
-            Paragraph customer = new Paragraph();
+                    Font head1Font = FontFactory.getFont(FontFactory.HELVETICA, 23f);
+                    Font head2Font = FontFactory.getFont(FontFactory.HELVETICA, 10f);
+                    Font head3Font = FontFactory.getFont(FontFactory.HELVETICA, 10f);
 
-            p1.setAlignment(Element.ALIGN_CENTER);
-            p2.setAlignment(Element.ALIGN_CENTER);
-            p3.setAlignment(Element.ALIGN_CENTER);
-            customer.setAlignment(Element.ALIGN_CENTER);
-            p1.setFont(head1Font);
-            p2.setFont(head2Font);
-            p3.setFont(head3Font);
-            Date date = new Date();
-            String stringDate = DateFormat.getDateTimeInstance().format(date);
+                    Paragraph p1 = new Paragraph();
+                    Paragraph p2 = new Paragraph();
+                    Paragraph p3 = new Paragraph();
+                    Paragraph customer = new Paragraph();
+
+                    p1.setAlignment(Element.ALIGN_CENTER);
+                    p2.setAlignment(Element.ALIGN_CENTER);
+                    p3.setAlignment(Element.ALIGN_CENTER);
+                    customer.setAlignment(Element.ALIGN_CENTER);
+                    p1.setFont(head1Font);
+                    p2.setFont(head2Font);
+                    p3.setFont(head3Font);
+                    Date date = new Date();
+                    String stringDate = DateFormat.getDateTimeInstance().format(date);
         /*    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.icon);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -855,106 +870,146 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             img.setAlignment(Element.ALIGN_CENTER);*/
 
 //            p1.add("A.G & Sons Sukkur\n");
-            p2.add("Branch of A.G & Sons, Blacksmith Street Off Shahi Bazar Sukkur. Phone# 071-5625355\n");
-            p3.add("Loading Report by " + allProdsAndDetails.get(0).getOrderSalName() + " wise All Customers Date: " + stringDate + "\n\n");
+                    p2.add("Branch of A.G & Sons, Blacksmith Street Off Shahi Bazar Sukkur. Phone# 071-5625355\n");
+                    p3.add("Loading Report by " + allProdsAndDetails.get(0).getOrderSalName() + " wise All Customers Date: " + stringDate + "\n\n");
 //            document.add(img);
 //            document.add(p1);
 //            document.add(p2);
-            document.add(p3);
-            PdfPTable table = new PdfPTable(12);
-            table.setWidthPercentage(100);
-            float[] widths = new float[]{40f, 30f, 50f, 30f, 50f, 40f, 60f, 20f, 20f, 20f, 30f, 30f};
-            table.setWidths(widths);
-            try {
-                bfCell = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-                fontHeader = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD, BaseColor.WHITE);
-                fontCell = new Font(bfheader, 6, 0, BaseColor.DARK_GRAY);
-                fontSelected = new Font(bfheader, 6, 0, BaseColor.BLUE);
-                fontCustomer = new Font(bfCell, 7, 0, new BaseColor(76, 104, 162));
-            } catch (DocumentException e) {
-                utils.hideLoader();
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-                utils.hideLoader();
-            }
+                    document.add(p3);
+                    PdfPTable table = new PdfPTable(12);
+                    table.setWidthPercentage(100);
+                    float[] widths = new float[]{40f, 30f, 50f, 30f, 50f, 40f, 60f, 20f, 20f, 20f, 30f, 30f};
+                    table.setWidths(widths);
+                    try {
+                        bfCell = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+                        fontHeader = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD, BaseColor.WHITE);
+                        fontCell = new Font(bfheader, 6, 0, BaseColor.DARK_GRAY);
+                        fontSelected = new Font(bfheader, 6, 0, BaseColor.BLUE);
+                        fontCustomer = new Font(bfCell, 7, 0, new BaseColor(76, 104, 162));
+                    } catch (DocumentException e) {
+                        utils.hideLoader();
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        utils.hideLoader();
+                    }
+                    // **GROUPING LOGIC: Orders grouped by Customer Name**
+                    Map<String, List<EntityOrderAndDetails>> groupedOrders = new LinkedHashMap<>();
+                    for (EntityOrderAndDetails details : allProdsAndDetails) {
+                        groupedOrders.computeIfAbsent(details.getOrderCustName(), k -> new ArrayList<>()).add(details);
+                    }
 
-            table.addCell(createCellForHeader("InvoiceID", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("SalCode", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("SalName", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("CustCode", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("TownName", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("ProductCode", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("ProductName", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("Size", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("Rate", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("Qty", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("Bonus", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
-            table.addCell(createCellForHeader("Disc%", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
 
-            for (EntityOrderAndDetails details : allProdsAndDetails) {
-                table.addCell("");
-                table.addCell(createCell(details.getOrderCustName() + " | " + utils.convertDate(details.getOrderListDate()), 12, 2, 1, fontCustomer, Element.ALIGN_LEFT));
-                table.addCell(createCellForInvoice(details.getOrderInvoiceNo(), 1, 2, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderSalCode(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderSalName(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderCustCode(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderTownId(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderListDetailProdCode(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderListDetailProdName(), 1, 1, 1, fontCell, Element.ALIGN_LEFT));
-                table.addCell(createCell(details.getOrderListDetailProdSize(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderListDetailProdRate(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderListDetailProdQty(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderListDetailProdBonus(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-                table.addCell(createCell(details.getOrderListDetailProdDiscount(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
-            }
-            document.add(table);
-            document.addCreationDate();
-            document.close();
-        } catch (
-                FileNotFoundException e) {
-            utils.hideLoader();
-            utils.alertBox(DashboardActivity.this, "Error", e.getMessage(), "OK", new setOnitemClickListner() {
-                @Override
-                public void onClick(DialogInterface view, int i) {
-                    utils.hideLoader();
-                    view.dismiss();
-                }
-            });
-            return;
-        } catch (
-                DocumentException e) {
-            utils.hideLoader();
-            utils.alertBox(DashboardActivity.this, "Error", e.getMessage(), "OK", new setOnitemClickListner() {
-                @Override
-                public void onClick(DialogInterface view, int i) {
-                    utils.hideLoader();
-                    view.dismiss();
-                }
-            });
-            return;
-        } catch (Exception e) {
-            return;
-        } finally {
-            this.utils.showMessage(DashboardActivity.this, "Saved your pdf file in AGS folder");
-            utils.alertBox(DashboardActivity.this, "Export PDF File", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            Intent shareIntent = shareFile(file, filename + ".pdf");
-                            startActivity(shareIntent);
-                            view.dismiss();
-                        }
-                    }, new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            openFile(file, filename + ".pdf");
-                            view.dismiss();
+                    // **Header Row**
+                    table.addCell(createCellForHeader("InvoiceID", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("SalCode", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("SalName", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("CustCode", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("TownName", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("ProductCode", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("ProductName", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("Size", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("Rate", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("Qty", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("Bonus", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+                    table.addCell(createCellForHeader("Disc%", 0, 1, 1, fontHeader, Element.ALIGN_CENTER));
+
+                    // **Add Orders for Each Customer**
+                    for (Map.Entry<String, List<EntityOrderAndDetails>> entry : groupedOrders.entrySet()) {
+                        String customerName = entry.getKey();
+                        List<EntityOrderAndDetails> customerOrders = entry.getValue();
+
+                        // **Customer Name Row (Merged Across All Columns)**
+                        PdfPCell customerCell = new PdfPCell(new Phrase(customerName, fontCustomer));
+                        customerCell.setColspan(12);
+                        customerCell.setBackgroundColor(BaseColor.WHITE);
+                        customerCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                        table.addCell(customerCell);
+
+                        // **Add Each Order for the Customer**
+                        for (EntityOrderAndDetails details : customerOrders) {
+                            table.addCell(createCell(details.getOrderInvoiceNo(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderSalCode(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderSalName(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderCustCode(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderTownId(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdCode(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdName(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdSize(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdRate(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdQty(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdBonus(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
+                            table.addCell(createCell(details.getOrderListDetailProdDiscount(), 1, 1, 1, fontCell, Element.ALIGN_CENTER));
                         }
                     }
-            );
-        }
-        utils.hideLoader();
+
+                    document.add(table);
+                    document.addCreationDate();
+                    document.close();
+
+                } catch (
+                        FileNotFoundException e) {
+                    utils.hideLoader();
+                    utils.alertBox(DashboardActivity.this, "Error", e.getMessage(), "OK", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            utils.hideLoader();
+                            view.dismiss();
+                        }
+                    });
+                    return false;
+                } catch (
+                        DocumentException e) {
+                    utils.hideLoader();
+                    utils.alertBox(DashboardActivity.this, "Error", e.getMessage(), "OK", new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) {
+                            utils.hideLoader();
+                            view.dismiss();
+                        }
+                    });
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }finally {
+                    return true;
+                }
+
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                super.onPostExecute(success);
+                utils.hideLoader();
+                if (success) {
+                    showDialogOnSuccess(filename);
+                } else {
+                    utils.alertBox(DashboardActivity.this, "Error", "Failed to generate PDF!", "OK", (dialog, i) -> dialog.dismiss());
+                }
+            }
+        }.execute();
     }
+
+    // **Show Dialog When PDF is Created**
+    private void showDialogOnSuccess(String filename) {
+        utils.showMessage(DashboardActivity.this, "Saved your pdf file in AGS folder");
+        utils.alertBox(DashboardActivity.this, "Export PDF File", "What would you like to do for this file?", "Share", "Cancel", "Open", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        Intent shareIntent = shareFile(file, filename + ".pdf");
+                        startActivity(shareIntent);
+                        view.dismiss();
+                    }
+                }, new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        openFile(file, filename + ".pdf");
+                        view.dismiss();
+                    }
+                }
+        );
+    }
+
     public PdfPCell createCellForHeader(String content, int colspan, int rowspan, int border, Font font, int Align) {
         PdfPCell cell = new PdfPCell(new Phrase(content, font));
         cell.setColspan(colspan);
@@ -989,9 +1044,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         cell.setRowspan(rowspan);
         cell.setBorder(border);
         cell.setBorder(Rectangle.BOX);
+        boolean isDarkMode = session.isDarkMode();
         cell.setBorderColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.grey)));
         cell.setHorizontalAlignment(Align);
-        cell.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.white)));
+        if (!isDarkMode) {
+            cell.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.white)));
+        } else {
+            cell.setBackgroundColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.colorBlack)));
+        }
         return cell;
     }
 
