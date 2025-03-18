@@ -23,8 +23,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -665,7 +667,42 @@ public class ProductOfferActivity extends AppCompatActivity {
         this.product = product;
 
         final EditText productName = (EditText) promptsView.findViewById(R.id.productName);
+        TextView schemLimiteDate = promptsView.findViewById(R.id.schemLimiteDate);
+        TextView schemProductPrice = promptsView.findViewById(R.id.schemProductPrice);
+        TextView schemProductSize = promptsView.findViewById(R.id.schemProductSize);
+        TextView schemProductOffer = promptsView.findViewById(R.id.schemProductOffer);
+        TextView schemeCompany = promptsView.findViewById(R.id.schemeCompany);
+        TextView schemGroup = promptsView.findViewById(R.id.schemGroup);
+        TextView schemSalesTax = promptsView.findViewById(R.id.schemSalesTax);
         productQty = (EditText) promptsView.findViewById(R.id.productQty);
+        String offerLimit = product.getProd_OfferLimit(); // Example: "1/1/2025 12:00:00 AM"
+        // Step 1: Parse the original format
+        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a", Locale.US);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MMM/yyyy", Locale.US);
+        try {
+            Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
+            String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
+            schemLimiteDate.setText(formattedDate); // Set the formatted date to TextView
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle parsing error
+        }
+        schemSalesTax.setText(product.getProd_salestax());
+        if (!product.getProd_Offer().isEmpty()) {
+            schemProductOffer.setText(product.getProd_Offer());
+        } else {
+            schemProductOffer.setText("No Offer");
+        }
+        schemProductSize.setText(product.getProductSize());
+        schemProductPrice.setText(product.getProductPrice() + " PKR");
+        schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+        schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
+        schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
+        SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
+//        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#B0BEC5")), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  // Grey color for original price
+        schemeCompany.setText(spannableString);
+        schemeCompany.setGravity(Gravity.CENTER);
+        schemeCompany.setGravity(Gravity.CENTER);
         new Handler().postDelayed(new Runnable() {
 
             public void run() {
@@ -684,7 +721,46 @@ public class ProductOfferActivity extends AppCompatActivity {
         imm.showSoftInput(productQty, InputMethodManager.SHOW_IMPLICIT);
         productBonus = (EditText) promptsView.findViewById(R.id.productBonus);
         productDiscount = (EditText) promptsView.findViewById(R.id.productDiscount);
+        productQty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
+                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText())), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
+                }else{
+                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+        productBonus.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
+                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText())), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
+                }else{
+                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
         productName.setText(product.getProductName());
 
         // set dialog message
@@ -722,6 +798,18 @@ public class ProductOfferActivity extends AppCompatActivity {
         // show it
         alertDialog.show();
     }
+    public float getSalesTax(int productQty, float productPrice, float prod_salestax, float productBonus) {
+        if (productQty == 0) {
+            productQty = 1;
+        }
+        if (productBonus == 0) {
+            productBonus = 1;
+        }
+        float qtRate = productQty * productPrice;
+        float qtRateSales = productQty + productBonus * prod_salestax;
+        return qtRate + qtRateSales;
+    }
+
 
     public EntityProduct addProductToList() {
         EntityProductDetails detailsProd;

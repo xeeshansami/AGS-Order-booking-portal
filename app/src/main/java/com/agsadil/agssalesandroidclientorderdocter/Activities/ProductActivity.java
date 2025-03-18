@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,7 +22,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +32,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,8 +39,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -319,7 +314,7 @@ public class ProductActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace(); // Handle parsing error
         }
-        schemSalesTax.setText(product.getProd_salestax());
+        schemSalesTax.setText(String.valueOf(getSalesTax(1,product.getProductPrice(), Float.parseFloat(product.getProd_salestax()),1)));
         schemProductOffer.setText(product.getProd_Offer());
         schemProductSize.setText(product.getProductSize());
         schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
@@ -350,5 +345,10 @@ public class ProductActivity extends AppCompatActivity {
             finish();
             dialog.dismiss(); // Close the dialog after applying
         });
+    }
+    public float getSalesTax(int productQty, float productPrice, float prod_salestax, float productBonus){
+        float qtRate = productQty * productPrice ;
+        float qtRateSales = productQty + productBonus * prod_salestax ;
+        return qtRate+qtRateSales;
     }
 }

@@ -28,8 +28,10 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -769,7 +771,8 @@ public class OrderBooking extends Fragment {
             schemProductOffer.setText("No Offer");
         }
         schemProductSize.setText(product.getProductSize());
-        schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
+        schemProductPrice.setText(product.getProductPrice() + " PKR");
+        schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
         schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
         schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
         SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
@@ -796,7 +799,46 @@ public class OrderBooking extends Fragment {
         imm.showSoftInput(productQty, InputMethodManager.SHOW_IMPLICIT);
         productBonus = (EditText) promptsView.findViewById(R.id.productBonus);
         productDiscount = (EditText) promptsView.findViewById(R.id.productDiscount);
+        productQty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
+                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText())), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
+                }else{
+                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+        productBonus.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
+                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText())), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
+                }else{
+                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
         productName.setText(product.getProductName());
 
         // set dialog message
@@ -850,6 +892,18 @@ public class OrderBooking extends Fragment {
 
         // show it
         alertDialog.show();
+    }
+
+    public float getSalesTax(int productQty, float productPrice, float prod_salestax, float productBonus) {
+        if (productQty == 0) {
+            productQty = 1;
+        }
+        if (productBonus == 0) {
+            productBonus = 1;
+        }
+        float qtRate = productQty * productPrice;
+        float qtRateSales = productQty + productBonus * prod_salestax;
+        return qtRate + qtRateSales;
     }
 
     public static void hideKeyboard(Activity activity) {
