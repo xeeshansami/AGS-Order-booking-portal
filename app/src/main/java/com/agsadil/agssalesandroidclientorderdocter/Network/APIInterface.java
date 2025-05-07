@@ -1,7 +1,11 @@
 package com.agsadil.agssalesandroidclientorderdocter.Network;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface APIInterface {
@@ -16,7 +20,14 @@ public interface APIInterface {
 
     @GET("products2?")
     Call<String> getProductsForSPO(@Query("compid") String compid, @Query("branch") String branch);
-
+    @FormUrlEncoded
+    @POST("agssalesclient.asmx/CustomerPurchaseHistoryQuery")
+    Call<ResponseBody> getPurchaseHistory(
+            @Field("branch") String branch,
+            @Field("CustomerId") String customerId,
+            @Field("dtFrom") String dtFrom,
+            @Field("dtEnd") String dtEnd
+    );
     @GET("salesman?")
     Call<String> getSalesman(@Query("branch") String branch);
 

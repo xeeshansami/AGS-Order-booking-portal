@@ -20,12 +20,24 @@ import com.agsadil.agssalesandroidclientorderdocter.Adapters.ProductAdapter;
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProduct;
 import com.agsadil.agssalesandroidclientorderdocter.Models.Product;
+import com.agsadil.agssalesandroidclientorderdocter.Models.PurchaseHistoryItem;
+import com.agsadil.agssalesandroidclientorderdocter.Network.APIClient;
+import com.agsadil.agssalesandroidclientorderdocter.Network.APIInterface;
+import com.agsadil.agssalesandroidclientorderdocter.Network.IOnConnectionTimeoutListener;
 import com.agsadil.agssalesandroidclientorderdocter.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryFragment extends Fragment {
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class HistoryFragment extends Fragment implements IOnConnectionTimeoutListener {
     private DatabaseHandler db;
     private RecyclerView recyclerView;
     private LinearLayout product_row_header;
@@ -42,11 +54,11 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
-
         product_row_header = rootView.findViewById(R.id.product_row_header);
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         db = new DatabaseHandler(getActivity());
+        fetchHistory();
         productsList = db.getAllProducts();
         EditText searchInput = rootView.findViewById(R.id.searchInput);
         TextView noDataMessage = rootView.findViewById(R.id.noDataMessage);
@@ -83,5 +95,48 @@ public class HistoryFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void fetchHistory() {
+        APIInterface consumerAPI = APIClient.getClient(this).create(APIInterface.class);
+        Call<ResponseBody> call = consumerAPI.getPurchaseHistory("7", "5968", "1/1/2025", "10/1/2025");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String xmlResponse = response.body().string();
+
+                        // Extract JSON string from XML
+                        String json = xmlResponse
+                                .replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>", "")
+                                .replaceAll("<string[^>]*>", "")
+                                .replace("</string>", "")
+                                .replace("&amp;", "&");
+
+                        // Parse JSON array
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<List<PurchaseHistoryItem>>(){}.getType();
+                        List<PurchaseHistoryItem> items = gson.fromJson(json, listType);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // Handle error
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+    @Override
+    public void onConnectionTimeout() {
+
+
     }
 }
