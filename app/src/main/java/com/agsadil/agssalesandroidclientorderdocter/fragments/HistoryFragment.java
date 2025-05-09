@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,9 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.APIClient;
 import com.agsadil.agssalesandroidclientorderdocter.Network.APIInterface;
 import com.agsadil.agssalesandroidclientorderdocter.Network.IOnConnectionTimeoutListener;
 import com.agsadil.agssalesandroidclientorderdocter.R;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedViewModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,6 +54,8 @@ public class HistoryFragment extends Fragment implements IOnConnectionTimeoutLis
         // Required empty public constructor
     }
 
+    SharedPreferenceHandler sharedPreferenceManager;
+
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +65,13 @@ public class HistoryFragment extends Fragment implements IOnConnectionTimeoutLis
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         db = new DatabaseHandler(getActivity());
-        fetchHistory();
+        sharedPreferenceManager = new SharedPreferenceHandler(getActivity());
+
+        SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        viewModel.getSharedValue().observe(getViewLifecycleOwner(), customerID -> {
+            //5968
+            fetchHistory(sharedPreferenceManager.getbranch(), customerID);
+        });
         productsList = db.getAllProducts();
         EditText searchInput = rootView.findViewById(R.id.searchInput);
         TextView noDataMessage = rootView.findViewById(R.id.noDataMessage);
@@ -97,9 +110,9 @@ public class HistoryFragment extends Fragment implements IOnConnectionTimeoutLis
         return rootView;
     }
 
-    private void fetchHistory() {
+    private void fetchHistory(String branch, String customerID) {
         APIInterface consumerAPI = APIClient.getClient(this).create(APIInterface.class);
-        Call<ResponseBody> call = consumerAPI.getPurchaseHistory("7", "5968", "1/1/2025", "10/1/2025");
+        Call<ResponseBody> call = consumerAPI.getPurchaseHistory(branch, customerID);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -116,7 +129,8 @@ public class HistoryFragment extends Fragment implements IOnConnectionTimeoutLis
 
                         // Parse JSON array
                         Gson gson = new Gson();
-                        Type listType = new TypeToken<List<PurchaseHistoryItem>>(){}.getType();
+                        Type listType = new TypeToken<List<PurchaseHistoryItem>>() {
+                        }.getType();
                         List<PurchaseHistoryItem> items = gson.fromJson(json, listType);
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -66,6 +67,7 @@ import com.agsadil.agssalesandroidclientorderdocter.Models.EntitySalesman;
 import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedViewModel;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.onItemClickListener2;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -147,6 +149,8 @@ public class OrderBooking extends Fragment {
                     int customerId = Integer.parseInt(data.getStringExtra("customerId"));
                     selectedCustomer = db.getCustomer(customerId);
                     textViewCustomer.setText(selectedCustomer.getCustomerName());
+                    SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+                    viewModel.setSharedValue(String.valueOf(customerId));
                     textViewCustomer.setVisibility(View.VISIBLE);
                     textViewCustomerTown.setText(selectedCustomer.getCustomerAddress());
                     textViewCustomerTown.setVisibility(View.VISIBLE);
@@ -188,6 +192,7 @@ public class OrderBooking extends Fragment {
             db = new DatabaseHandler(getActivity());
             sp = new SharedPreferenceHandler(getActivity());
             sessionManager = new SessionManager(getActivity());
+
             boolean isDarkMode = sessionManager.isDarkMode();
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
