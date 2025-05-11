@@ -765,27 +765,22 @@ public class OrderBooking extends Fragment {
         try {
             Date offerDate = inputFormat.parse(offerLimit); // Convert string to Date
             String formattedDate = outputFormat.format(offerDate); // Convert Date to "dd-MMM-yyyy" format
-            schemLimiteDate.setText(formattedDate); // Set the formatted date to TextView
+            schemLimiteDate.setText(formattedDate.trim()); // Set the formatted date to TextView
         } catch (Exception e) {
             e.printStackTrace(); // Handle parsing error
         }
-        schemSalesTax.setText(product.getProd_salestax());
+        schemSalesTax.setText(product.getProd_salestax().trim());
         if (!product.getProd_Offer().isEmpty()) {
-            schemProductOffer.setText(product.getProd_Offer());
+            schemProductOffer.setText(product.getProd_Offer().trim());
         } else {
-            schemProductOffer.setText("No Offer");
+            schemProductOffer.setText("No Offer".trim());
         }
-        schemProductSize.setText(product.getProductSize());
-        schemProductPrice.setText(product.getProductPrice() + " PKR");
+        schemProductSize.setText(product.getProductSize().trim());
+        schemProductPrice.setText(product.getProductPrice() + " PKR".trim());
         schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
         schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
         schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
-        SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
-//        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#B0BEC5")), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  // Grey color for original price
-        schemeCompany.setText(spannableString);
-        schemeCompany.setGravity(Gravity.CENTER);
-        schemeCompany.setGravity(Gravity.CENTER);
+        schemeCompany.setText(String.valueOf(product.getProd_Group_Name()));
         new Handler().postDelayed(new Runnable() {
 
             public void run() {
@@ -813,9 +808,9 @@ public class OrderBooking extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
-                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText())), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
+                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText()).trim()), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
                 }else{
-                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax().trim()), 1) + " PKR");
                 }
             }
 
@@ -833,9 +828,9 @@ public class OrderBooking extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
-                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText())), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
+                    schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText()).trim()), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
                 }else{
-                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR");
+                    schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR".trim());
                 }
             }
 
@@ -844,7 +839,7 @@ public class OrderBooking extends Fragment {
                 // Not needed
             }
         });
-        productName.setText(product.getProductName());
+        productName.setText(product.getProductName().trim());
 
         // set dialog message
         alertDialogBuilder

@@ -1,21 +1,30 @@
 package com.agsadil.agssalesandroidclientorderdocter.Network;
 
+import android.content.Context;
+
 import com.agsadil.agssalesandroidclientorderdocter.BuildConfig;
+import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.ConnectivityInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 //import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.HttpUrl;
@@ -42,172 +51,95 @@ public class APIClient {
      * @param listener
      * @return
      */
-    public static Retrofit getClient(IOnConnectionTimeoutListener listener) {
+
+    public static Retrofit getClient(Context context, IOnConnectionTimeoutListener listener) {
         timeoutListener = listener;
+
         if (retrofit == null) {
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(context);
+            X509TrustManager trustManager = getTrustManager(context);
 
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-            };
-
-            // Install the all-trusting trust manager
-            SSLContext sslContext = null;
-            try {
-                sslContext = SSLContext.getInstance("SSL");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            try {
-                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            } catch (KeyManagementException e) {
-                e.printStackTrace();
+            if (sslSocketFactory != null && trustManager != null) {
+                builder.sslSocketFactory(sslSocketFactory, trustManager);
             }
 
-            // Create an all-trusting hostname verifier
-            HostnameVerifier allHostsValid = (hostname, session) -> true;
+            builder.hostnameVerifier((hostname, session) -> true); // Optional: use strict hostname in prod
 
-            OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-            builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
-                    .hostnameVerifier(allHostsValid);
             builder.readTimeout(APIConstants.READ_TIMEOUT, TimeUnit.SECONDS);
             builder.writeTimeout(APIConstants.WRITE_TIMEOUT, TimeUnit.SECONDS);
             builder.connectTimeout(APIConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
             builder.callTimeout(30, TimeUnit.SECONDS);
+
             if (BuildConfig.DEBUG) {
-//                if (MyApplication.getConsumerApplication() != null) {
-//                    builder.addInterceptor(new ChuckInterceptor(MyApplication.getConsumerApplication()));
-//                }
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                 builder.addInterceptor(interceptor);
             }
-            builder.addInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    final Request original = chain.request();
-                    final HttpUrl originalHttpUrl = original.url();
 
-                    final HttpUrl url = originalHttpUrl.newBuilder()
-                            .build();
-
-                    // Request customization: add request headers
-                    final Request.Builder requestBuilder = original.newBuilder()
-                            .url(url);
-
-                    final Request request = requestBuilder.build();
-                    return chain.proceed(request);
-                }
+            builder.addInterceptor(chain -> {
+                Request original = chain.request();
+                HttpUrl url = original.url().newBuilder().build();
+                Request request = original.newBuilder().url(url).build();
+                return chain.proceed(request);
             });
 
-//            builder.addInterceptor(new ConnectivityInterceptor(MyApplication.getApplication()));
-            Gson gson = new GsonBuilder()
-                    .setLenient()
-                    .create();
             OkHttpClient client = builder.build();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.baseUrl)
                     .client(client)
-                    .addConverterFactory(SimpleXmlConverterFactory.create())
-//                    .addConverterFactory(ScalarsConverterFactory.create()) // For plain text (XML string)
-//                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .client(getUnsafeOkHttpClient())
+                    .addConverterFactory(SimpleXmlConverterFactory.create()) // or GsonConverterFactory.create()
                     .build();
         }
+
         return retrofit;
     }
-    private static OkHttpClient getUnsafeOkHttpClient() {
+
+    // Load the certificate and return the SSL Socket Factory
+    private static SSLSocketFactory getSSLSocketFactory(Context context) {
         try {
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {}
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {}
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[]{}; }
-                    }
-            };
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream certInput = context.getResources().openRawResource(R.raw.agssukker); // your .cert/.pem file
+            Certificate ca = cf.generateCertificate(certInput);
+            certInput.close();
 
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
 
-            return new OkHttpClient.Builder()
-                    .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
-                    .hostnameVerifier((hostname, session) -> true)
-                    .build();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore);
 
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
+
+            return sslContext.getSocketFactory();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
     }
-    public static Retrofit getClient(IOnConnectionTimeoutListener listener, long timeout) {
-        timeoutListener = listener;
-        if (retrofitLongTimeout == null) {
-            OkHttpClient.Builder builder = new OkHttpClient().newBuilder().readTimeout(timeout, TimeUnit.SECONDS).
-                    writeTimeout(timeout, TimeUnit.SECONDS).connectTimeout(timeout, TimeUnit.SECONDS);
 
-//            if (BuildConfig.DEBUG) {
-//                if (MyApplication.getConsumerApplication() != null) {
-//                    builder.addInterceptor(new ChuckInterceptor(MyApplication.getConsumerApplication()));
-//                }
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addInterceptor(interceptor);
-//            }
-            builder.addInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    final Request original = chain.request();
-                    final HttpUrl originalHttpUrl = original.url();
-
-                    final HttpUrl url = originalHttpUrl.newBuilder()
-                            .build();
-
-                    // Request customization: add request headers
-                    final Request.Builder requestBuilder = original.newBuilder()
-                            .url(url);
-
-                    final Request request = requestBuilder.build();
-                    return chain.proceed(request);
-                }
-            });
-
-            builder.addInterceptor(new ConnectivityInterceptor(MyApplication.getApplication()));
-
-            OkHttpClient client = builder.build();
-
-            retrofitLongTimeout = new Retrofit.Builder()
-                    .baseUrl(Constant.baseUrl)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
-//                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .build();
-        }
-        return retrofitLongTimeout;
-    }
-
-    private static Response OnIntercept(Interceptor.Chain chain) throws IOException {
+    // Extract TrustManager from cert
+    private static X509TrustManager getTrustManager(Context context) {
         try {
-            if (BuildConfig.DEBUG) {
-                /*LoggerUtil.printInfo(chain.request().url().toString());
-                LoggerUtil.printInfo(chain.request().headers().toString());*/
-            }
-            Response response = chain.proceed(chain.request());
-            return response;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            if (timeoutListener != null)
-                timeoutListener.onConnectionTimeout();
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream certInput = context.getResources().openRawResource(R.raw.agssukker);
+            Certificate ca = cf.generateCertificate(certInput);
+            certInput.close();
+
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore);
+
+            return (X509TrustManager) tmf.getTrustManagers()[0];
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

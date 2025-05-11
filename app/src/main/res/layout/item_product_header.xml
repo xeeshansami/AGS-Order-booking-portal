@@ -16,7 +16,7 @@
             android:fontFamily="@font/imprima"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Product ID"
+            android:text="Product Code"
             android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
@@ -41,6 +41,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorBlack"></View>
 
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -48,7 +49,7 @@
             android:fontFamily="@font/imprima"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Size"
+            android:text="Product Rate"
             android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
@@ -64,7 +65,7 @@
             android:fontFamily="@font/imprima"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Price"
+            android:text="Product Bonus"
             android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
@@ -72,7 +73,6 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/colorBlack"></View>
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -80,24 +80,9 @@
             android:fontFamily="@font/imprima"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Product Company"
+            android:text="Product Quantity"
             android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorBlack"></View>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/imprima"
-            android:gravity="center"
-            android:padding="2dp"
-            android:text="Group Name"
-            android:textColor="@color/colorBlack"
-            android:textStyle="bold" />
     </TableRow>
 </LinearLayout>

@@ -320,12 +320,7 @@ public class ProductActivity extends AppCompatActivity {
         schemProductPrice.setText(String.valueOf(product.getProductPrice() + " PKR"));
         schemGroup.setText(String.valueOf("(" + product.getProductCompany()) + ")");
         schemGroup.setTextColor(Color.parseColor("#069319"));  // Set color for discounted price (e.g., pink)
-        SpannableString spannableString = new SpannableString(String.valueOf(product.getProd_Group_Name()));
-//        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#B0BEC5")), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  // Grey color for original price
-        schemeCompany.setText(spannableString);
-        schemeCompany.setGravity(Gravity.CENTER);
-        schemeCompany.setGravity(Gravity.CENTER);
+        schemeCompany.setText(String.valueOf(product.getProd_Group_Name()));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView)
                 .setCancelable(false) // Prevent dialog from closing when tapping outside

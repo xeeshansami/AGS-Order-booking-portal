@@ -42,21 +42,23 @@
         </LinearLayout>
 
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Product Name:"
+                android:text="Name:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:gravity="right"
                 android:id="@+id/productName"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
@@ -65,21 +67,23 @@
                 android:textSize="16sp" />
         </LinearLayout>
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Product Price:"
+                android:text="Price:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:gravity="right"
                 android:id="@+id/schemProductPrice"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
@@ -88,21 +92,23 @@
                 android:textSize="16sp" />
         </LinearLayout>
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Product SaleTax:"
+                android:text="SaleTax:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:gravity="right"
                 android:id="@+id/schemSalesTax"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
@@ -111,21 +117,23 @@
                 android:textStyle="bold" />
         </LinearLayout>
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Product Size:"
+                android:text="Size:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:gravity="right"
                 android:id="@+id/schemProductSize"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
@@ -134,21 +142,23 @@
                 android:textSize="16sp" />
         </LinearLayout>
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Product Offer:"
+                android:text="Offer:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:gravity="right"
                 android:id="@+id/schemProductOffer"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
@@ -157,21 +167,23 @@
                 android:textSize="16sp" />
         </LinearLayout>
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Limited Time Offer:"
+                android:text="Duration:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:gravity="right"
                 android:id="@+id/schemLimiteDate"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text=""
@@ -180,24 +192,26 @@
                 android:textStyle="bold" />
         </LinearLayout>
         <LinearLayout
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Company &amp; Group:"
+                android:text="CompanyGroup:"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp" />
 
             <TextView
+                android:layout_weight="1"
+                android:gravity="right"
                 android:id="@+id/schemeCompany"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:gravity="center"
                 android:text=""
                 android:textStyle="bold"
                 android:textColor="@color/colorBlack"

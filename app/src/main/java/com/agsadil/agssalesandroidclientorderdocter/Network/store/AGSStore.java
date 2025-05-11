@@ -12,7 +12,12 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.hand
 public class AGSStore extends Application implements IOnConnectionTimeoutListener {
     private static AGSStore store;
 
-    APIInterface consumerAPI = APIClient.getClient(this).create(APIInterface.class);
+    APIInterface consumerAPI = APIClient.getClient(this, new IOnConnectionTimeoutListener() {
+        @Override
+        public void onConnectionTimeout() {
+
+        }
+    }).create(APIInterface.class);
 
     private AGSStore() {
     }

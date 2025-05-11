@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProduct;
+import com.agsadil.agssalesandroidclientorderdocter.Models.PurchaseHistoryItem;
 import com.agsadil.agssalesandroidclientorderdocter.R;
 
 import java.util.ArrayList;
@@ -16,10 +17,10 @@ import java.util.List;
 import android.text.TextUtils;
 
 public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<EntityProduct> products;
-    private List<EntityProduct> filteredProducts;
+    private List<PurchaseHistoryItem> products;
+    private List<PurchaseHistoryItem> filteredProducts;
 
-    public ProductAdapter(List<EntityProduct> products) {
+    public ProductAdapter(List<PurchaseHistoryItem> products) {
         this.products = products;
         this.filteredProducts = new ArrayList<>(products); // Initialize filtered list
     }
@@ -39,13 +40,12 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof RowViewHolder) {
             RowViewHolder rowHolder = (RowViewHolder) holder;
-            EntityProduct product = filteredProducts.get(position);
-            rowHolder.productName.setText(product.getProductName());
-            rowHolder.productCompany.setText(String.valueOf(product.getProductSize()));
-            rowHolder.productId.setText(String.valueOf(product.getProductId()));
-            rowHolder.Prod_Group_Name.setText(String.valueOf(product.getProd_Group_Name()));
-            rowHolder.productQuantity.setText(String.valueOf(product.getProductSize()));
-            rowHolder.productPrice.setText(String.format("$%.2f", product.getProductPrice()));
+            PurchaseHistoryItem product = filteredProducts.get(position);
+            rowHolder.productId.setText(String.valueOf(product.getItemCode()));
+            rowHolder.productName.setText(product.getItemName());
+            rowHolder.productQuantity.setText(String.valueOf(product.getQty()));
+            rowHolder.productPrice.setText(product.getRate());
+            rowHolder.productCompany.setText(String.valueOf(product.getBonus()));
         }
     }
 
@@ -56,7 +56,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public static class RowViewHolder extends RecyclerView.ViewHolder {
-        TextView productName, productQuantity, productPrice, productCompany, productId, Prod_Group_Name;
+        TextView productName, productQuantity, productPrice, productCompany, productId;
 
         public RowViewHolder(View itemView) {
             super(itemView);
@@ -65,7 +65,6 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             productPrice = itemView.findViewById(R.id.productPrice);
             productCompany = itemView.findViewById(R.id.productCompany);
             productId = itemView.findViewById(R.id.productId);
-            Prod_Group_Name = itemView.findViewById(R.id.productGroup);
         }
     }
 
@@ -79,10 +78,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (TextUtils.isEmpty(query)) {
             filteredProducts = new ArrayList<>(products);
         } else {
-            List<EntityProduct> filteredList = new ArrayList<>();
-            for (EntityProduct product : products) {
-                if (product.getProductName().toLowerCase().contains(query.toLowerCase()) ||
-                        String.valueOf(product.getProductId()).contains(query)) {
+            List<PurchaseHistoryItem> filteredList = new ArrayList<>();
+            for (PurchaseHistoryItem product : products) {
+                if (product.getItemName().toLowerCase().contains(query.toLowerCase())
+                        || String.valueOf(product.getItemCode()).contains(query)
+                        || String.valueOf(product.getQty()).contains(query)
+                        || String.valueOf(product.getRate()).contains(query)
+                        || String.valueOf(product.getBonus()).contains(query)
+                ) {
                     filteredList.add(product);
                 }
             }
