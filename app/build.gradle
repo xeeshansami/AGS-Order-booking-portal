@@ -9,8 +9,8 @@ android {
         minSdkVersion 21
         //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
-        versionCode 21
-        versionName "15.1.0"
+        versionCode 22
+        versionName "15.2.0"
         multiDexEnabled true
     }
     useLibrary 'org.apache.http.legacy'
