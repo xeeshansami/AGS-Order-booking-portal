@@ -355,7 +355,6 @@ public class LoginActivity extends AppCompatActivity {
 //    private void allowExtPermissions() {
 //        Intent intent = null;
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-//            intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
 //        }
 //        intent.addCategory("android.intent.category.DEFAULT");
 //        intent.setData(Uri.parse(String.format("package:%s", getApplication().getPackageName())));
@@ -485,19 +484,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handlePermissionsGranted() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                allowExtPermissions();
-            }
-        } else {
-            isOnlineOffline();
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            if (!Environment.isExternalStorageManager()) {
+//                allowExtPermissions();
+//            }
+//        } else {
+//            isOnlineOffline();
+//        }
+        isOnlineOffline();
     }
 
     private void allowExtPermissions() {
         // Implement logic to request special permission for managing external storage
-        Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-        startActivity(intent);
     }
 
 

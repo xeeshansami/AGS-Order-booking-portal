@@ -24,6 +24,11 @@ import com.agsadil.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,11 +37,6 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
