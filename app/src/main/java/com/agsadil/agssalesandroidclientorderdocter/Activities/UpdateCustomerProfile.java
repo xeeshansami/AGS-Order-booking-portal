@@ -60,6 +60,12 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+        sp = new SharedPreferenceHandler(this);
+        db = new DatabaseHandler(this);
+        utils = new Utils(this);
+        myCalendar = Calendar.getInstance();
+        agsStore = AGSStore.getInstance();
+
         setContentView(R.layout.activity_update_customer_profile);
         toolbar=findViewById(R.id.toolbar);
         customer_date=findViewById(R.id.customer_date);
@@ -78,12 +84,15 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
                 finish();
             }
         });
+        if(getIntent().hasExtra("customerId")) {
+            selectedCustomer = new EntityCustomer();
+            int customerId = Integer.parseInt(getIntent().getStringExtra("customerId"));
+            selectedCustomer = db.getCustomer(customerId);
+            btnSelectCustomer.setText(selectedCustomer.getCustomerName() + "\n" + selectedCustomer.getCustomerAddress());
+            customer_address.setText(selectedCustomer.getCustomerAddress());
+            customer_licences.setText(selectedCustomer.getCustomerBranch());
+        }
 
-        sp = new SharedPreferenceHandler(this);
-        db = new DatabaseHandler(this);
-        utils = new Utils(this);
-        myCalendar = Calendar.getInstance();
-        agsStore = AGSStore.getInstance();
         customer_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

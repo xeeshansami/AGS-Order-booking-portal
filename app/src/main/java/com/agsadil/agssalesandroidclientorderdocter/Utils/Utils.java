@@ -545,6 +545,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                 JSONArray jsonArray = null;
                 try {
                     jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
+                    Log.i("jsonArray",jsonArray.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -795,6 +796,10 @@ public class Utils implements IOnConnectionTimeoutListener {
                         customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
                         customer.setCustomerAddress(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
                         customer.setCustomerBranch(jObject.get("Account_Branch").toString());
+                        customer.setAccountCNIC(jObject.get("Account_CNIC").toString());
+                        customer.setAccountLocation1(jObject.get("Account_LOCATION1").toString());
+                        customer.setAccountLocation2(jObject.get("Account_LOCATION2").toString());
+                        customer.setAccountTaxRation(jObject.get("Account_TAXRATIO").toString());
                         db.addAllCustomers(customer);
                     }
                     //TODO: PRODUCTS
@@ -871,6 +876,10 @@ public class Utils implements IOnConnectionTimeoutListener {
                         customer.setCustomerName(jObject.get("ACCOUNT_NAME").toString());
                         customer.setCustomerAddress(jObject.get("ACCOUNT_TOWN_NAME").toString() + " " + jObject.get("Account_Address").toString());
                         customer.setCustomerBranch(jObject.get("Account_Branch").toString());
+                        customer.setAccountCNIC(jObject.get("Account_CNIC").toString());
+                        customer.setAccountLocation1(jObject.get("Account_LOCATION1").toString());
+                        customer.setAccountLocation2(jObject.get("Account_LOCATION2").toString());
+                        customer.setAccountTaxRation(jObject.get("Account_TAXRATIO").toString());
                         db.addAllCustomers(customer);
                     }
 

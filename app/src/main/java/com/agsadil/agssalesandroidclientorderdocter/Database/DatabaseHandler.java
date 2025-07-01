@@ -43,6 +43,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String customerName = "customerName";
     private static final String customerBranch = "customerBranch";
     private static final String customerAddress = "customerAddress";
+    private static final String customerCNIC = "customerCNIC";
+    private static final String customerTaxRatio = "customerTaxRatio";
+    private static final String customerLat = "customerLat";
+    private static final String customerLng = "customerLng";
     private static final String customerSelected = "customerSelected";
 
     // endregion
@@ -140,6 +144,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + customerId + " integer primary key, "
                 + customerName + " text, "
                 + customerAddress + " text, "
+                + customerCNIC + " text, "
+                + customerTaxRatio + " text, "
+                + customerLat + " text, "
+                + customerLng + " text, "
                 + customerSelected + " integer, "
                 + customerBranch + " text" + ")";
         db.execSQL(CREATE_TABLE_CUSTOMER);
@@ -290,9 +298,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void addAllCustomers(EntityCustomer allCustomers) {
+        ContentValues values = new ContentValues();
+        values.put(customerId, allCustomers.getCustomerId());
+        values.put(customerName, allCustomers.getCustomerName());
+        values.put(customerAddress, allCustomers.getCustomerAddress());
+        values.put(customerCNIC, allCustomers.getAccountCNIC());
+        values.put(customerTaxRatio, allCustomers.getAccountTaxRation());
+        values.put(customerLat, allCustomers.getAccountLocation1());
+        values.put(customerLng, allCustomers.getAccountLocation2());
+        values.put(customerSelected, 0);
+        values.put(customerBranch, allCustomers.getCustomerBranch());
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "insert into " + TABLE_CUSTOMER + " values (" + allCustomers.getCustomerId() + ", '" + allCustomers.getCustomerName() + "','" + allCustomers.getCustomerAddress() + "',0,'" + allCustomers.getCustomerBranch() + "');";
-        db.execSQL(sql);
+        db.insert(TABLE_CUSTOMER, null, values);
     }
 
     public void addUserInfo(int userid, String username, String userRole) {
@@ -303,17 +320,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public EntityCustomer getCustomer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql = "SELECT * FROM " + TABLE_CUSTOMER + " where " + customerId + " = " + id + " LIMIT 1;";
-        Cursor cursor = db.rawQuery(sql, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        EntityCustomer customer = new EntityCustomer();
-        customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
-        customer.setCustomerName(cursor.getString(1));
-        customer.setCustomerAddress(cursor.getString(2));
-        customer.setCustomerBranch(cursor.getString(3));
+        String sql = "SELECT * FROM " + TABLE_CUSTOMER + " WHERE customerId = ? LIMIT 1";
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(id)});
 
-        // return contact
+        EntityCustomer customer = null;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            customer = new EntityCustomer();
+            customer.setCustomerId(cursor.getInt(cursor.getColumnIndexOrThrow(customerId)));
+            customer.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(customerName)));
+            customer.setCustomerAddress(cursor.getString(cursor.getColumnIndexOrThrow(customerAddress)));
+            customer.setAccountCNIC(cursor.getString(cursor.getColumnIndexOrThrow(customerCNIC)));
+            customer.setAccountTaxRation(cursor.getString(cursor.getColumnIndexOrThrow(customerTaxRatio)));
+            customer.setAccountLocation1(cursor.getString(cursor.getColumnIndexOrThrow(customerLat)));
+            customer.setAccountLocation2(cursor.getString(cursor.getColumnIndexOrThrow(customerLng)));
+            customer.setCustomerBranch(cursor.getString(cursor.getColumnIndexOrThrow(customerSelected)));
+            cursor.close();
+        }
+
         return customer;
     }
 
@@ -333,12 +357,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 EntityCustomer customer = new EntityCustomer();
-
-                customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
-                customer.setCustomerName(cursor.getString(1));
-                customer.setCustomerAddress(cursor.getString(2));
-                customer.setCustomerBranch(cursor.getString(3));
-                customer.setSelectedCustomer(Integer.parseInt((cursor.getString(cursor.getColumnIndex("customerSelected")))));
+                customer.setCustomerId(cursor.getInt(cursor.getColumnIndexOrThrow(customerId)));
+                customer.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(customerName)));
+                customer.setCustomerAddress(cursor.getString(cursor.getColumnIndexOrThrow(customerAddress)));
+                customer.setAccountCNIC(cursor.getString(cursor.getColumnIndexOrThrow(customerCNIC)));
+                customer.setAccountTaxRation(cursor.getString(cursor.getColumnIndexOrThrow(customerTaxRatio)));
+                customer.setAccountLocation1(cursor.getString(cursor.getColumnIndexOrThrow(customerLat)));
+                customer.setAccountLocation2(cursor.getString(cursor.getColumnIndexOrThrow(customerLng)));
+                customer.setCustomerBranch(cursor.getString(cursor.getColumnIndexOrThrow(customerSelected)));
 
                 // Adding contact to list
                 customerList.add(customer);
@@ -389,11 +415,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 EntityCustomer customer = new EntityCustomer();
-                customer.setCustomerId(Integer.parseInt(cursor.getString(0)));
-                customer.setCustomerName(cursor.getString(1));
-                customer.setCustomerAddress(cursor.getString(2));
-                customer.setCustomerBranch(cursor.getString(3));
-
+                customer.setCustomerId(cursor.getInt(cursor.getColumnIndexOrThrow(customerId)));
+                customer.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(customerName)));
+                customer.setCustomerAddress(cursor.getString(cursor.getColumnIndexOrThrow(customerAddress)));
+                customer.setCustomerBranch(cursor.getString(cursor.getColumnIndexOrThrow(customerSelected)));
                 // Adding contact to list
                 customerList.add(customer);
             } while (cursor.moveToNext());

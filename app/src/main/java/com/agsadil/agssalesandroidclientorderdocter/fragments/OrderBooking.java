@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,12 +31,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
+import android.text.Html;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -48,6 +46,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -57,6 +56,7 @@ import android.widget.Toast;
 import com.agsadil.agssalesandroidclientorderdocter.Activities.CustomerActivity;
 import com.agsadil.agssalesandroidclientorderdocter.Activities.DashboardActivity;
 import com.agsadil.agssalesandroidclientorderdocter.Activities.ProductActivity;
+import com.agsadil.agssalesandroidclientorderdocter.Activities.UpdateCustomerProfile;
 import com.agsadil.agssalesandroidclientorderdocter.Adapters.ProductDetailsListAdapter;
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityCustomer;
@@ -107,9 +107,10 @@ public class OrderBooking extends Fragment {
     TextView datePicker, txtSelectSalesman;
     Spinner spinnerSalesMan;
     TextView textViewCustomer, customer_selection_lbl;
-    TextView textViewCustomerTown;
+    TextView textViewCustomerTown,txtSelectCustomerCNIC;
+    ImageView btnSelectCustomerLocation;
     Button btnSelectCustomer, txtSelectProduct;
-    TextView txtNetTotal;
+    TextView txtNetTotal,txtNetTotalIncomeTaxPercent,txtNetTotalOrderValueWithTax;
     EditText txtRemarks;
     Button btnSetDate;
     private List<EntityProductDetails> productsList = new ArrayList<EntityProductDetails>();
@@ -153,8 +154,41 @@ public class OrderBooking extends Fragment {
                     viewModel.setSharedValue(String.valueOf(customerId));
                     textViewCustomer.setVisibility(View.VISIBLE);
                     textViewCustomerTown.setText(selectedCustomer.getCustomerAddress());
+                    if(!selectedCustomer.getAccountCNIC().isEmpty() || selectedCustomer.getAccountCNIC()!=null) {
+                        txtSelectCustomerCNIC.setText(Html.fromHtml("<u>Profile CNIC#: " + selectedCustomer.getAccountCNIC() + "</u>"));
+                        txtSelectCustomerCNIC.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent=new Intent(getActivity(), UpdateCustomerProfile.class);
+                                intent.putExtra("customerId",data.getStringExtra("customerId"));
+                                startActivity(intent);
+                            }
+                        });
+                    }else{
+                        txtSelectCustomerCNIC.setText(Html.fromHtml("<u>Profile CNIC#: N/A</u>"));
+                    }
                     textViewCustomerTown.setVisibility(View.VISIBLE);
+                    txtSelectCustomerCNIC.setVisibility(View.VISIBLE);
                     btnSelectCustomer.setText("Change Customer");
+
+                    btnSelectCustomerLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            double latitude = Double.parseDouble(selectedCustomer.getAccountLocation1());  // replace with your latitude
+                            double longitude =  Double.parseDouble(selectedCustomer.getAccountLocation2()); // replace with your longitude
+
+                            String uri = "geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(Customer+Location)";
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                            intent.setPackage("com.google.android.apps.maps");
+
+                            // Check if Google Maps is installed
+                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getActivity(), "Google Maps not installed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
                 if (resultCode == RESULT_CANCELED) {
                     utils.hideLoader();
@@ -227,6 +261,8 @@ public class OrderBooking extends Fragment {
                 customer_selection_lbl.setText("Select Customer");
             }
             textViewCustomer = (TextView) getView().findViewById(R.id.txtSelectCustomer);
+            txtSelectCustomerCNIC = (TextView) getView().findViewById(R.id.txtSelectCustomerCNIC);
+            btnSelectCustomerLocation = (ImageView) getView().findViewById(R.id.btnSelectCustomerLocation);
             textViewCustomerTown = (TextView) getView().findViewById(R.id.txtSelectCustomerTown);
             btnSelectCustomer = (Button) getView().findViewById(R.id.btnSelectCustomer);
             txtSelectProduct = (Button) getView().findViewById(R.id.txtSelectProduct);
@@ -243,6 +279,8 @@ public class OrderBooking extends Fragment {
                 }
             });
             txtNetTotal = (TextView) getView().findViewById(R.id.txtNetTotal);
+            txtNetTotalIncomeTaxPercent = (TextView) getView().findViewById(R.id.txtNetTotalIncomeTaxPercent);
+            txtNetTotalOrderValueWithTax = (TextView) getView().findViewById(R.id.txtNetTotalOrderValueWithTax);
 
             btnSetDate = (Button) getView().findViewById(R.id.btnSetDate);
 
@@ -594,7 +632,9 @@ public class OrderBooking extends Fragment {
                     textViewCustomer.setText("");
                     textViewCustomer.setVisibility(View.GONE);
 
+                    txtSelectCustomerCNIC.setText("");
                     textViewCustomerTown.setText("");
+                    txtSelectCustomerCNIC.setVisibility(View.GONE);
                     textViewCustomerTown.setVisibility(View.GONE);
 
                     btnSelectCustomer.setText("Select Customer");
@@ -703,9 +743,18 @@ public class OrderBooking extends Fragment {
             textViewCustomer.setVisibility(View.VISIBLE);
 
             textViewCustomerTown.setText(queryCustomer.getCustomerBranch());
+            txtSelectCustomerCNIC.setText(Html.fromHtml("<u>"+queryCustomer.getCustomerId()+"</u>"));
+
             textViewCustomerTown.setVisibility(View.VISIBLE);
+            txtSelectCustomerCNIC.setVisibility(View.VISIBLE);
 
             btnSelectCustomer.setVisibility(View.GONE);
+            txtSelectCustomerCNIC.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getActivity(), UpdateCustomerProfile.class));
+                }
+            });
 
         }
     }
@@ -927,7 +976,7 @@ public class OrderBooking extends Fragment {
             detailsProd.setProductName(product.getProductName());
             detailsProd.setProductSize(product.getProductSize());
             detailsProd.setProductPrice(product.getProductPrice());
-            detailsProd.setProductPrice(product.getProductPrice());
+            detailsProd.setProd_salestax(product.getProd_salestax());
             detailsProd.setProductSelected(true);
 
             detailsProd.setProductQty(Integer.parseInt(productQty.getText().toString()));
@@ -939,6 +988,8 @@ public class OrderBooking extends Fragment {
             productsList.add(detailsProd);
             float oldValue = Float.parseFloat(txtNetTotal.getText().toString());
             txtNetTotal.setText(String.valueOf(oldValue + detailsProd.getItemValue()));
+            txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ "+selectedCustomer.getAccountTaxRation()+"%"));
+            txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList,selectedCustomer.getAccountTaxRation())));
 
             adapter.notifyDataSetChanged();
 
@@ -1006,6 +1057,9 @@ public class OrderBooking extends Fragment {
                                     adapter.notifyDataSetChanged();
 
                                     txtNetTotal.setText(String.valueOf(sum(productsList)));
+                                    txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ "+selectedCustomer.getAccountTaxRation()+"%"));
+                                    txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList,selectedCustomer.getAccountTaxRation())));
+
 
                                     CardViewallSelectedProds.setVisibility(View.VISIBLE);
                                     CardViewNetTotal.setVisibility(View.VISIBLE);
@@ -1029,6 +1083,8 @@ public class OrderBooking extends Fragment {
                                 adapter.notifyDataSetChanged();
 
                                 txtNetTotal.setText(String.valueOf(sum(productsList)));
+                                txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ "+selectedCustomer.getAccountTaxRation()+"%"));
+                                txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList,selectedCustomer.getAccountTaxRation())));
 
                                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) listView.getLayoutParams();
                                 lp.height = 180 * productsList.size();
@@ -1067,7 +1123,6 @@ public class OrderBooking extends Fragment {
     public float sum(List<EntityProductDetails> allProds) {
 
         float sum = 0;
-
         for (EntityProductDetails eachDet : allProds) {
 
             sum += eachDet.getItemValue();
@@ -1075,6 +1130,23 @@ public class OrderBooking extends Fragment {
         }
 
         return sum;
+
+    }
+    public float sumWithTax(List<EntityProductDetails> allProds, String accountTaxRation) {
+
+        float sum = 0;
+        float finalValueaccountTaxRation=Float.parseFloat(accountTaxRation);
+        if(finalValueaccountTaxRation>1) {
+            finalValueaccountTaxRation = Float.parseFloat(accountTaxRation) / 100;
+        }
+        for (EntityProductDetails eachDet : allProds) {
+
+            sum += eachDet.getItemValue();
+
+        }
+        float finalSum=sum+sum*finalValueaccountTaxRation;
+
+        return finalSum;
 
     }
 }

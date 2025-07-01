@@ -24,10 +24,10 @@ public class ProductDetailsListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<EntityProductDetails> productDetailItems;
 
-    public ProductDetailsListAdapter(Activity activity, List<EntityProductDetails> productDetailItems,  onItemClickListener2 onItemClickListener){
+    public ProductDetailsListAdapter(Activity activity, List<EntityProductDetails> productDetailItems, onItemClickListener2 onItemClickListener) {
         this.activity = activity;
         this.productDetailItems = productDetailItems;
-        this.onItemClickListener=onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -62,6 +62,7 @@ public class ProductDetailsListAdapter extends BaseAdapter {
         TextView Bonus = (TextView) convertView.findViewById(R.id.Bonus);
         TextView Discount = (TextView) convertView.findViewById(R.id.Discount);
         TextView Total = (TextView) convertView.findViewById(R.id.Total);
+        TextView salesTax = (TextView) convertView.findViewById(R.id.salesTax);
 
         final EntityProductDetails product = productDetailItems.get(position);
 
@@ -73,10 +74,11 @@ public class ProductDetailsListAdapter extends BaseAdapter {
         Bonus.setText(String.valueOf(product.getProductBonus()));
         Discount.setText(String.valueOf(product.getProductDiscount()));
         Total.setText(String.valueOf(product.getItemValue()));
+        salesTax.setText(String.valueOf(product.getProd_salestax()));
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListener.onItemClick(view,position,product);
+                onItemClickListener.onItemClick(view, position, product);
             }
         });
         return convertView;

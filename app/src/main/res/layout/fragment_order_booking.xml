@@ -91,8 +91,7 @@
                         android:textColor="@color/grey"
                         android:textCursorDrawable="@null"
                         android:textSize="15dp"
-                        android:visibility="gone"
-                        />
+                        android:visibility="gone" />
 
                     <Spinner
                         android:id="@+id/spinnerSelectSalesMan"
@@ -148,14 +147,51 @@
                         android:textSize="15dp"
                         android:visibility="gone" />
 
-                    <Button
-                        android:id="@+id/btnSelectCustomer"
+                    <TextView
+                        android:id="@+id/txtSelectCustomerCNIC"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/blue"
+                        android:textCursorDrawable="@null"
+                        android:textSize="15dp"
+                        android:visibility="gone" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/login_btn_shape"
-                        android:text="Select Customer"
-                        android:textColor="@color/colorPrimary" />
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/btnSelectCustomer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:background="@drawable/login_btn_shape"
+                            android:text="Select Customer"
+                            android:textColor="@color/colorPrimary" />
+
+                        <View
+                            android:layout_width="10dp"
+                            android:layout_height="wrap_content"></View>
+
+                        <ImageView
+
+                            android:id="@+id/btnSelectCustomerLocation"
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_location_on"
+                            android:text="Select Customer"
+                            android:textColor="@color/colorPrimary" />
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -236,35 +272,135 @@
                 android:layout_height="wrap_content"
                 card_view:cardBackgroundColor="@color/white">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20px"
-                    android:orientation="vertical"
-                    android:padding="10dp">
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Net Total"
-                        android:textColor="@color/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/txtNetTotal"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="15dp"
-                        android:singleLine="true"
-                        android:text="0"
-                        android:textColor="@color/grey"
-                        android:textSize="15dp" />
+                        android:layout_marginTop="20px"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Net Total"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Before Tax"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="10dp" />
+
+                        <TextView
+                            android:id="@+id/txtNetTotal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="15dp"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@color/grey"
+                            android:textSize="15dp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorBlack"></View>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="20px"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Advance Income tax"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="10dp" />
+
+                        <TextView
+                            android:id="@+id/txtNetTotalIncomeTaxPercent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="15dp"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="15dp" />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorBlack"></View>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="20px"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Order Value With Tax"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="After Tax"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="10dp" />
+
+                        <TextView
+                            android:id="@+id/txtNetTotalOrderValueWithTax"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="15dp"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@color/grey"
+                            android:textSize="15dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -291,8 +427,8 @@
                     <EditText
                         android:id="@+id/editTextRemarks"
                         android:layout_width="match_parent"
-                        android:textColor="@color/grey"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/grey" />
 
                 </LinearLayout>
 

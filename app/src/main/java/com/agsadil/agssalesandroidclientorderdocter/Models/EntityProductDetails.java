@@ -32,7 +32,11 @@ public class EntityProductDetails implements Serializable {
     }
 
     public String getProd_salestax() {
-        return prod_salestax;
+        if (prod_salestax != null && !prod_salestax.isEmpty()) {
+            return prod_salestax;
+        } else {
+            return "0.0";
+        }
     }
 
     public void setProd_salestax(String prod_salestax) {
@@ -79,6 +83,7 @@ public class EntityProductDetails implements Serializable {
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
+
     public String getProductEnrtyFromAddress() {
         return productEnrtyFromAddress;
     }
@@ -104,6 +109,7 @@ public class EntityProductDetails implements Serializable {
     }
 
     private String longitude;
+
     public int getProductId() {
         return productId;
     }
@@ -160,14 +166,14 @@ public class EntityProductDetails implements Serializable {
         this.productDiscount = productDiscount;
     }
 
-    public float getItemValue(){
-
+    public float getItemValue() {
         float total = productQty * productPrice;
-
-        if(productDiscount > 0){
+        if (productDiscount > 0) {
             total -= (total * productDiscount) / 100;
         }
-
+        if(prod_salestax!=null && !prod_salestax.isEmpty()) {
+            total = total + (productQty + productBonus) * Float.parseFloat(prod_salestax);
+        }
         return total;
     }
 

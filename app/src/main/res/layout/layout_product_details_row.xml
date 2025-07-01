@@ -43,6 +43,15 @@
             android:layout_weight="0.15"
             android:gravity="right">
 
+
+            <TextView
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="10dp"
+                android:text="Rate:  " />
+
             <TextView
                 android:textColor="@color/grey"
                 android:layout_width="wrap_content"
@@ -165,6 +174,32 @@
                 android:textSize="10dp" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight=".10"
+            android:gravity="right">
+
+            <TextView
+                android:textColor="@color/grey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SalesTax: "
+                android:textSize="10dp" />
+
+            <TextView
+                android:textColor="@color/grey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="10"
+                android:id="@+id/salesTax"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
