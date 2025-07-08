@@ -374,7 +374,7 @@ public class LoginActivity extends AppCompatActivity {
                 utils.hideLoader();
                 button.setEnabled(true);
                 button.setClickable(true);
-                if (sp.getusername() != null) {
+                if (sp.getusername() != null && !sp.getusername().isEmpty()) {
                     utils.alertBox(LoginActivity.this, "Alert", "Logged in user: " + sp.getusername() + " or password is wrong, please login again.", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {

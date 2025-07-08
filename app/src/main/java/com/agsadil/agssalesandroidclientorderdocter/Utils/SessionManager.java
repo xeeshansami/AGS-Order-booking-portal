@@ -17,7 +17,7 @@ public class SessionManager {
     private static String TAG = SessionManager.class.getSimpleName();
 
     // Keys for SharedPreferences
-    public static final String SHARED_PREF_NAME = "cloudChef";
+    public static final String SHARED_PREF_NAME = "MyPref";
     public static final String SESSION_SHARED_PREF = "sessionId";
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
     public static final String LOGGEDIN_GUEST_USER_SHARED_PREF = "loggedinAsGuestUser";
@@ -43,7 +43,16 @@ public class SessionManager {
         editor.commit();
         Log.d(TAG, "User login session modified!");
     }
-
+    public void removeKey(String key) {
+        if (pref.contains(key)) {
+            editor.remove(key);
+            editor.apply();
+            editor.commit();
+            Log.d(TAG, "Removed key: " + key);
+        } else {
+            Log.d(TAG, "Key not found: " + key);
+        }
+    }
     public boolean isLoggedIn() {
         return pref.getBoolean(LOGGEDIN_SHARED_PREF, false);
     }

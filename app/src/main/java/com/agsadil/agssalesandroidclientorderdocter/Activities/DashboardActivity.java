@@ -487,6 +487,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             public void onClick(DialogInterface dialog, int which) {
 //                sp.clearAll();
 //                db.clearAll();
+                sp.removeKey(sp.username);
+                sp.removeKey(sp.branch);
+                sp.removeKey(sp.email);
+                sp.removeKey(sp.password);
+                sp.removeKey(sp.role);
+                session.removeKey(sp.username);
+                session.removeKey(sp.branch);
+                session.removeKey(sp.email);
+                session.removeKey(sp.password);
+                session.removeKey(sp.role);
                 session.setLogin(false);
                 session.setGuestUserLogin(false);
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
