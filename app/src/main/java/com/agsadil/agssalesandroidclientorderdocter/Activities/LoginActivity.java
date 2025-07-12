@@ -367,27 +367,22 @@ public class LoginActivity extends AppCompatActivity {
         String username = txtUsername.getText().toString().trim();
         String userpassword = txtPassword.getText().toString().trim();
         if (sp.getusername() != null) {
-            if (sp.getusername().equals(username) && sp.getpassword() != null && sp.getpassword().equals(userpassword)) {
+            if (sp.getpassword() != null && sp.getusername().equals(username) &&  sp.getpassword().equals(userpassword)) {
                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                 finish();
             } else {
                 utils.hideLoader();
                 button.setEnabled(true);
                 button.setClickable(true);
-                if (sp.getusername() != null && !sp.getusername().isEmpty()) {
-                    utils.alertBox(LoginActivity.this, "Alert", "Logged in user: " + sp.getusername() + " or password is wrong, please login again.", "ok", new setOnitemClickListner() {
+                if (sp.getusername().equals(username) && sp.getpassword() != null && !sp.getpassword().equals(userpassword)) {
+                    utils.alertBox(LoginActivity.this, "Alert", "Recent Logged in user: " + sp.getusername() + " password is wrong, please login again.", "ok", new setOnitemClickListner() {
                         @Override
                         public void onClick(DialogInterface view, int i) {
                             view.dismiss();
                         }
                     });
                 } else {
-                    utils.alertBox(LoginActivity.this, "Alert", "Username or password is wrong, please login again.", "ok", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            view.dismiss();
-                        }
-                    });
+                    utils.loginOrActiveCheck(false, true, false, button, username, userpassword);
                 }
             }
         } else {

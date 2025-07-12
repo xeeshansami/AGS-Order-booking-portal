@@ -421,6 +421,8 @@ public class Utils implements IOnConnectionTimeoutListener {
             @Override
             public void Success(String response) {
                 try {
+                    sp.clearAll();
+                    db.clearAll();
                     JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
                     if (Integer.parseInt(jsonObject.get("userid").toString()) > 0) {
                         sp.setuserid(jsonObject.get("userid").toString());
@@ -545,7 +547,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                 JSONArray jsonArray = null;
                 try {
                     jsonArray = new JSONArray(response.toString().substring(response.indexOf("["), response.indexOf("}]") + 2));
-                    Log.i("jsonArray",jsonArray.toString());
+                    Log.i("jsonArray", jsonArray.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -714,12 +716,14 @@ public class Utils implements IOnConnectionTimeoutListener {
         });
     }
 
-    public void showMessage(Context context,String message){
+    public void showMessage(Context context, String message) {
         Snackbar.make(((Activity) context).findViewById(android.R.id.content), message, 2000).show();
     }
-    public void showMessage(Context context,String message,int duration){
+
+    public void showMessage(Context context, String message, int duration) {
         Snackbar.make(((Activity) context).findViewById(android.R.id.content), message, duration).show();
     }
+
     public class Downloading extends AsyncTask<Void, Integer, String> {
         Button button;
         int inWhich = 0;
@@ -953,6 +957,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                             context.startActivity(intent);
                             ((Activity) context).finish();
                         }
+                        Intent intent = new Intent(context, DashboardActivity.class);
+                        context.startActivity(intent);
+                        ((Activity) context).finish();
                     } else {
                         hideLoader();
                         alertDialog.dismiss();
