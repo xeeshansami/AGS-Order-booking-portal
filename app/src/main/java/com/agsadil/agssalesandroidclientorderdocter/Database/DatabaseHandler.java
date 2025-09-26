@@ -1093,7 +1093,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "ol.orderTotalDiscount," +
                 "ol.orderTotalNet," +
                 "ol.orderTotalRemarks," +
-                "ol.orderBranch," +
+                "'" + branch + "' as orderBranch," +
                 "ol.orderBranchSerial," +
                 "ol.orderTownId," +
                 "old.orderListDetailId," +
