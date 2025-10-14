@@ -137,6 +137,7 @@ public class OrderFormActivity extends AppCompatActivity {
             }).attach();
         } catch (Exception e) {
             Log.i("Exceptions",e.getMessage());
+            if(utils!=null)
             utils.alertBox(this, "Alert", "Something went wrong\n"+e.getMessage()+"\n"+e.getStackTrace(), "Ok", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {
@@ -166,6 +167,7 @@ public class OrderFormActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Check if productsList size is greater than 0
         if (viewPager.getCurrentItem()==0) {
+            if(utils!=null)
             utils.alertBox(this, "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
                 @Override
                 public void onClick(DialogInterface view, int i) {

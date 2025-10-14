@@ -107,10 +107,10 @@ public class OrderBooking extends Fragment {
     TextView datePicker, txtSelectSalesman;
     Spinner spinnerSalesMan;
     TextView textViewCustomer, customer_selection_lbl;
-    TextView textViewCustomerTown,txtSelectCustomerCNIC;
+    TextView textViewCustomerTown, txtSelectCustomerCNIC;
     ImageView btnSelectCustomerLocation;
     Button btnSelectCustomer, txtSelectProduct;
-    TextView txtNetTotal,txtNetTotalIncomeTaxPercent,txtNetTotalOrderValueWithTax;
+    TextView txtNetTotal, txtNetTotalIncomeTaxPercent, txtNetTotalOrderValueWithTax;
     EditText txtRemarks;
     Button btnSetDate;
     private List<EntityProductDetails> productsList = new ArrayList<EntityProductDetails>();
@@ -154,17 +154,17 @@ public class OrderBooking extends Fragment {
                     viewModel.setSharedValue(String.valueOf(customerId));
                     textViewCustomer.setVisibility(View.VISIBLE);
                     textViewCustomerTown.setText(selectedCustomer.getCustomerAddress());
-                    if(!selectedCustomer.getAccountCNIC().isEmpty() || selectedCustomer.getAccountCNIC()!=null) {
+                    if (!selectedCustomer.getAccountCNIC().isEmpty() || selectedCustomer.getAccountCNIC() != null) {
                         txtSelectCustomerCNIC.setText(Html.fromHtml("<u>Profile CNIC#: " + selectedCustomer.getAccountCNIC() + "</u>"));
                         txtSelectCustomerCNIC.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent=new Intent(getActivity(), UpdateCustomerProfile.class);
-                                intent.putExtra("customerId",data.getStringExtra("customerId"));
+                                Intent intent = new Intent(getActivity(), UpdateCustomerProfile.class);
+                                intent.putExtra("customerId", data.getStringExtra("customerId"));
                                 startActivity(intent);
                             }
                         });
-                    }else{
+                    } else {
                         txtSelectCustomerCNIC.setText(Html.fromHtml("<u>Profile CNIC#: N/A</u>"));
                     }
                     textViewCustomerTown.setVisibility(View.VISIBLE);
@@ -174,24 +174,34 @@ public class OrderBooking extends Fragment {
                     btnSelectCustomerLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            double latitude = Double.parseDouble(selectedCustomer.getAccountLocation1());  // replace with your latitude
-                            double longitude =  Double.parseDouble(selectedCustomer.getAccountLocation2()); // replace with your longitude
+                            try {
+                                double latitude = Double.parseDouble(selectedCustomer.getAccountLocation1());  // replace with your latitude
+                                double longitude = Double.parseDouble(selectedCustomer.getAccountLocation2()); // replace with your longitude
 
-                            String uri = "geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(Customer+Location)";
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                            intent.setPackage("com.google.android.apps.maps");
+                                String uri = "geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(Customer+Location)";
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                intent.setPackage("com.google.android.apps.maps");
 
-                            // Check if Google Maps is installed
-                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(getActivity(), "Google Maps not installed", Toast.LENGTH_SHORT).show();
+                                // Check if Google Maps is installed
+                                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(getActivity(), "Google Maps not installed", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (Exception exception) {
+                                if (utils != null) {
+                                    utils.hideLoader();
+                                    utils.errorBox(getActivity(), exception.getMessage());
+                                } else {
+                                    Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     });
                 }
                 if (resultCode == RESULT_CANCELED) {
-                    utils.hideLoader();
+                    if (utils != null)
+                        utils.hideLoader();
 //                    Toast.makeText(this, "i am called in canncelled", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -207,11 +217,16 @@ public class OrderBooking extends Fragment {
             } else if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK)
                 getCurrentLocation();
             if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_CANCELED)
-                utils.hideLoader();
+                if (utils != null)
+                    utils.hideLoader();
 //                Toast.makeText(getActivity(), "Please enable Location settings...!!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            utils.hideLoader();
-            utils.errorBox(getActivity(), "GPS enabling please restart the application");
+            if (utils != null) {
+                utils.hideLoader();
+                utils.errorBox(getActivity(), "GPS enabling please restart the application");
+            } else {
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -234,12 +249,16 @@ public class OrderBooking extends Fragment {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         } catch (Exception e) {
-            utils.alertBox(getActivity(), "Alert", "Master data have not download properly, Please download it from side bar menu \n => \"Download Products\"  ", "Ok", new setOnitemClickListner() {
-                @Override
-                public void onClick(DialogInterface view, int i) {
-                    getActivity().finish();
-                }
-            });
+            if (utils != null) {
+                utils.alertBox(getActivity(), "Alert", "Master data have not download properly, Please download it from side bar menu \n => \"Download Products\"  ", "Ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        getActivity().finish();
+                    }
+                });
+            } else {
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -261,6 +280,7 @@ public class OrderBooking extends Fragment {
                 customer_selection_lbl.setText("Select Customer");
             }
             textViewCustomer = (TextView) getView().findViewById(R.id.txtSelectCustomer);
+            txtSelectSalesman = (TextView) getView().findViewById(R.id.txtSelectSalesman);
             txtSelectCustomerCNIC = (TextView) getView().findViewById(R.id.txtSelectCustomerCNIC);
             btnSelectCustomerLocation = (ImageView) getView().findViewById(R.id.btnSelectCustomerLocation);
             textViewCustomerTown = (TextView) getView().findViewById(R.id.txtSelectCustomerTown);
@@ -304,12 +324,16 @@ public class OrderBooking extends Fragment {
             BindSalesManSpinner();
             BindCustomer();
         } catch (Exception e) {
-            utils.alertBox(getActivity(), "Alert", "Master data have not download properly, Please download it from side bar menu \n => \"Download Products\"  ", "Ok", new setOnitemClickListner() {
-                @Override
-                public void onClick(DialogInterface view, int i) {
-                    getActivity().finish();
-                }
-            });
+            if (utils != null) {
+                utils.alertBox(getActivity(), "Alert", "Master data have not download properly, Please download it from side bar menu \n => \"Download Products\"  ", "Ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        getActivity().finish();
+                    }
+                });
+            } else {
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -371,12 +395,13 @@ public class OrderBooking extends Fragment {
                 if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
                     // handle back button's click listener
                     if (productsList.size() > 0) {
-                        utils.alertBox(getActivity(), "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                getActivity().finish();
-                            }
-                        });
+                        if (utils != null)
+                            utils.alertBox(getActivity(), "Alert", "Do you want to Cancel this Order?", "Yes", "No", new setOnitemClickListner() {
+                                @Override
+                                public void onClick(DialogInterface view, int i) {
+                                    getActivity().finish();
+                                }
+                            });
                     } else {
                         getActivity().finish();
                     }
@@ -388,43 +413,89 @@ public class OrderBooking extends Fragment {
     }
 
 
+    @SuppressLint("MissingPermission")
     public void SaveOrder() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogButtonStyle);
         builder.setCancelable(false);
         builder.setTitle("Confirm");
         builder.setMessage("Do you want to save this order?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                /*Save data in db*/
-                dialog.dismiss();
-                utils.showLoader(getActivity());
-                createLocationRequest();
-                settingsCheck();
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GRANT_PERMISSION);
-                    utils.hideLoader();
+        builder.setPositiveButton("YES", (dialog, which) -> {
+            dialog.dismiss();
+
+            if (utils != null) utils.showLoader(getActivity());
+
+            try {
+                // Check permission at runtime
+                if (ActivityCompat.checkSelfPermission(
+                        getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED) {
+
+                    // Request permission and stop here
+                    ActivityCompat.requestPermissions(
+                            getActivity(),
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            REQUEST_GRANT_PERMISSION
+                    );
+                    if (utils != null) utils.hideLoader();
+
+                    // Fallback dummy location if user denies
+                    double dummyLat = 24.8607;
+                    double dummyLon = 67.0011;
+                    saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
                     return;
                 }
+
+                // Create location request and callback
+                createLocationRequest();
+                settingsCheck();
                 if (locationCallback == null)
                     buildLocationCallback();
-                if (currentLocation == null)
-                    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+
+                // Try to get last known location (fast & safe)
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(location -> {
+                            if (utils != null) utils.hideLoader();
+
+                            if (location != null) {
+                                saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
+                            } else {
+                                // Location null — use dummy fallback
+                                double dummyLat = 24.8607;
+                                double dummyLon = 67.0011;
+                                saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            if (utils != null) utils.hideLoader();
+                            // On failure, still save with dummy
+                            double dummyLat = 24.8607;
+                            double dummyLon = 67.0011;
+                            saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
+                        });
+
+            } catch (Exception exception) {
+                if (utils != null) {
+                    utils.hideLoader();
+                    utils.errorBox(getActivity(), "Something went wrong. Saving with default location.");
+                } else {
+                    Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                // Catch-all fallback — never crash
+                double dummyLat = 24.8607;
+                double dummyLon = 67.0011;
+                saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                utils.hideLoader();
-                // Do nothing
-                dialog.dismiss();
-            }
+        builder.setNegativeButton("NO", (dialog, which) -> {
+            if (utils != null) utils.hideLoader();
+            dialog.dismiss();
         });
 
-        AlertDialog alert = builder.create();
-        alert.show();
+        builder.create().show();
     }
+
 
     protected void createLocationRequest() {
         try {
@@ -433,7 +504,11 @@ public class OrderBooking extends Fragment {
             locationRequest.setFastestInterval(5000);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         } catch (Exception e1) {
-            utils.errorBox(getActivity(), e1.getMessage());
+            if (utils != null) {
+                utils.errorBox(getActivity(), e1.getMessage());
+            } else {
+                Toast.makeText(mContext, e1.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -452,8 +527,12 @@ public class OrderBooking extends Fragment {
                 try {
                     getCurrentLocation();
                 } catch (Exception e1) {
-                    utils.hideLoader();
-                    utils.errorBox(getActivity(), e1.getMessage());
+                    if (utils != null) {
+                        utils.hideLoader();
+                        utils.errorBox(getActivity(), e1.getMessage());
+                    } else {
+                        Toast.makeText(mContext, e1.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -469,62 +548,101 @@ public class OrderBooking extends Fragment {
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
-                            utils.hideLoader();
+                            if (utils != null)
+                                utils.hideLoader();
                             ResolvableApiException resolvable = (ResolvableApiException) e;
                             resolvable.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
                             utils.showLoader(getActivity());
                         } catch (IntentSender.SendIntentException sendEx) {
-                            utils.hideLoader();
+                            if (utils != null)
+                                utils.hideLoader();
                             // Ignore the error.
                         } catch (Exception e1) {
-                            utils.hideLoader();
-                            utils.errorBox(getActivity(), e1.getMessage());
+                            if (utils != null) {
+                                utils.hideLoader();
+                                utils.errorBox(getActivity(), e1.getMessage());
+                            } else {
+                                Toast.makeText(mContext, e1.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 } catch (Exception e1) {
-                    utils.hideLoader();
-                    utils.errorBox(getActivity(), e1.getMessage());
+                    if (utils != null) {
+                        utils.hideLoader();
+                        utils.errorBox(getActivity(), e1.getMessage());
+                    } else {
+                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
     }
 
+    @SuppressLint("MissingPermission")
     public void getCurrentLocation() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                        utils.hideLoader();
-                        return;
-                    }
-                    fusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                                @SuppressLint("WrongConstant")
-                                @Override
-                                public void onSuccess(Location location) {
-                                    Log.d("TAG", "onSuccess: getLastLocation");
-                                    // Got last known location. In some rare situations this can be null.
-                                    if (location != null) {
-                                        currentLocation = location;
-//                                        Snackbar.make(findViewById(android.R.id.content), "andress=" + location.getLatitude() + "," + location.getLongitude(), 5000).show();
-                                        saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
-                                        Log.d("TAG", "onSuccess:latitude " + location.getLatitude());
-                                        Log.d("TAG", "onSuccess:longitude " + location.getLongitude());
-                                    } else {
-                                        utils.hideLoader();
-                                        Log.d("TAG", "location is null");
-                                        buildLocationCallback();
-                                    }
-                                }
-                            });
-                } catch (Exception e) {
-                    utils.hideLoader();
-                    utils.errorBox(getActivity(), e.getMessage());
-                }
+        if (getActivity() == null || isDetached()) {
+            Log.e("getCurrentLocation", "Fragment not attached — skipping");
+            return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
+        utils.showLoader(getActivity());
+
+        // Start timeout handler (e.g. 5 seconds)
+        Handler timeoutHandler = new Handler(Looper.getMainLooper());
+        Runnable timeoutRunnable = () -> {
+            if (isSafeToUse()) {
+                utils.hideLoader();
+                Log.w("Location", "Timeout: using fallback location");
+                // Use dummy fallback (Pakistan coordinates)
+                double lat = 33.6844; // Islamabad
+                double lng = 73.0479;
+                saveDataSuccessFullyInDB(lat, lng, "pakistan");
             }
-        }, 3000);
+        };
+        timeoutHandler.postDelayed(timeoutRunnable, 5000);
+
+        // Request location
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), location -> {
+                    if (!isSafeToUse()) return;
+
+                    timeoutHandler.removeCallbacks(timeoutRunnable); // cancel timeout
+                    utils.hideLoader();
+
+                    if (location != null) {
+                        Log.d("Location", "Got current location");
+                        saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
+                    } else {
+                        Log.w("Location", "Location null, using fallback");
+                        double lat = 33.6844;
+                        double lng = 73.0479;
+                        saveDataSuccessFullyInDB(lat, lng, "pakistan");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (isSafeToUse()) {
+                        timeoutHandler.removeCallbacks(timeoutRunnable);
+                        utils.hideLoader();
+                        Log.e("Location", "Failed to get location: " + e.getMessage());
+                        // Fallback to dummy
+                        double lat = 33.6844;
+                        double lng = 73.0479;
+                        saveDataSuccessFullyInDB(lat, lng, "pakistan");
+                    }
+                });
+    }
+
+    private boolean isSafeToUse() {
+        return getActivity() != null && isAdded() && !isDetached();
     }
 
     private void buildLocationCallback() {
@@ -534,7 +652,8 @@ public class OrderBooking extends Fragment {
                 public void onLocationResult(LocationResult locationResult) {
                     try {
                         if (locationResult == null) {
-                            utils.hideLoader();
+                            if (utils != null)
+                                utils.hideLoader();
                             return;
                         }
                         for (Location location : locationResult.getLocations()) {
@@ -544,16 +663,24 @@ public class OrderBooking extends Fragment {
                             Log.d("TAG", "onLocationResult: " + currentLocation.getLatitude());
                         }
                     } catch (Exception e1) {
-                        utils.hideLoader();
-                        utils.errorBox(getActivity(), e1.getMessage());
+                        if (utils != null) {
+                            utils.hideLoader();
+                            utils.errorBox(getActivity(), e1.getMessage());
+                        } else {
+                            Toast.makeText(mContext, e1.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
 
                 ;
             };
         } catch (Exception e) {
-            utils.hideLoader();
-            utils.errorBox(getActivity(), e.getMessage());
+            if (utils != null) {
+                utils.hideLoader();
+                utils.errorBox(getActivity(), e.getMessage());
+            } else {
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -586,22 +713,26 @@ public class OrderBooking extends Fragment {
                 order.setAllProducts(productsList);
                 db.CreateOrder(order);
                 db.updateSelectedCustomer(selectedCustomer.getCustomerId());
-                this.utils.showMessage(getActivity(), "Order created Successfully");
+                if (utils != null)
+                    this.utils.showMessage(getActivity(), "Order created Successfully");
                 Intent intent = new Intent(getActivity(), DashboardActivity.class);
                 startActivity(intent);
-                utils.hideLoader();
+                if (utils != null)
+                    utils.hideLoader();
                 getActivity().finish();
             } else {
-                utils.hideLoader();
+                if (utils != null)
+                    utils.hideLoader();
                 this.utils.showMessage(getActivity(), "Select customer or add atleast 1 product");
             }
         } catch (Exception e) {
-            utils.alertBox(getActivity(), "Error", e.getMessage(), "Ok", new setOnitemClickListner() {
-                @Override
-                public void onClick(DialogInterface view, int i) {
-                    view.dismiss();
-                }
-            });
+            if (utils != null)
+                utils.alertBox(getActivity(), "Error", e.getMessage(), "Ok", new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                    }
+                });
         }
     }
 
@@ -725,6 +856,7 @@ public class OrderBooking extends Fragment {
                 spinnerSalesMan.setAdapter(dataAdapter);
             }
         } catch (Exception e) {
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -743,7 +875,7 @@ public class OrderBooking extends Fragment {
             textViewCustomer.setVisibility(View.VISIBLE);
 
             textViewCustomerTown.setText(queryCustomer.getCustomerBranch());
-            txtSelectCustomerCNIC.setText(Html.fromHtml("<u>"+queryCustomer.getCustomerId()+"</u>"));
+            txtSelectCustomerCNIC.setText(Html.fromHtml("<u>" + queryCustomer.getCustomerId() + "</u>"));
 
             textViewCustomerTown.setVisibility(View.VISIBLE);
             txtSelectCustomerCNIC.setVisibility(View.VISIBLE);
@@ -856,9 +988,9 @@ public class OrderBooking extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
+                if (productQty.getText().length() != 0 && productBonus.getText().length() != 0) {
                     schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText()).trim()), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
-                }else{
+                } else {
                     schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax().trim()), 1) + " PKR");
                 }
             }
@@ -876,9 +1008,9 @@ public class OrderBooking extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(productQty.getText().length()!=0 && productBonus.getText().length()!=0) {
+                if (productQty.getText().length() != 0 && productBonus.getText().length() != 0) {
                     schemSalesTax.setText(String.valueOf(getSalesTax(Integer.parseInt(String.valueOf(productQty.getText()).trim()), product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), Float.parseFloat(String.valueOf(productBonus.getText()))) + " PKR"));
-                }else{
+                } else {
                     schemSalesTax.setText(getSalesTax(1, product.getProductPrice(), Float.parseFloat(product.getProd_salestax()), 1) + " PKR".trim());
                 }
             }
@@ -988,8 +1120,8 @@ public class OrderBooking extends Fragment {
             productsList.add(detailsProd);
             float oldValue = Float.parseFloat(txtNetTotal.getText().toString());
             txtNetTotal.setText(String.valueOf(oldValue + detailsProd.getItemValue()));
-            txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ "+selectedCustomer.getAccountTaxRation()+"%"));
-            txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList,selectedCustomer.getAccountTaxRation())));
+            txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ " + selectedCustomer.getAccountTaxRation() + "%"));
+            txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList, selectedCustomer.getAccountTaxRation())));
 
             adapter.notifyDataSetChanged();
 
@@ -1057,8 +1189,8 @@ public class OrderBooking extends Fragment {
                                     adapter.notifyDataSetChanged();
 
                                     txtNetTotal.setText(String.valueOf(sum(productsList)));
-                                    txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ "+selectedCustomer.getAccountTaxRation()+"%"));
-                                    txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList,selectedCustomer.getAccountTaxRation())));
+                                    txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ " + selectedCustomer.getAccountTaxRation() + "%"));
+                                    txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList, selectedCustomer.getAccountTaxRation())));
 
 
                                     CardViewallSelectedProds.setVisibility(View.VISIBLE);
@@ -1083,8 +1215,8 @@ public class OrderBooking extends Fragment {
                                 adapter.notifyDataSetChanged();
 
                                 txtNetTotal.setText(String.valueOf(sum(productsList)));
-                                txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ "+selectedCustomer.getAccountTaxRation()+"%"));
-                                txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList,selectedCustomer.getAccountTaxRation())));
+                                txtNetTotalIncomeTaxPercent.setText(String.valueOf("@ " + selectedCustomer.getAccountTaxRation() + "%"));
+                                txtNetTotalOrderValueWithTax.setText(String.valueOf(sumWithTax(productsList, selectedCustomer.getAccountTaxRation())));
 
                                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) listView.getLayoutParams();
                                 lp.height = 180 * productsList.size();
@@ -1132,11 +1264,12 @@ public class OrderBooking extends Fragment {
         return sum;
 
     }
+
     public float sumWithTax(List<EntityProductDetails> allProds, String accountTaxRation) {
 
         float sum = 0;
-        float finalValueaccountTaxRation=Float.parseFloat(accountTaxRation);
-        if(finalValueaccountTaxRation>1) {
+        float finalValueaccountTaxRation = Float.parseFloat(accountTaxRation);
+        if (finalValueaccountTaxRation > 1) {
             finalValueaccountTaxRation = Float.parseFloat(accountTaxRation) / 100;
         }
         for (EntityProductDetails eachDet : allProds) {
@@ -1144,7 +1277,7 @@ public class OrderBooking extends Fragment {
             sum += eachDet.getItemValue();
 
         }
-        float finalSum=sum+sum*finalValueaccountTaxRation;
+        float finalSum = sum + sum * finalValueaccountTaxRation;
 
         return finalSum;
 
