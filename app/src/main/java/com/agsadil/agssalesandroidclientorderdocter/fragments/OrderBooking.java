@@ -419,81 +419,37 @@ public class OrderBooking extends Fragment {
         builder.setCancelable(false);
         builder.setTitle("Confirm");
         builder.setMessage("Do you want to save this order?");
-        builder.setPositiveButton("YES", (dialog, which) -> {
-            dialog.dismiss();
-
-            if (utils != null) utils.showLoader(getActivity());
-
-            try {
-                // Check permission at runtime
-                if (ActivityCompat.checkSelfPermission(
-                        getActivity(),
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED) {
-
-                    // Request permission and stop here
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            REQUEST_GRANT_PERMISSION
-                    );
-                    if (utils != null) utils.hideLoader();
-
-                    // Fallback dummy location if user denies
-                    double dummyLat = 24.8607;
-                    double dummyLon = 67.0011;
-                    saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
-                    return;
-                }
-
-                // Create location request and callback
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                /*Save data in db*/
+                dialog.dismiss();
+                utils.showLoader(getActivity());
                 createLocationRequest();
                 settingsCheck();
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_GRANT_PERMISSION);
+                    utils.hideLoader();
+                    return;
+                }
                 if (locationCallback == null)
                     buildLocationCallback();
-
-                // Try to get last known location (fast & safe)
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(location -> {
-                            if (utils != null) utils.hideLoader();
-
-                            if (location != null) {
-                                saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
-                            } else {
-                                // Location null — use dummy fallback
-                                double dummyLat = 24.8607;
-                                double dummyLon = 67.0011;
-                                saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            if (utils != null) utils.hideLoader();
-                            // On failure, still save with dummy
-                            double dummyLat = 24.8607;
-                            double dummyLon = 67.0011;
-                            saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
-                        });
-
-            } catch (Exception exception) {
-                if (utils != null) {
-                    utils.hideLoader();
-                    utils.errorBox(getActivity(), "Something went wrong. Saving with default location.");
-                } else {
-                    Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                // Catch-all fallback — never crash
-                double dummyLat = 24.8607;
-                double dummyLon = 67.0011;
-                saveDataSuccessFullyInDB(dummyLat, dummyLon, "pakistan");
+                if (currentLocation == null)
+                    fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
             }
         });
 
-        builder.setNegativeButton("NO", (dialog, which) -> {
-            if (utils != null) utils.hideLoader();
-            dialog.dismiss();
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                utils.hideLoader();
+                // Do nothing
+                dialog.dismiss();
+            }
         });
 
-        builder.create().show();
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 
@@ -580,65 +536,41 @@ public class OrderBooking extends Fragment {
 
     @SuppressLint("MissingPermission")
     public void getCurrentLocation() {
-        if (getActivity() == null || isDetached()) {
-            Log.e("getCurrentLocation", "Fragment not attached — skipping");
-            return;
-        }
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return;
-        }
-
-        utils.showLoader(getActivity());
-
-        // Start timeout handler (e.g. 5 seconds)
-        Handler timeoutHandler = new Handler(Looper.getMainLooper());
-        Runnable timeoutRunnable = () -> {
-            if (isSafeToUse()) {
-                utils.hideLoader();
-                Log.w("Location", "Timeout: using fallback location");
-                // Use dummy fallback (Pakistan coordinates)
-                double lat = 33.6844; // Islamabad
-                double lng = 73.0479;
-                saveDataSuccessFullyInDB(lat, lng, "pakistan");
-            }
-        };
-        timeoutHandler.postDelayed(timeoutRunnable, 5000);
-
-        // Request location
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(requireActivity(), location -> {
-                    if (!isSafeToUse()) return;
-
-                    timeoutHandler.removeCallbacks(timeoutRunnable); // cancel timeout
-                    utils.hideLoader();
-
-                    if (location != null) {
-                        Log.d("Location", "Got current location");
-                        saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
-                    } else {
-                        Log.w("Location", "Location null, using fallback");
-                        double lat = 33.6844;
-                        double lng = 73.0479;
-                        saveDataSuccessFullyInDB(lat, lng, "pakistan");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (isSafeToUse()) {
-                        timeoutHandler.removeCallbacks(timeoutRunnable);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                         utils.hideLoader();
-                        Log.e("Location", "Failed to get location: " + e.getMessage());
-                        // Fallback to dummy
-                        double lat = 33.6844;
-                        double lng = 73.0479;
-                        saveDataSuccessFullyInDB(lat, lng, "pakistan");
+                        return;
                     }
-                });
+                    fusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                                @SuppressLint("WrongConstant")
+                                @Override
+                                public void onSuccess(Location location) {
+                                    Log.d("TAG", "onSuccess: getLastLocation");
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        currentLocation = location;
+//                                        Snackbar.make(findViewById(android.R.id.content), "andress=" + location.getLatitude() + "," + location.getLongitude(), 5000).show();
+                                        saveDataSuccessFullyInDB(location.getLatitude(), location.getLongitude(), "pakistan");
+                                        Log.d("TAG", "onSuccess:latitude " + location.getLatitude());
+                                        Log.d("TAG", "onSuccess:longitude " + location.getLongitude());
+                                    } else {
+                                        utils.hideLoader();
+                                        Log.d("TAG", "location is null");
+                                        buildLocationCallback();
+                                    }
+                                }
+                            });
+                } catch (Exception e) {
+                    utils.hideLoader();
+                    utils.errorBox(getActivity(), e.getMessage());
+                }
+            }
+        }, 3000);
     }
 
     private boolean isSafeToUse() {
@@ -652,8 +584,7 @@ public class OrderBooking extends Fragment {
                 public void onLocationResult(LocationResult locationResult) {
                     try {
                         if (locationResult == null) {
-                            if (utils != null)
-                                utils.hideLoader();
+                            utils.hideLoader();
                             return;
                         }
                         for (Location location : locationResult.getLocations()) {
@@ -663,24 +594,16 @@ public class OrderBooking extends Fragment {
                             Log.d("TAG", "onLocationResult: " + currentLocation.getLatitude());
                         }
                     } catch (Exception e1) {
-                        if (utils != null) {
-                            utils.hideLoader();
-                            utils.errorBox(getActivity(), e1.getMessage());
-                        } else {
-                            Toast.makeText(mContext, e1.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        utils.hideLoader();
+                        utils.errorBox(getActivity(), e1.getMessage());
                     }
                 }
 
                 ;
             };
         } catch (Exception e) {
-            if (utils != null) {
-                utils.hideLoader();
-                utils.errorBox(getActivity(), e.getMessage());
-            } else {
-                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+            utils.hideLoader();
+            utils.errorBox(getActivity(), e.getMessage());
         }
     }
 

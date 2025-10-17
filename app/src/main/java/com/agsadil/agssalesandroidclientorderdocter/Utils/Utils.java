@@ -98,16 +98,25 @@ public class Utils implements IOnConnectionTimeoutListener {
     }
 
     public static void errorBox(final Context context, String message) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
-        alertDialog.setTitle("SOMETHING WENT WRONG");
-        alertDialog.setMessage(context.getClass().getSimpleName() + " class error \n" + message);
-        alertDialog.setCancelable(false);
-        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                ((Activity) context).finish();
+        try {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.AlertDialogButtonStyle);
+            alertDialog.setTitle("SOMETHING WENT WRONG");
+            alertDialog.setMessage(context.getClass().getSimpleName() + " class error \n" + message);
+            alertDialog.setCancelable(false);
+            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    ((Activity) context).finish();
+                }
+            });
+            alertDialog.show();
+        }catch (Exception ex){
+            if(message!=null){
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
             }
-        });
-        alertDialog.show();
+
+        }
     }
 
     public void alertBox(Context context, String title, String msg, String btn1, setOnitemClickListner OnClickListener) {
