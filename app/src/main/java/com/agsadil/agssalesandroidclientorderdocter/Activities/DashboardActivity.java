@@ -4,7 +4,12 @@ import com.agsadil.agssalesandroidclientorderdocter.BuildConfig;
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityOrder;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityOrderAndDetails;
-
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.ErrorResponse;
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
@@ -42,6 +47,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -71,11 +77,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -144,7 +145,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     protected Font fontCustomer;
     BaseFont bfheader;
     BaseFont bfCell;
-
+    private DatabaseReference appStatusRef,appStatusRef2;
     public double div(Double x, Double y) {
         Log.i("beforePercentage", "" + (int) (x / y));
         return (x / y) * 100;
@@ -222,6 +223,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         super.onCreate(savedInstanceState);
         try {
             setContentView(R.layout.dashboard);
+            FirebaseApp.initializeApp(this);
+            appStatusRef = FirebaseDatabase.getInstance().getReference("morgen/enabled");
+            appStatusRef2 = FirebaseDatabase.getInstance().getReference("morgens/message");
+            checkAppStatus();
             syncBtn = findViewById(R.id.syncNowBtn);
             syncBtn.setOnClickListener(this);
             utils = new Utils(this);
@@ -307,6 +312,41 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 }
             });
         }
+    }
+
+    private void checkAppStatus() {
+        appStatusRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Boolean enabled = snapshot.getValue(Boolean.class);
+                if (enabled != null && !enabled) {
+                    appStatusRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            String message = snapshot.getValue(String.class);
+                            showDisabledAlert(message);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            Toast.makeText(DashboardActivity.this, "Error fetching app status", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(DashboardActivity.this, "Error fetching app status", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showDisabledAlert(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Exception")
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Exit", (dialog, which) -> finishAffinity())
+                .show();
     }
 
     private void showItem() {

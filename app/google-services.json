@@ -8,86 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1075407325718:android:363efd51d7b726eaf54337",
-        "android_client_info": {
-          "package_name": "agnsons.agssalesandroidclient"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1075407325718-bkctr5ul010vak2gl4earsr2vaj3n7cm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "agnsons.agssalesandroidclient",
-            "certificate_hash": "c53ec73d50b0b0ec0caf99aa1000b697e858fbc9"
-          }
-        },
-        {
-          "client_id": "1075407325718-7fbue113p5131lc2khls2k3cfeqon5tv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCG3S4m8EJeJK_PVb1EDYV42JN0AImCJEU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1075407325718-7fbue113p5131lc2khls2k3cfeqon5tv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1075407325718:android:000800154c01b879f54337",
         "android_client_info": {
           "package_name": "bhople.nikhil.youtubechannelsubscribe"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "1075407325718-7fbue113p5131lc2khls2k3cfeqon5tv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCG3S4m8EJeJK_PVb1EDYV42JN0AImCJEU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1075407325718-7fbue113p5131lc2khls2k3cfeqon5tv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1075407325718:android:35881fe7133c1c56f54337",
-        "android_client_info": {
-          "package_name": "com.ags.agssalesandroidclientorder"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1075407325718-6mbp06ldq017tlpv09ea9h245gbv31ti.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ags.agssalesandroidclientorder",
-            "certificate_hash": "c53ec73d50b0b0ec0caf99aa1000b697e858fbc9"
-          }
-        },
         {
           "client_id": "1075407325718-7fbue113p5131lc2khls2k3cfeqon5tv.apps.googleusercontent.com",
           "client_type": 3
@@ -148,20 +74,12 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1075407325718:android:b274f09f3ab91507f54337",
+        "mobilesdk_app_id": "1:1075407325718:android:869b4f44ca53574bf54337",
         "android_client_info": {
-          "package_name": "com.agsadil.agssalesandroidclientorderdocter"
+          "package_name": "com.example.duallauncher"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "1075407325718-sr8t05lmte2ladti2m795s0u7vi6g0r9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.agsadil.agssalesandroidclientorderdocter",
-            "certificate_hash": "9505b856fdce60042ec9740060c4dcde3bc388eb"
-          }
-        },
         {
           "client_id": "1075407325718-7fbue113p5131lc2khls2k3cfeqon5tv.apps.googleusercontent.com",
           "client_type": 3
