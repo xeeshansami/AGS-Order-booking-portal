@@ -364,7 +364,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 customer.setAccountTaxRation(cursor.getString(cursor.getColumnIndexOrThrow(customerTaxRatio)));
                 customer.setAccountLocation1(cursor.getString(cursor.getColumnIndexOrThrow(customerLat)));
                 customer.setAccountLocation2(cursor.getString(cursor.getColumnIndexOrThrow(customerLng)));
-                customer.setCustomerBranch(cursor.getString(cursor.getColumnIndexOrThrow(customerSelected)));
+                customer.setCustomerBranch(cursor.getString(cursor.getColumnIndexOrThrow(customerBranch)));
+                customer.setSelectedCustomer(cursor.getInt(cursor.getColumnIndexOrThrow(customerSelected)));
 
                 // Adding contact to list
                 customerList.add(customer);
@@ -419,6 +420,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 customer.setCustomerName(cursor.getString(cursor.getColumnIndexOrThrow(customerName)));
                 customer.setCustomerAddress(cursor.getString(cursor.getColumnIndexOrThrow(customerAddress)));
                 customer.setCustomerBranch(cursor.getString(cursor.getColumnIndexOrThrow(customerSelected)));
+                customer.setSelectedCustomer(cursor.getInt(cursor.getColumnIndexOrThrow(customerSelected)));
                 // Adding contact to list
                 customerList.add(customer);
             } while (cursor.moveToNext());

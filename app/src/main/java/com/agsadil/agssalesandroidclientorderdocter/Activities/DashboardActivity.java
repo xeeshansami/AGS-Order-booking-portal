@@ -831,7 +831,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             protected Boolean doInBackground(Void... voids) {
                 try {
-                    String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
+                    String rootDir = DashboardActivity.this.getExternalFilesDir(null).getAbsolutePath();
+                    String dir = rootDir + File.separator + "AGS";
                     file = new File(dir);
                     if (!file.exists()) {
                         file.mkdirs();

@@ -635,6 +635,7 @@ public class OrderBooking extends Fragment {
                 order.setorderCreatedOn(DateFormat.getDateTimeInstance().format(new Date()));
                 order.setAllProducts(productsList);
                 db.CreateOrder(order);
+                selectedCustomer.setSelectedCustomer(1);
                 db.updateSelectedCustomer(selectedCustomer.getCustomerId());
                 if (utils != null)
                     this.utils.showMessage(getActivity(), "Order created Successfully");
