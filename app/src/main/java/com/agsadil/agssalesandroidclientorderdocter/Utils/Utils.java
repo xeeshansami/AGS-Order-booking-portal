@@ -379,7 +379,7 @@ public class Utils implements IOnConnectionTimeoutListener {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
-    public void loginOrActiveCheck(boolean isSalesman, boolean isCustomer, boolean isSPO, final Button button, final String username, final String pwd) {
+    public void loginOrActiveCheck(boolean isSalesman, boolean isCustomer, boolean isSPO, final Button button, final String username, final String pwd,boolean isCheckedRemember) {
         Login(button, username, pwd);
     }
 

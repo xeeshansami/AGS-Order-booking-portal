@@ -20,6 +20,7 @@ public class SessionManager {
     public static final String SHARED_PREF_NAME = "MyPref";
     public static final String SESSION_SHARED_PREF = "sessionId";
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
+    public static final String CHECKED_REMEMBER = "CHECKED_REMEMBER";
     public static final String LOGGEDIN_GUEST_USER_SHARED_PREF = "loggedinAsGuestUser";
     public static final String DARK_MODE = "DARK_MODE";
     public static final String COLOR_MODE = "COLOR_MODE";
@@ -43,6 +44,12 @@ public class SessionManager {
         editor.commit();
         Log.d(TAG, "User login session modified!");
     }
+    public void setCheckedRemember(boolean isCheckedRemember) {
+        editor.putBoolean(CHECKED_REMEMBER, isCheckedRemember);
+        editor.apply();
+        editor.commit();
+        Log.d(TAG, "User login session modified!");
+    }
     public void removeKey(String key) {
         if (pref.contains(key)) {
             editor.remove(key);
@@ -55,6 +62,9 @@ public class SessionManager {
     }
     public boolean isLoggedIn() {
         return pref.getBoolean(LOGGEDIN_SHARED_PREF, false);
+    }
+    public boolean isCheckedRemember() {
+        return pref.getBoolean(CHECKED_REMEMBER, false);
     }
 
     public void setGuestUserLogin(boolean isGuestLoggedIn) {

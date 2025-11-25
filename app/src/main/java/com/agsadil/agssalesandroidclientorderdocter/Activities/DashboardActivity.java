@@ -1268,7 +1268,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
                                                 if (sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
-                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword());
+                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword(),session.isLoggedIn());
                                                 }
                                                 view.dismiss();
                                             }

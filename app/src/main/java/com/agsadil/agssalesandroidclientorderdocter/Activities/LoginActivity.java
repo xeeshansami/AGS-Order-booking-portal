@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -74,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox check_remember;
     SessionManager session;
     Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+
 //        AutostartDownload();
         myToolbar = (Toolbar) findViewById(R.id.toolbar);
         as_guest__button = findViewById(R.id.as_guest__button);
@@ -99,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         download_pdf_manual = findViewById(R.id.download_pdf_manual);
         txtUsername = (EditText) findViewById(R.id.txtUserName);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
+
         hideImage1 = findViewById(R.id.hideshow_img);
         version_name_lbl = findViewById(R.id.version_name_lbl);
         btnLogin = findViewById(R.id.btnLogin);
@@ -106,13 +108,22 @@ public class LoginActivity extends AppCompatActivity {
         version_name_lbl.setText("Version: " + BuildConfig.VERSION_NAME);
         myToolbar.setSubtitle("Sign in");
 //        myToolbar.setNavigationIcon(R.drawable.ic_login);
+        if(session.isLoggedIn()){
+            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+            finish();
+        }
+
+        if(session.isCheckedRemember()){
+            check_remember.setChecked(true);
+            txtUsername.setText(sp.getusername());
+        }
         as_guest__button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(LoginActivity.this, DashboardActivity.class);
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                 session.setGuestUserLogin(true);
                 db.deleteOldRecordOfOrders();
-                intent.putExtra("isGuestAccount",true);
+                intent.putExtra("isGuestAccount", true);
                 startActivity(intent);
             }
         });
@@ -362,36 +373,30 @@ public class LoginActivity extends AppCompatActivity {
 //    }
 
 
-
-    public void online(Button button) {
+    public void online(Button button, boolean isCheckedRemember) {
         String username = txtUsername.getText().toString().trim();
         String userpassword = txtPassword.getText().toString().trim();
-        if (sp.getusername() != null) {
-            if (sp.getpassword() != null && sp.getusername().equals(username) &&  sp.getpassword().equals(userpassword)) {
+        //if check existing sp user and pwd saved
+        if (sp.getusername() != null && sp.getpassword() != null) {
+            if (sp.getusername().equals(username) && sp.getpassword().equals(userpassword)) {
+                session.setCheckedRemember(isCheckedRemember);
                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                 finish();
             } else {
                 utils.hideLoader();
                 button.setEnabled(true);
                 button.setClickable(true);
-                if (sp.getusername().equals(username) && sp.getpassword() != null && !sp.getpassword().equals(userpassword)) {
-                    utils.alertBox(LoginActivity.this, "Alert", "Recent Logged in user: " + sp.getusername() + " password is wrong, please login again.", "ok", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            view.dismiss();
-                        }
-                    });
-                } else {
-                    utils.loginOrActiveCheck(false, true, false, button, username, userpassword);
-                }
+                utils.loginOrActiveCheck(false, true, false, button, username, userpassword,isCheckedRemember);
             }
         } else {
-            utils.loginOrActiveCheck(false, true, false, button, username, userpassword);
+            utils.loginOrActiveCheck(false, true, false, button, username, userpassword,isCheckedRemember);
         }
     }
 
     public void offline(Button button) {
-        if (sp.getusername() != null && sp.getusername().equals(txtUsername.getText().toString().trim()) && sp.getpassword() != null && sp.getpassword().equals(txtPassword.getText().toString().trim())) {
+        String username = txtUsername.getText().toString().trim();
+        String userpassword = txtPassword.getText().toString().trim();
+        if (sp.getusername() != null && sp.getpassword() != null && sp.getusername().equals(username) && sp.getpassword().equals(userpassword)) {
             startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
             finish();
         } else {
@@ -409,44 +414,25 @@ public class LoginActivity extends AppCompatActivity {
 
     public void Login(final Button btnLogin) {
         if (validation()) {
-            if (utils.checkConnection(this)) {
+            if (utils.checkConnection(this))
+            {
                 utils.showLoader(this);
                 new Utils.CheckNetworkConnection(this, new OnConnectionCallback() {
                     @Override
                     public void onConnectionSuccess() {
-                        if (check_remember.isChecked()) {
-                            session.setLogin(true);
-                        } else {
-                            session.setLogin(false);
-                        }
-                        online(btnLogin);
+                        online(btnLogin,check_remember.isChecked());
                     }
 
                     @Override
                     public void onConnectionFail(String errorMsg) {
-                        if (check_remember.isChecked()) {
-                            session.setLogin(true);
-                        } else {
-                            session.setLogin(false);
-                        }
                         offline(btnLogin);
                     }
                 }).execute();
             } else {
-                if (check_remember.isChecked()) {
-                    session.setLogin(true);
-                } else {
-                    session.setLogin(false);
-                }
                 offline(btnLogin);
             }
-        } else {
-            utils.hideLoader();
-            btnLogin.setEnabled(true);
-            btnLogin.setClickable(true);
         }
     }
-
 
 
     private boolean hasAllPermissions(String[] permissions) {
@@ -463,7 +449,7 @@ public class LoginActivity extends AppCompatActivity {
             handlePermissionsGranted();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(permissions,1001);
+                requestPermissions(permissions, 1001);
             }
         }
     }
@@ -473,7 +459,7 @@ public class LoginActivity extends AppCompatActivity {
             handlePermissionsGranted();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(permissions2,1001);
+                requestPermissions(permissions2, 1001);
             }
         }
     }
