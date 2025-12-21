@@ -819,7 +819,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                 details.getOrderListDetailProdBonus() + ", " +
                                 details.getOrderListDetailProdDiscount() + "\n");
             }
-            String dir = Environment.getExternalStorageDirectory() + File.separator + "AGS";
+            String dir = getExternalFilesDir(null) + File.separator + "AGS";
             file = new File(dir);
             if (!file.exists()) {
                 file.mkdirs();
@@ -871,7 +871,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             protected Boolean doInBackground(Void... voids) {
                 try {
-                    String rootDir = DashboardActivity.this.getExternalFilesDir(null).getAbsolutePath();
+                    String rootDir = getExternalFilesDir(null).getAbsolutePath();
                     String dir = rootDir + File.separator + "AGS";
                     file = new File(dir);
                     if (!file.exists()) {
@@ -1415,7 +1415,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         imm.showSoftInput(pdf_name, InputMethodManager.SHOW_FORCED);
         imm.showSoftInput(pdf_name, InputMethodManager.SHOW_IMPLICIT);
         location = promptsView.findViewById(R.id.location);
-        location.setText("Folder: " + Environment.getExternalStorageDirectory() + File.separator + "AGS");
+        location.setText("Folder: " + getExternalFilesDir(null) + File.separator + "AGS");
         Button pdf_name_btn = promptsView.findViewById(R.id.pdf_name_btn);
         pdf_name_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1448,7 +1448,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         imm.showSoftInput(pdf_name, InputMethodManager.SHOW_FORCED);
         imm.showSoftInput(pdf_name, InputMethodManager.SHOW_IMPLICIT);
         location = promptsView.findViewById(R.id.location);
-        location.setText("Folder: " + Environment.getExternalStorageDirectory() + File.separator + "AGS");
+        location.setText("Folder: " + getExternalFilesDir(null) + File.separator + "AGS");
         Button pdf_name_btn = promptsView.findViewById(R.id.pdf_name_btn);
         pdf_name_btn.setOnClickListener(new View.OnClickListener() {
             @Override
