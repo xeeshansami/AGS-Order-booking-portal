@@ -22,7 +22,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.FontImprima;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -32,7 +31,6 @@ import com.google.android.material.snackbar.Snackbar;
 public class ChangePassword extends AppCompatActivity {
 
     private DatabaseHandler db;
-    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     private String url_Base = "http://mobile.agssukkur.com/agssalesclient.asmx/";
     private String url_Signup = url_Base + "Signup";
@@ -50,8 +48,7 @@ public class ChangePassword extends AppCompatActivity {
         utils = new Utils(this);
         setContentView(R.layout.activity_changepassword);
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

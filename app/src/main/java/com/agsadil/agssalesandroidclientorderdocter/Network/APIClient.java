@@ -70,7 +70,7 @@ public class APIClient {
             builder.readTimeout(APIConstants.READ_TIMEOUT, TimeUnit.SECONDS);
             builder.writeTimeout(APIConstants.WRITE_TIMEOUT, TimeUnit.SECONDS);
             builder.connectTimeout(APIConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
-            builder.callTimeout(30, TimeUnit.SECONDS);
+            builder.callTimeout(90, TimeUnit.SECONDS);
 
             if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

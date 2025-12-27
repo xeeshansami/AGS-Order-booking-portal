@@ -8,7 +8,7 @@ import com.agsadil.agssalesandroidclientorderdocter.R;
 import android.app.Activity;
 
 import com.agsadil.agssalesandroidclientorderdocter.Adapters.CustomerListAdapter;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.interfaces.OnItemClickListenerCustomer;
 
 import android.content.Intent;
@@ -34,7 +34,7 @@ public class CustomerActivity extends AppCompatActivity {
 
     private List<EntityCustomer> customersList = new ArrayList<EntityCustomer>();
     private DatabaseHandler db;
-    private SessionManager sessionManager;
+    private SharedPreferenceHandler sessionManager;
     private RecyclerView listView;
     private CustomerListAdapter adapter;
     private EditText txtCustomerSearch;
@@ -46,7 +46,7 @@ public class CustomerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customer);
 
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

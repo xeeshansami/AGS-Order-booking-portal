@@ -17,7 +17,6 @@ import com.agsadil.agssalesandroidclientorderdocter.R;
 
 import android.annotation.SuppressLint;
 
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 
 import android.content.ActivityNotFoundException;
@@ -30,7 +29,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -120,7 +118,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private String url_Login = url_Base + "Login";
     DatabaseHandler db;
     SharedPreferenceHandler sp;
-    SessionManager session;
     TextView pending_orders, total_orders_of_mtd, total_Amount_of_mtd, total_customer_of_mtd;
     TextView todays_order, todays_Amount, todays_customer;
     TextView pending_Amount;
@@ -230,7 +227,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             syncBtn = findViewById(R.id.syncNowBtn);
             syncBtn.setOnClickListener(this);
             utils = new Utils(this);
-            session = new SessionManager(this);
             databse = FirebaseDatabase.getInstance().getReference("ConsumerAppVersion");
             LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA));
             LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_ORDERS_DATA));
@@ -238,7 +234,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED));
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
-            boolean isDarkMode = session.isDarkMode();
+            boolean isDarkMode = sp.isDarkMode();
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             } else {
@@ -247,8 +243,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             user_title = findViewById(R.id.user_title);
             toolbar.setTitle("Dashboard");
-            if (getIntent().hasExtra("isGuestAccount") || session.isGuestUserLoggedIn() && !session.isLoggedIn()) {
-                if (getIntent().getBooleanExtra("isGuestAccount", false) || session.isGuestUserLoggedIn() && !session.isLoggedIn()) {
+            if (getIntent().hasExtra("isGuestAccount") || sp.isGuestUserLoggedIn() && !sp.isLoggedIn()) {
+                if (getIntent().getBooleanExtra("isGuestAccount", false) || sp.isGuestUserLoggedIn() && !sp.isLoggedIn()) {
                     user_title.setText("Guest Account: You can Only 1 Order once in a day(24 hr's)");
                 }
             } else {
@@ -281,7 +277,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             if (sp.getusername() != null) {
                 usertitle.setText("UserID: " + sp.getusername());
             }
-            if (session.isLoggedIn() || session.isGuestUserLoggedIn()) {
+            if (sp.isLoggedIn() || sp.isGuestUserLoggedIn()) {
                 AutostartDownload(syncBtn);
             }
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -527,18 +523,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             public void onClick(DialogInterface dialog, int which) {
 //                sp.clearAll();
 //                db.clearAll();
-//                sp.removeKey(sp.username);
-//                sp.removeKey(sp.branch);
-//                sp.removeKey(sp.email);
-//                sp.removeKey(sp.password);
+                sp.removeKey(sp.username);
+                sp.removeKey(sp.branch);
+                sp.removeKey(sp.email);
+                sp.removeKey(sp.password);
 //                sp.removeKey(sp.role);
-//                session.removeKey(sp.username);
-//                session.removeKey(sp.branch);
-//                session.removeKey(sp.email);
-//                session.removeKey(sp.password);
-//                session.removeKey(sp.role);
-                session.setLogin(false);
-                session.setGuestUserLogin(false);
+                sp.removeKey(sp.username);
+                sp.removeKey(sp.branch);
+                sp.removeKey(sp.email);
+                sp.removeKey(sp.password);
+                db.deleteOldRecordOfOrders();
+//                sp.removeKey(sp.role);
+                sp.setLogin(false);
+                sp.setGuestUserLogin(false);
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -716,7 +713,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         try {
                             JSONObject jObj = new JSONObject(responseData.substring(response.indexOf("{"), response.indexOf("}") + 1));
                             if (Integer.parseInt(jObj.get("status").toString()) == 1) {
-                                if (session.isGuestUserLoggedIn()) {
+                                if (sp.isGuestUserLoggedIn()) {
                                     DateFormat df = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
                                     String currentTime = df.format(Calendar.getInstance().getTime());
                                     SharedPreferenceManager.getInstance(DashboardActivity.this).storeStringInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, currentTime);
@@ -1092,7 +1089,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         cell.setRowspan(rowspan);
         cell.setBorder(border);
         cell.setBorder(Rectangle.BOX);
-        boolean isDarkMode = session.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         cell.setBorderColor(new BaseColor(ContextCompat.getColor(DashboardActivity.this, R.color.grey)));
         cell.setHorizontalAlignment(Align);
         if (!isDarkMode) {
@@ -1268,7 +1265,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
                                                 if (sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
-                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword(),session.isLoggedIn());
+                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword(),sp.isLoggedIn());
                                                 }
                                                 view.dismiss();
                                             }
@@ -1529,7 +1526,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void uploadSyncData() {
-        if (session.isGuestUserLoggedIn()) {
+        if (sp.isGuestUserLoggedIn()) {
             String previousDate = SharedPreferenceManager.getInstance(DashboardActivity.this).getStringFromSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
             try {

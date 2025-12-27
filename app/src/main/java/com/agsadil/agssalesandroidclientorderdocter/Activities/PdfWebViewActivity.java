@@ -14,19 +14,19 @@ import android.webkit.WebViewClient;
 
 import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 
 public class PdfWebViewActivity extends AppCompatActivity {
     Utils utils;
-    SessionManager sessionManager;
+    SharedPreferenceHandler sessionManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf_web_view);
         utils=new Utils(this);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

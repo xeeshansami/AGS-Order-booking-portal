@@ -17,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -27,7 +26,6 @@ import java.util.Random;
 
 public class VarificationActivity extends AppCompatActivity {
     private DatabaseHandler db;
-    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Utils utils;
     EditText txtUserNumber;
@@ -38,15 +36,15 @@ public class VarificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        sp = new SharedPreferenceHandler(this);
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         setContentView(R.layout.activity_verification);
-        sp = new SharedPreferenceHandler(this);
+
         utils = new Utils(this);
         db = new DatabaseHandler(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);

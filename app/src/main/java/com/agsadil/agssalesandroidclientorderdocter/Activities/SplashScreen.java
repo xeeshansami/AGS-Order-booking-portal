@@ -30,9 +30,8 @@ public class SplashScreen extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
     TextView splashTV, splashTV2;
     FirebaseAuth firebaseAuth;
-    SessionManager sessionManager;
+    SharedPreferenceHandler sessionManager;
     FirebaseAuth.AuthStateListener fbAuthListener;
-    SessionManager session;
     Intent intent;
     TextView poweredBy;
     ImageView splashLayout;
@@ -52,7 +51,7 @@ public class SplashScreen extends AppCompatActivity {
         new FontImprima(this, splashTV);
         new FontImprima(this, splashTV2);
         new FontImprima(this, poweredBy);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -64,8 +63,7 @@ public class SplashScreen extends AppCompatActivity {
             poweredBy.setText(Html.fromHtml("<h6>Powered By<font color=#FF0000><u> Paxees Technologies </u></font> © 2025</h6>", Html.FROM_HTML_MODE_COMPACT));
         }
         //Check if user is already logged in or not
-        session = new SessionManager(this);
-        if (session.isLoggedIn()) {
+        if (sessionManager.isLoggedIn()) {
             intent = new Intent(getApplicationContext(), DashboardActivity.class);
         } else {
             intent = new Intent(getApplicationContext(), LoginActivity.class);

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button chooseColorButton;
     private TextView appNameTextView, appVersionTextView, appSizeTextView, lastUpdateTextView;
 
-    private SessionManager sessionManager;
+    private SharedPreferenceHandler sessionManager;
     private static final String PREFS_NAME = "AppSettings";
 
     @Override
@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
         lastUpdateTextView = findViewById(R.id.tv_last_update);
 
         // Initialize SharedPreferences
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
 
         // Set default values for app info
         setAppInfo();

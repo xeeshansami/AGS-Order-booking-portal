@@ -14,7 +14,7 @@ import android.widget.EditText;
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 import com.google.android.material.snackbar.Snackbar;
@@ -25,7 +25,7 @@ public class EditSingleProduct extends AppCompatActivity implements View.OnClick
     Button updateBtn;
     Toolbar myToolbar;
     DatabaseHandler db;
-    SessionManager sessionManager;
+    SharedPreferenceHandler sessionManager;
     Utils utils;
 
     @Override
@@ -33,7 +33,7 @@ public class EditSingleProduct extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_single_product);
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

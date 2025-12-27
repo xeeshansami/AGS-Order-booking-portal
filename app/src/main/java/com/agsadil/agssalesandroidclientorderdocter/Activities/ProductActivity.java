@@ -8,7 +8,7 @@ import com.agsadil.agssalesandroidclientorderdocter.R;
 import android.app.Activity;
 
 import com.agsadil.agssalesandroidclientorderdocter.Adapters.ProductListAdapter;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.interfaces.OnItemClickListener;
 import com.bumptech.glide.Glide;
 
@@ -18,11 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -51,7 +47,7 @@ import java.util.concurrent.Executors;
 public class ProductActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
-    private SessionManager sessionManager;
+    private SharedPreferenceHandler sessionManager;
 
     private ArrayList<EntityProduct> productsList = new ArrayList<EntityProduct>();
     private List<EntityProduct> productsListSP = new ArrayList<EntityProduct>();
@@ -75,7 +71,7 @@ public class ProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product);
 
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

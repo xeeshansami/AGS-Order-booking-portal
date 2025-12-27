@@ -70,6 +70,7 @@ public class Utils implements IOnConnectionTimeoutListener {
     int i = 0;
     double percent = 0.0;
     Context context;
+    boolean isLoggedInActivity=false;
     boolean isSalesmansDonwloadOrNot = true, isCustomersDonwloadOrNot = true, isProductsDonwloadOrNot = true;
     List<JSONArray> jsonMainArrays;
     setOnitemClickListner listener;
@@ -430,7 +431,8 @@ public class Utils implements IOnConnectionTimeoutListener {
             @Override
             public void Success(String response) {
                 try {
-                    sp.clearAll();
+//                    sp.clearAll();
+
                     db.clearAll();
                     JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
                     if (Integer.parseInt(jsonObject.get("userid").toString()) > 0) {
@@ -952,6 +954,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                 public void run() {
                     if (checkActivity(context, "LoginActivity")) {
                         hideLoader();
+                        sp.setLogin(true);
                         alertDialog.dismiss();
                         button.setEnabled(true);
                         button.setClickable(true);
@@ -960,12 +963,12 @@ public class Utils implements IOnConnectionTimeoutListener {
                         String currentTime = df.format(Calendar.getInstance().getTime());
                         SharedPreferenceManager.getInstance(context).storeStringInSharedPreferences(Constant.AUTO_DOWNLOAD_IN_TIME, currentTime);
                         db.addUserInfo(Integer.parseInt(sp.getuserid()), sp.getusername(), sp.getrole());
-                        int autoDownload = SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT);
-                        if (autoDownload != 1) {
-                            Intent intent = new Intent(context, DashboardActivity.class);
-                            context.startActivity(intent);
-                            ((Activity) context).finish();
-                        }
+//                        int autoDownload = SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT);
+//                        if (autoDownload != 1) {
+//                            Intent intent = new Intent(context, DashboardActivity.class);
+//                            context.startActivity(intent);
+//                            ((Activity) context).finish();
+//                        }
                         Intent intent = new Intent(context, DashboardActivity.class);
                         context.startActivity(intent);
                         ((Activity) context).finish();
@@ -982,6 +985,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                         alertBox(context, "", "Master data've download completed", "Done", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {
+//                                if(isLoggedInActivity) {
+//                                    sp.setLogin(true);
+//                                }
                                 view.dismiss();
                             }
                         });
@@ -1061,6 +1067,7 @@ public class Utils implements IOnConnectionTimeoutListener {
 
     public void ChangeView(String role, final Button button, String username, String password) {
         if (checkActivity(context, "LoginActivity")) {
+            isLoggedInActivity=true;
             int autoDownload = SharedPreferenceManager.getInstance(context).getIntFromSharedPreferences(Constant.AUTO_DOWNLOAD_IN_Day_TXT);
             if (autoDownload == 1) {
                 StartDownloading(role, button);

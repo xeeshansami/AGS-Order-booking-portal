@@ -2,7 +2,6 @@ package com.agsadil.agssalesandroidclientorderdocter.Activities;
 
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityOrder;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 
@@ -34,7 +33,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Adapters.OrderListAdapter;
 public class OrderListActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
-    private SessionManager sessionManager;
 
     private ArrayList<EntityOrder> orderList = new ArrayList<EntityOrder>();
     private RecyclerView recyclerView;
@@ -59,8 +57,8 @@ public class OrderListActivity extends AppCompatActivity {
             db = new DatabaseHandler(this);
             orderList = db.getAllOrders();
             selectedItems = new ArrayList<Integer>();
-            sessionManager = new SessionManager(this);
-            boolean isDarkMode = sessionManager.isDarkMode();
+            sp = new SharedPreferenceHandler(getApplicationContext());
+            boolean isDarkMode = sp.isDarkMode();
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             } else {
@@ -80,7 +78,7 @@ public class OrderListActivity extends AppCompatActivity {
             // BindOrdersList();
 
 
-            sp = new SharedPreferenceHandler(getApplicationContext());
+
         } catch (Exception e) {
             Utils.errorBox(this, e.getMessage());
         }

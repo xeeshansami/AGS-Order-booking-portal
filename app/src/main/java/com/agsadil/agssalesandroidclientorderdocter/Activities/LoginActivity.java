@@ -6,7 +6,6 @@ import android.Manifest;
 
 import com.agsadil.agssalesandroidclientorderdocter.BuildConfig;
 
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 
 import android.content.DialogInterface;
@@ -71,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
     Toolbar myToolbar;
     TextView version_name_lbl, forget_pwd_txt;
     CheckBox check_remember;
-    SessionManager session;
     Intent intent;
 
     @Override
@@ -84,9 +82,8 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHandler(this);
 
         check_remember = findViewById(R.id.check_remember);
-        // Session manager
-        session = new SessionManager(getApplicationContext());
-        boolean isDarkMode = session.isDarkMode();
+        // sp manager
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
@@ -108,12 +105,12 @@ public class LoginActivity extends AppCompatActivity {
         version_name_lbl.setText("Version: " + BuildConfig.VERSION_NAME);
         myToolbar.setSubtitle("Sign in");
 //        myToolbar.setNavigationIcon(R.drawable.ic_login);
-        if(session.isLoggedIn()){
+        if(sp.isLoggedIn()){
             startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
             finish();
         }
 
-        if(session.isCheckedRemember()){
+        if(sp.isCheckedRemember()){
             check_remember.setChecked(true);
             txtUsername.setText(sp.getusername());
         }
@@ -121,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                session.setGuestUserLogin(true);
+                sp.setGuestUserLogin(true);
                 db.deleteOldRecordOfOrders();
                 intent.putExtra("isGuestAccount", true);
                 startActivity(intent);
@@ -379,7 +376,7 @@ public class LoginActivity extends AppCompatActivity {
         //if check existing sp user and pwd saved
         if (sp.getusername() != null && sp.getpassword() != null) {
             if (sp.getusername().equals(username) && sp.getpassword().equals(userpassword)) {
-                session.setCheckedRemember(isCheckedRemember);
+                sp.setCheckedRemember(isCheckedRemember);
                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                 finish();
             } else {

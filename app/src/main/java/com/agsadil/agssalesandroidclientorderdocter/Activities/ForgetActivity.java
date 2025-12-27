@@ -19,7 +19,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.Error
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -32,7 +31,6 @@ public class ForgetActivity extends AppCompatActivity {
     String SENT = "Code has been sent again, Please check your phone";
     String DELIVERED = "Code has not been send due to some problem occurred, please try again later.";
     private DatabaseHandler db;
-    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Utils utils;
     EditText txtUserName, txtUserNumber;
@@ -48,8 +46,7 @@ public class ForgetActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

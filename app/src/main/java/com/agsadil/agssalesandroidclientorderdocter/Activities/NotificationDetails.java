@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agsadil.agssalesandroidclientorderdocter.Adapters.NotificationAdapter;
 import com.agsadil.agssalesandroidclientorderdocter.Models.Notifications;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -36,7 +35,6 @@ public class NotificationDetails extends AppCompatActivity {
     ImageView notification_image;
     Button order_from_notifications;
     SharedPreferenceHandler sp;
-    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +42,7 @@ public class NotificationDetails extends AppCompatActivity {
         setContentView(R.layout.notification_details);
         notificationsData = new Notifications();
         sp = new SharedPreferenceHandler(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

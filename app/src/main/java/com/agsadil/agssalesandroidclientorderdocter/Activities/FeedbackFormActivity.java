@@ -21,7 +21,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.Error
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -29,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class FeedbackFormActivity extends AppCompatActivity {
     private DatabaseHandler db;
-    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Utils utils;
     Button sendFeedback_btn;
@@ -44,8 +42,7 @@ public class FeedbackFormActivity extends AppCompatActivity {
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

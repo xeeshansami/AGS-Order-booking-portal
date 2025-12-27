@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Constant;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.FontImprima;
@@ -47,7 +46,6 @@ import java.util.Calendar;
 public class SignupActivity extends AppCompatActivity {
 
     private DatabaseHandler db;
-    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     private String url_Base = "https://mobile.agssukkur.com/agssalesclient.asmx/";
     private String url_Signup = url_Base + "Signup";
@@ -71,8 +69,7 @@ public class SignupActivity extends AppCompatActivity {
         utils = new Utils(this);
         setContentView(R.layout.activity_signup);
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

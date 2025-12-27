@@ -29,7 +29,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,7 +36,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,12 +47,8 @@ import com.agsadil.agssalesandroidclientorderdocter.Models.EntityOrder;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProduct;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntitySalesman;
-import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.ErrorResponse;
-import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
-import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.OnConnectionCallback;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -72,11 +66,6 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -90,7 +79,6 @@ public class ProductOfferActivity extends AppCompatActivity {
     private DatabaseHandler db;
     private SharedPreferenceHandler sp;
     Utils utils;
-    SessionManager sessionManager;
     RecyclerView product_offer_recycler_view;
     private ProductListAdapter adapter;
     private FusedLocationProviderClient fusedLocationClient;
@@ -107,8 +95,7 @@ public class ProductOfferActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_offer);
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

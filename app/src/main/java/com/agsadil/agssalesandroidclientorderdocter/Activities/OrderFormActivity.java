@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 
 import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Adapters.ProductDetailsListAdapter;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 
@@ -52,7 +51,6 @@ public class OrderFormActivity extends AppCompatActivity {
     Toolbar myToolbar;
     DatabaseHandler db;
     SharedPreferenceHandler sp;
-    SessionManager sessionManager;
     /**
      * set Google location listner
      */
@@ -97,8 +95,7 @@ public class OrderFormActivity extends AppCompatActivity {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(OrderFormActivity.this);
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
-            sessionManager = new SessionManager(this);
-            boolean isDarkMode = sessionManager.isDarkMode();
+            boolean isDarkMode = sp.isDarkMode();
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             } else {

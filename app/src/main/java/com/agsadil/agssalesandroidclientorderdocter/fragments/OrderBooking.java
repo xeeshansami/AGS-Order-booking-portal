@@ -65,7 +65,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProduct;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntitySalesman;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedViewModel;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
@@ -97,7 +96,6 @@ public class OrderBooking extends Fragment {
 
     DatabaseHandler db;
     SharedPreferenceHandler sp;
-    SessionManager sessionManager;
     /**
      * set Google location listner
      */
@@ -240,9 +238,8 @@ public class OrderBooking extends Fragment {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
             db = new DatabaseHandler(getActivity());
             sp = new SharedPreferenceHandler(getActivity());
-            sessionManager = new SessionManager(getActivity());
 
-            boolean isDarkMode = sessionManager.isDarkMode();
+            boolean isDarkMode = sp.isDarkMode();
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             } else {
@@ -1193,7 +1190,7 @@ public class OrderBooking extends Fragment {
 
         float sum = 0;
         float finalValueaccountTaxRation = Float.parseFloat(accountTaxRation);
-        if (finalValueaccountTaxRation > 1) {
+        if (finalValueaccountTaxRation > 0) {
             finalValueaccountTaxRation = Float.parseFloat(accountTaxRation) / 100;
         }
         for (EntityProductDetails eachDet : allProds) {

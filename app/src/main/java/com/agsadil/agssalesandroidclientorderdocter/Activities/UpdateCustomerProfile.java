@@ -25,7 +25,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.Error
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -43,7 +42,6 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
     private Calendar myCalendar;
     private AGSStore agsStore;
     private Utils utils;
-    private SessionManager sessionManager;
     private SharedPreferenceHandler sp;
     Toolbar toolbar;
     TextView customer_date;
@@ -53,15 +51,15 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        sp = new SharedPreferenceHandler(this);
+        db = new DatabaseHandler(this);
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        sp = new SharedPreferenceHandler(this);
-        db = new DatabaseHandler(this);
+
         utils = new Utils(this);
         myCalendar = Calendar.getInstance();
         agsStore = AGSStore.getInstance();

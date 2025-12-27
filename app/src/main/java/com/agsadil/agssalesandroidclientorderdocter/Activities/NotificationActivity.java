@@ -18,7 +18,7 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.Error
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.onItemClickListenerForNotifications;
 
@@ -32,7 +32,7 @@ public class NotificationActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     NotificationAdapter adapter;
     Utils utils;
-    SessionManager sessionManager;
+    SharedPreferenceHandler sessionManager;
     ArrayList<Notifications> notifications;
 
     @Override
@@ -50,7 +50,7 @@ public class NotificationActivity extends AppCompatActivity {
         });
         utils = new Utils(this);
         utils.showLoader(this);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

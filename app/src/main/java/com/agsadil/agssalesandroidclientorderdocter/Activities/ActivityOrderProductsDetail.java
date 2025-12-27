@@ -6,7 +6,7 @@ import com.agsadil.agssalesandroidclientorderdocter.Models.EntityOrder;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProductDetails;
 
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.onItemClickListener2;
 
 import android.content.Intent;
@@ -30,7 +30,7 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
     private ArrayList<EntityOrder> orderList;
     DatabaseHandler db;
     Integer orderId;
-    SessionManager sessionManager;
+    SharedPreferenceHandler sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class ActivityOrderProductsDetail extends AppCompatActivity {
         getSupportActionBar().setTitle("View Order Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         db = new DatabaseHandler(this);
-        sessionManager = new SessionManager(this);
+        sessionManager = new SharedPreferenceHandler(this);
         boolean isDarkMode = sessionManager.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

@@ -17,7 +17,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.Error
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.SessionManager;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
@@ -30,14 +29,12 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
     private AGSStore agsStore = AGSStore.getInstance();
     private Utils utils;
     private SharedPreferenceHandler sp;
-    private SessionManager sessionManager;
     EditText login_id,user_name,user_email,user_contact;
     Button update_btn,update_pwd_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionManager = new SessionManager(this);
-        boolean isDarkMode = sessionManager.isDarkMode();
+        boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
