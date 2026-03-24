@@ -69,13 +69,17 @@ public interface APIInterface {
 
 
 
-    @GET("UpdateProfileTwo?")
+    @POST("UpdateProfileTwo?")
     Call<String> postUpdateProfileForCustomer(@Query("newname") String newname,
                                               @Query("vLat") String vLat,
                                               @Query("vLong") String vLong,
+                                              @Query("userid") String userid,
                                               @Query("LicenceNo") String LicenceNo,
                                               @Query("LicenceDate") String LicenceDate,
                                               @Query("Prop") String Prop,
                                               @Query("vAddress") String vAddress,
-                                              @Query("userid") String userid);
+                                              @Query("UpdatedByUser") String UpdatedByUser,
+                                              @Query("cnicnumber") String cnicnumber,
+                                              @Query("strnNumber") String strnNumber
+    );
 }

@@ -8,6 +8,8 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.IOnConnectionTimeout
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.handler.BaseHR;
 
+import retrofit2.http.Query;
+
 
 public class AGSStore extends Application implements IOnConnectionTimeoutListener {
     private static AGSStore store;
@@ -88,12 +90,16 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
     public void postUpdateProfileForCustomer(String newname,
                                              String vLat,
                                              String vLong,
+                                             String userid,
                                              String LicenceNo,
                                              String LicenceDate,
                                              String Prop,
                                              String vAddress,
-                                             String userid, callback callback) {
-        consumerAPI.postUpdateProfileForCustomer(newname, vLat, vLong, LicenceNo, LicenceDate, Prop, vAddress, userid).enqueue(new BaseHR(callback));
+                                             String UpdatedByUser,
+                                             String cnicnumber,
+                                             String strnNumber,
+                                             callback callback) {
+        consumerAPI.postUpdateProfileForCustomer(newname, vLat, vLong,userid, LicenceNo, LicenceDate, Prop, vAddress, UpdatedByUser,cnicnumber,strnNumber).enqueue(new BaseHR(callback));
     }
 
     public void onConnectionTimeout() {

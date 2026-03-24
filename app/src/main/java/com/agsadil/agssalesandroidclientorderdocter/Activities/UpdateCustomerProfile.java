@@ -213,7 +213,7 @@ public class UpdateCustomerProfile extends AppCompatActivity implements View.OnC
                                    String customerDate, String vLat, String vLong,
                                    String customerContactPerson, String userId) {
         utils.showLoader(this);
-        agsStore.postUpdateProfileForCustomer(customerName, vLat, vLong, customerLicence,
+        agsStore.postUpdateProfileForCustomer(customerName, vLat, vLong,userId, customerLicence,
                 customerDate, customerContactPerson, customerAddress, userId, new callback() {
                     @Override
                     public void Success(String response) {
