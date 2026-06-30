@@ -1,20 +1,39 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-
+    <!-- Dark base theme (Material Components Bridge - dark variant).
+         Colour tokens resolve to values-night/colors.xml automatically.
+         Component/shape styles are inherited from values/styles.xml. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!--<item name="colorControlNormal">#fff</item> -->
+        <item name="colorPrimaryVariant">@color/ags_primary</item>
+        <item name="colorOnPrimary">@color/ags_on_primary</item>
+        <item name="colorSecondary">@color/ags_secondary</item>
+        <item name="colorSecondaryVariant">@color/ags_secondary_container</item>
+        <item name="colorOnSecondary">@color/ags_on_secondary</item>
+        <item name="android:colorBackground">@color/ags_background</item>
+        <item name="colorOnBackground">@color/ags_on_background</item>
+        <item name="colorSurface">@color/ags_surface</item>
+        <item name="colorOnSurface">@color/ags_on_surface</item>
+        <item name="colorError">@color/ags_error</item>
+        <item name="colorOnError">@color/ags_on_error</item>
 
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AGS.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AGS.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.AGS.Large</item>
+
+        <item name="android:textColorHint">@color/ags_text_hint</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+
     <style name="AlertDialogButtonStyle" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:textColor">@color/colorPrimary</item> <!-- Set button text color for Light Mode -->
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
+
     <style name="Loader" parent="Theme.AppCompat.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -26,5 +45,5 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+
 </resources>

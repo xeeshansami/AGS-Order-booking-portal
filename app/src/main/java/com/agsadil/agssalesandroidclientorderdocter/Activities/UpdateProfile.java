@@ -34,6 +34,8 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = new SharedPreferenceHandler(this);
+        utils = new Utils(this);
         boolean isDarkMode = sp.isDarkMode();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -161,6 +163,11 @@ public class UpdateProfile extends AppCompatActivity implements View.OnClickList
                     String userId = objects.getString("userid");
 
                     if (!userId.equalsIgnoreCase("0")) {
+                        // Server update succeeded -> keep the locally stored
+                        // profile in sync so the app shows the new values.
+                        sp.setUser_Category(newName);
+                        sp.setemail(newEmail);
+                        sp.setContact(newNumber);
                         utils.alertBox(UpdateProfile.this, "Congratulations!", "Your profile has been updated", "ok", new setOnitemClickListner() {
                             @Override
                             public void onClick(DialogInterface view, int i) {

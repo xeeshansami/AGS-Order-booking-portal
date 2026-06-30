@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Soft rounded card surface for the modernized UI. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/ags_card" />
+    <corners android:radius="@dimen/radius_lg" />
+    <stroke
+        android:width="@dimen/stroke_width"
+        android:color="@color/ags_outline_variant" />
+</shape>

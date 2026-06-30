@@ -16,8 +16,14 @@ public abstract class RH<T> implements Callback<T> {
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
-        if (response.isSuccessful())
+        if (response.isSuccessful()) {
             onSuccess(response);
+        } else {
+            // Without this branch a non-2xx HTTP response would never invoke
+            // any callback, leaving progress loaders stuck on screen forever.
+            onFailure(new ErrorResponse("error", false,
+                    "Server error (" + response.code() + "), please try again later."));
+        }
     }
 
     @Override

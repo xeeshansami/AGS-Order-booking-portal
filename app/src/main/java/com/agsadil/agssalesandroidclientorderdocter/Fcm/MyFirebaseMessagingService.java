@@ -17,14 +17,45 @@ import androidx.core.app.NotificationCompat;
 
 import com.agsadil.agssalesandroidclientorderdocter.Activities.NotificationActivity;
 import com.agsadil.agssalesandroidclientorderdocter.R;
+import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceManager;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        // Cache the refreshed token so it can be sent to the backend if needed.
+        SharedPreferenceManager.getInstance(getApplicationContext()).setFcmToken(token);
+        // Keep every device subscribed so broadcast notifications always arrive.
+        FirebaseMessaging.getInstance().subscribeToTopic("general");
+    }
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        sendMyNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+
+        String title = null;
+        String body = null;
+
+        // Notification payload (foreground messages / notification-type messages).
+        if (remoteMessage.getNotification() != null) {
+            title = remoteMessage.getNotification().getTitle();
+            body = remoteMessage.getNotification().getBody();
+        }
+
+        // Fall back to the data payload (data-only messages) so nothing is missed.
+        if (remoteMessage.getData() != null && !remoteMessage.getData().isEmpty()) {
+            if (title == null) title = remoteMessage.getData().get("title");
+            if (body == null) body = remoteMessage.getData().get("body");
+        }
+
+        if (title == null) title = getString(R.string.app_name);
+        if (body == null) body = "";
+
+        sendMyNotification(body, title);
     }
 
     private void sendMyNotification(String message, String title) {

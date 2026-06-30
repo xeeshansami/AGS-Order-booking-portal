@@ -8,8 +8,6 @@ import com.agsadil.agssalesandroidclientorderdocter.Network.IOnConnectionTimeout
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.handler.BaseHR;
 
-import retrofit2.http.Query;
-
 
 public class AGSStore extends Application implements IOnConnectionTimeoutListener {
     private static AGSStore store;
@@ -88,18 +86,21 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
     }
 
     public void postUpdateProfileForCustomer(String newname,
+                                             String newEmail,
+                                             String newMobile,
+                                             String userid,
                                              String vLat,
                                              String vLong,
-                                             String userid,
-                                             String LicenceNo,
-                                             String LicenceDate,
+                                             String cnicnumber,
                                              String Prop,
                                              String vAddress,
+                                             String LicenceNo,
                                              String UpdatedByUser,
-                                             String cnicnumber,
+                                             String ContactNo,
+                                             String LicenceDate,
                                              String strnNumber,
                                              callback callback) {
-        consumerAPI.postUpdateProfileForCustomer(newname, vLat, vLong,userid, LicenceNo, LicenceDate, Prop, vAddress, UpdatedByUser,cnicnumber,strnNumber).enqueue(new BaseHR(callback));
+        consumerAPI.postUpdateProfileForCustomer(newname, newEmail, newMobile, userid, vLat, vLong, cnicnumber, Prop, vAddress, LicenceNo, UpdatedByUser, ContactNo, LicenceDate, strnNumber).enqueue(new BaseHR(callback));
     }
 
     public void onConnectionTimeout() {

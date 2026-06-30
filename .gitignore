@@ -38,6 +38,14 @@ Thumbs.db
 # OSX files
 .DS_Store
 
+# Signing secrets - keep these OUT of version control
+*.jks
+*.keystore
+agskeystore
+keystore/credentials.txt
+keystore.properties
+signing.properties
+
 # Android Studio
 *.iml
 .idea

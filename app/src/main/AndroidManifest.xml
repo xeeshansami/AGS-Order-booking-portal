@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.agsadil.agssalesandroidclientorderdocter">
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Photo/video media permissions are NOT used (Play policy). Explicitly
+         strip them from the merged manifest in case a dependency injects them. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,10 +15,30 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Android 11+ (API 30) package visibility. Required so the app can detect
+         and launch a maps app (geo: intents) and open web links. Without this,
+         resolveActivity() returns null and the app wrongly reports
+         "Google Maps not installed". -->
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
         <application
         android:name="com.agsadil.agssalesandroidclientorderdocter.Network.MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:replace="android:allowBackup"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -80,6 +102,12 @@
         <activity
             android:exported="true"
             android:name="com.agsadil.agssalesandroidclientorderdocter.Activities.UpdateCustomerProfile"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:exported="true"
+            android:name="com.agsadil.agssalesandroidclientorderdocter.Activities.MapPickerActivity"
+            android:parentActivityName="com.agsadil.agssalesandroidclientorderdocter.Activities.UpdateCustomerProfile"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
@@ -167,6 +195,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

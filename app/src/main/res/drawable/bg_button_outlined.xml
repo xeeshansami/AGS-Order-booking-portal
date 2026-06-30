@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outlined button with press ripple (use as android:background). -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#1F778A35">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="@dimen/radius_md" />
+            <stroke
+                android:width="@dimen/stroke_width"
+                android:color="@color/colorPrimary" />
+        </shape>
+    </item>
+</ripple>

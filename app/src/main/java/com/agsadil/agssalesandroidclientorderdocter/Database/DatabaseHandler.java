@@ -312,6 +312,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_CUSTOMER, null, values);
     }
 
+    /**
+     * Syncs the local customer row with values that were just saved on the
+     * server. Matched by customerId. Only the columns the local table holds are
+     * updated (name, address, CNIC, tax/STRN, latitude, longitude); the
+     * selected flag and branch are left untouched.
+     *
+     * @return number of rows updated (0 if the customer isn't cached locally).
+     */
+    public int updateCustomer(EntityCustomer customer) {
+        if (customer == null) return 0;
+        ContentValues values = new ContentValues();
+        values.put(customerName, customer.getCustomerName());
+        values.put(customerAddress, customer.getCustomerAddress());
+        values.put(customerCNIC, customer.getAccountCNIC());
+        values.put(customerTaxRatio, customer.getAccountTaxRation());
+        values.put(customerLat, customer.getAccountLocation1());
+        values.put(customerLng, customer.getAccountLocation2());
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.update(TABLE_CUSTOMER, values, customerId + " = ?",
+                new String[]{String.valueOf(customer.getCustomerId())});
+    }
+
     public void addUserInfo(int userid, String username, String userRole) {
         SQLiteDatabase db = this.getWritableDatabase();
         String sql = "insert into " + TABLE_USER_INFO + " values (" + userid + ", '" + username + "','" + userRole + "');";

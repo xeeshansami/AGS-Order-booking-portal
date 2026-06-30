@@ -23,7 +23,7 @@ public interface APIInterface {
     Call<String> getProductsForSPO(@Query("compid") String compid, @Query("branch") String branch);
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
-    @POST("agssalesclient.asmx/CustomerPurchaseHistoryQuery")
+    @POST("CustomerPurchaseHistoryQuery")
     Call<ResponseBody> getPurchaseHistory(
             @Field("branch") String branch,
             @Field("CustomerId") String customerId
@@ -69,17 +69,20 @@ public interface APIInterface {
 
 
 
-    @POST("UpdateProfileTwo?")
+    @GET("UpdateProfileTwo?")
     Call<String> postUpdateProfileForCustomer(@Query("newname") String newname,
+                                              @Query("newEmail") String newEmail,
+                                              @Query("newMobile") String newMobile,
+                                              @Query("userid") String userid,
                                               @Query("vLat") String vLat,
                                               @Query("vLong") String vLong,
-                                              @Query("userid") String userid,
-                                              @Query("LicenceNo") String LicenceNo,
-                                              @Query("LicenceDate") String LicenceDate,
+                                              @Query("cnicnumber") String cnicnumber,
                                               @Query("Prop") String Prop,
                                               @Query("vAddress") String vAddress,
-                                              @Query("UpdatedByUser") String UpdatedByUser,
-                                              @Query("cnicnumber") String cnicnumber,
+                                              @Query("LicenceNo") String LicenceNo,
+                                              @Query("UpdatedBYUser") String UpdatedByUser,
+                                              @Query("ContactNo") String ContactNo,
+                                              @Query("LicenceDate") String LicenceDate,
                                               @Query("strnNumber") String strnNumber
     );
 }

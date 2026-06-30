@@ -18,10 +18,10 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
             app:titleTextColor="@color/toolBarTextColor"
             app:subtitleTextColor="@color/toolBarTextColor"
             android:background="@color/toolBarBackground"
-            android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -58,9 +58,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textColor="@color/grey"
                     android:fontFamily="sans-serif-smallcaps"
-                    android:text="Update your customer profile here" />
+                    android:textColor="@color/grey"
+                    android:text="Update customer profile here" />
 
             </LinearLayout>
 
@@ -72,34 +72,21 @@
                 android:orientation="vertical"
                 android:padding="@dimen/unit_10">
 
+                <!-- Select Customer -->
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:includeFontPadding="false"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/colorBlack"
-                            android:visibility="invisible" />
-
                         <Button
-                            android:layout_margin="5dp"
                             android:id="@+id/btnSelectCustomer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
                             android:background="@color/colorPrimary"
                             android:fontFamily="sans-serif-smallcaps"
                             android:gravity="left|center_vertical"
@@ -107,345 +94,492 @@
                             android:paddingLeft="@dimen/unit_10"
                             android:text="Select Customer"
                             android:textColor="@color/white" />
-
                     </LinearLayout>
-
-                    <View
-                        android:id="@+id/view"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/view"
                         android:background="@color/white"
-                        android:includeFontPadding="false"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
                         android:text="Select Customer"
-                        android:textAppearance="@android:style/TextAppearance.Medium"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
                 </RelativeLayout>
 
+                <!-- Customer Name -->
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/customer_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="Customer Name"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_username"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Customer Name"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:includeFontPadding="false"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/grey"
-                            android:visibility="invisible" />
+                <!-- Email -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/customer_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="Email Address"
+                            android:inputType="textEmailAddress"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_email"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Email Address"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
 
+                <!-- Contact/Mobile -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/customer_contact"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="Contact"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_contact"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Contact"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
+
+                <!-- CNIC -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/customer_cnic"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="CNIC"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_username"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="CNIC"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
+
+                <!-- Prop (Proprietor) -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/customer_prop"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="Proprietor"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_username"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Proprietor"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
+
+                <!-- Address -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
                         <EditText
                             android:id="@+id/customer_address"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
                             android:background="@null"
-                            android:drawableLeft="@drawable/ic_username"
-                            android:drawableTint="@color/colorPrimary"
                             android:hint="Address"
                             android:inputType="text"
                             android:singleLine="true"
-                            android:textColor="@color/grey"
-                            android:textCursorDrawable="@null"
-                            android:textSize="15dp" />
-
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_username"
+                            android:drawableTint="@color/colorPrimary" />
                     </LinearLayout>
-
-                    <View
-                        android:id="@+id/view2"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/view2"
                         android:background="@color/white"
-                        android:includeFontPadding="false"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
                         android:text="Address"
-                        android:textAppearance="@android:style/TextAppearance.Medium"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
                 </RelativeLayout>
 
+                <!-- Licence No -->
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:includeFontPadding="false"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/grey"
-                            android:visibility="invisible" />
-
                         <EditText
                             android:id="@+id/customer_licences"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="2dp"
+                            android:layout_margin="5dp"
                             android:background="@null"
-                            android:drawableLeft="@drawable/ic_email"
-                            android:drawableTint="@color/colorPrimary"
-                            android:hint="Licence#"
+                            android:hint="Licence No"
                             android:inputType="text"
                             android:singleLine="true"
-                            android:textColor="@color/grey"
-                            android:textCursorDrawable="@null"
-                            android:textSize="15dp" />
-
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_username"
+                            android:drawableTint="@color/colorPrimary" />
                     </LinearLayout>
-
-                    <View
-                        android:id="@+id/view4"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/view4"
                         android:background="@color/white"
-                        android:includeFontPadding="false"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="Licence#"
-                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:text="Licence No"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
                 </RelativeLayout>
 
+                <!-- Contact No -->
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/customer_contact_person"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="Contact No"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_contact"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Contact No"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:includeFontPadding="false"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/grey"
-                            android:visibility="invisible" />
-
-
+                <!-- Licence Date -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
                         <TextView
                             android:id="@+id/customer_date"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="2dp"
+                            android:layout_margin="5dp"
                             android:background="@null"
                             android:clickable="true"
                             android:drawableLeft="@mipmap/ic_date"
                             android:drawableTint="@color/colorPrimary"
                             android:gravity="center_vertical"
-                            android:text="31-Dec-2020"
-                            android:textColor="@color/grey"
-                            android:textCursorDrawable="@null"
-                            android:textSize="15dp" />
-
+                            android:text="Select Date"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:paddingLeft="5dp" />
                     </LinearLayout>
-
-                    <View
-                        android:id="@+id/view3"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/view3"
                         android:background="@color/white"
-                        android:includeFontPadding="false"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="Date"
-                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:text="Licence Date"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
                 </RelativeLayout>
 
+                <!-- STRN Number -->
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
-
-                        <View
-                            android:id="@+id/view5"
+                        <EditText
+                            android:id="@+id/customer_strn"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp" />
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@null"
+                            android:hint="STRN Number"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textColor="@color/ink_blue"
+                            android:textSize="15dp"
+                            android:drawableLeft="@drawable/ic_username"
+                            android:drawableTint="@color/colorPrimary" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="STRN Number"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
+                </RelativeLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:includeFontPadding="false"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/grey"
-                            android:visibility="invisible" />
-
+                <!-- Location (vLat, vLong) -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/border_edge_edittext"
+                        android:orientation="vertical">
                         <EditText
                             android:id="@+id/customer_location"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="2dp"
+                            android:layout_margin="5dp"
                             android:background="@null"
-                            android:drawableLeft="@drawable/ic_email"
-                            android:drawableTint="@color/colorPrimary"
-                            android:hint="Location"
-                            android:inputType="number"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:hint="Latitude"
+                            android:inputType="numberSigned|numberDecimal"
                             android:singleLine="true"
-                            android:textColor="@color/grey"
-                            android:textCursorDrawable="@null"
+                            android:textColor="@color/ink_blue"
                             android:textSize="15dp" />
-
                     </LinearLayout>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/view5"
                         android:background="@color/white"
-                        android:includeFontPadding="false"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="Location"
-                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:text="Latitude"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/border_edge_edittext"
                         android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:includeFontPadding="false"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/grey"
-                            android:visibility="invisible" />
-
                         <EditText
-                            android:id="@+id/customer_contact_person"
+                            android:id="@+id/customer_vLong"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="2dp"
+                            android:layout_margin="5dp"
                             android:background="@null"
-                            android:drawableLeft="@drawable/ic_email"
-                            android:drawableTint="@color/colorPrimary"
-                            android:hint="Contact Person"
-                            android:inputType="number"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:hint="Longitude"
+                            android:inputType="numberSigned|numberDecimal"
                             android:singleLine="true"
-                            android:textColor="@color/grey"
-                            android:textCursorDrawable="@null"
+                            android:textColor="@color/ink_blue"
                             android:textSize="15dp" />
-
                     </LinearLayout>
-
-                    <View
-                        android:id="@+id/view6"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/view6"
                         android:background="@color/white"
-                        android:includeFontPadding="false"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="Contact Person"
-                        android:textAppearance="@android:style/TextAppearance.Medium"
+                        android:text="Longitude"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="10dp" />
                 </RelativeLayout>
+
+                <!--Pick Location on Map-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btnPickLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:drawableLeft="@drawable/ic_location_on"
+                        android:drawableTint="@color/white"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:gravity="center"
+                        android:text="Pick Location on Map"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
                 <!--Update Button-->
                 <LinearLayout
+                    android:paddingTop="@dimen/unit_10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20px"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/unit_10">
+                    android:orientation="vertical">
 
                     <Button
                         android:id="@+id/update_btn"

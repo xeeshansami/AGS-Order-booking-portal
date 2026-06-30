@@ -180,11 +180,17 @@ public class OrderBooking extends Fragment {
                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                                 intent.setPackage("com.google.android.apps.maps");
 
-                                // Check if Google Maps is installed
+                                // Prefer Google Maps; otherwise fall back to any
+                                // installed maps app that can handle geo: links.
                                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(getActivity(), "Google Maps not installed", Toast.LENGTH_SHORT).show();
+                                    Intent fallback = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                    if (fallback.resolveActivity(getActivity().getPackageManager()) != null) {
+                                        startActivity(fallback);
+                                    } else {
+                                        Toast.makeText(getActivity(), "No maps app found to open the location", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             } catch (Exception exception) {
                                 if (utils != null) {

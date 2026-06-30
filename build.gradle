@@ -2,12 +2,13 @@
 
 buildscript {
     repositories {
-        maven { url 'https://maven.google.com' }
-        jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        // AGP 8.6 is the minimum that can compile against API 35; it bundles a
+        // compatible R8, so no explicit R8 classpath is needed.
+        classpath 'com.android.tools.build:gradle:8.6.0'
         classpath 'com.google.gms:google-services:4.4.1'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -17,10 +18,9 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
         maven { url "https://jitpack.io" }
-
     }
 }
 

@@ -19,4 +19,59 @@
     <color name="feedback_bg">#659EB6E4</color>
     <color name="grey">#A5A2A2</color>
     <color name="green">#069319</color>
+    <color name="ink_blue">#1A237E</color>
+
+    <!-- ===================================================================
+         Material 3 design tokens (UI modernization) - LIGHT
+         Built around the AGS olive-green brand. Existing color names above
+         are unchanged so no current screen breaks.
+         =================================================================== -->
+    <color name="ags_primary">#6B7F3A</color>
+    <color name="ags_on_primary">#FFFFFF</color>
+    <color name="ags_primary_container">#DDEAC0</color>
+    <color name="ags_on_primary_container">#1E2A00</color>
+
+    <color name="ags_secondary">#586249</color>
+    <color name="ags_on_secondary">#FFFFFF</color>
+    <color name="ags_secondary_container">#DCE7C7</color>
+    <color name="ags_on_secondary_container">#161E0A</color>
+
+    <color name="ags_tertiary">#386667</color>
+    <color name="ags_on_tertiary">#FFFFFF</color>
+    <color name="ags_tertiary_container">#BCEBEC</color>
+    <color name="ags_on_tertiary_container">#002021</color>
+
+    <color name="ags_background">#FBFDF3</color>
+    <color name="ags_on_background">#1A1C15</color>
+    <color name="ags_surface">#FBFDF3</color>
+    <color name="ags_on_surface">#1A1C15</color>
+    <color name="ags_surface_variant">#E2E4D4</color>
+    <color name="ags_on_surface_variant">#45483C</color>
+    <color name="ags_surface_container">#EFF1E7</color>
+    <color name="ags_surface_container_high">#E9EBE1</color>
+    <color name="ags_card">#FFFFFF</color>
+
+    <color name="ags_outline">#75796B</color>
+    <color name="ags_outline_variant">#C5C8B9</color>
+    <color name="ags_scrim">#000000</color>
+
+    <color name="ags_success">#2E7D32</color>
+    <color name="ags_on_success">#FFFFFF</color>
+    <color name="ags_success_container">#B7F0B5</color>
+    <color name="ags_warning">#B26A00</color>
+    <color name="ags_on_warning">#FFFFFF</color>
+    <color name="ags_warning_container">#FFDDB3</color>
+    <color name="ags_error">#BA1A1A</color>
+    <color name="ags_on_error">#FFFFFF</color>
+    <color name="ags_error_container">#FFDAD6</color>
+    <color name="ags_info">#0277BD</color>
+    <color name="ags_on_info">#FFFFFF</color>
+
+    <!-- Neutral text tones -->
+    <color name="ags_text_primary">#1A1C15</color>
+    <color name="ags_text_secondary">#45483C</color>
+    <color name="ags_text_hint">#75796B</color>
+    <color name="ags_divider">#1F000000</color>
+    <color name="ags_shimmer_base">#E6E8DE</color>
+    <color name="ags_shimmer_highlight">#F4F6EC</color>
 </resources>

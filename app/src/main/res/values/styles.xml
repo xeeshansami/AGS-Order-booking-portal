@@ -1,20 +1,45 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-
+    <!-- ===================================================================
+         Base application theme.
+         Migrated to a Material Components "Bridge" theme: it keeps full
+         AppCompat compatibility (so existing screens are unaffected) while
+         enabling modern Material components and the new design tokens.
+         =================================================================== -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <!-- Brand colours (kept consistent with existing @color references) -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!--<item name="colorControlNormal">#fff</item> -->
+        <!-- Material 3 semantic colours (adapt automatically in dark mode) -->
+        <item name="colorPrimaryVariant">@color/ags_primary</item>
+        <item name="colorOnPrimary">@color/ags_on_primary</item>
+        <item name="colorSecondary">@color/ags_secondary</item>
+        <item name="colorSecondaryVariant">@color/ags_secondary_container</item>
+        <item name="colorOnSecondary">@color/ags_on_secondary</item>
+        <item name="android:colorBackground">@color/ags_background</item>
+        <item name="colorOnBackground">@color/ags_on_background</item>
+        <item name="colorSurface">@color/ags_surface</item>
+        <item name="colorOnSurface">@color/ags_on_surface</item>
+        <item name="colorError">@color/ags_error</item>
+        <item name="colorOnError">@color/ags_on_error</item>
 
+        <!-- Global shape language -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AGS.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AGS.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.AGS.Large</item>
+
+        <item name="android:textColorHint">@color/ags_text_hint</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="AlertDialogButtonStyle" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:textColor">@color/colorPrimary</item> <!-- Set button text color for Light Mode -->
     </style>
+
     <style name="Loader" parent="Theme.AppCompat.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -26,5 +51,108 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- ===================================================================
+         Shape appearances
+         =================================================================== -->
+    <style name="ShapeAppearance.AGS.Small" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_sm</item>
+    </style>
+    <style name="ShapeAppearance.AGS.Medium" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_md</item>
+    </style>
+    <style name="ShapeAppearance.AGS.Large" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_lg</item>
+    </style>
+
+    <!-- ===================================================================
+         Reusable component styles
+         =================================================================== -->
+
+    <!-- Filled / primary button -->
+    <style name="Widget.AGS.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textAppearance">@style/TextAppearance.AGS.Label</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="android:paddingLeft">@dimen/space_xl</item>
+        <item name="android:paddingRight">@dimen/space_xl</item>
+        <item name="rippleColor">#33FFFFFF</item>
+        <item name="elevation">@dimen/elevation_card</item>
+    </style>
+
+    <!-- Secondary tonal button -->
+    <style name="Widget.AGS.Button.Tonal" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="backgroundTint">@color/ags_secondary_container</item>
+        <item name="android:textColor">@color/ags_on_secondary_container</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="elevation">@dimen/elevation_none</item>
+    </style>
+
+    <!-- Outlined button -->
+    <style name="Widget.AGS.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="android:textAppearance">@style/TextAppearance.AGS.Label</item>
+    </style>
+
+    <!-- Text button -->
+    <style name="Widget.AGS.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/TextAppearance.AGS.Label</item>
+    </style>
+
+    <!-- Card -->
+    <style name="Widget.AGS.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/radius_lg</item>
+        <item name="cardElevation">@dimen/elevation_card</item>
+        <item name="cardBackgroundColor">@color/ags_card</item>
+        <item name="contentPadding">@dimen/space_lg</item>
+        <item name="rippleColor">#1F000000</item>
+    </style>
+
+    <!-- Filled text input -->
+    <style name="Widget.AGS.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/ags_surface_container</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_md</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_md</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_md</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_md</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="android:textColorHint">@color/ags_text_hint</item>
+    </style>
+
+    <!-- Section header label -->
+    <style name="Widget.AGS.SectionHeader" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.AGS.Overline</item>
+        <item name="android:paddingTop">@dimen/space_lg</item>
+        <item name="android:paddingBottom">@dimen/space_sm</item>
+    </style>
+
+    <!-- Chip -->
+    <style name="Widget.AGS.Chip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">@color/ags_secondary_container</item>
+        <item name="android:textColor">@color/ags_on_secondary_container</item>
+        <item name="chipCornerRadius">@dimen/radius_pill</item>
+    </style>
+
+    <!-- Rounded modal bottom sheet -->
+    <style name="Widget.AGS.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.AGS.BottomSheet</item>
+        <item name="backgroundTint">@color/ags_surface_container</item>
+    </style>
+    <style name="ShapeAppearance.AGS.BottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/radius_xl</item>
+        <item name="cornerSizeTopRight">@dimen/radius_xl</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
 </resources>

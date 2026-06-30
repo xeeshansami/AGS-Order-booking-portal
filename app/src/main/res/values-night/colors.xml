@@ -18,4 +18,58 @@
     <color name="feedback_bg">#3A4F64</color> <!-- Darker blue with transparency -->
     <color name="grey">#BDBCBC</color> <!-- Dark gray -->
     <color name="green">#2C7A1D</color> <!-- Darker green -->
+    <color name="ink_blue">#AEB6FF</color> <!-- readable on dark surfaces -->
+    <color name="blue">#9FB4FF</color>
+
+    <!-- ===================================================================
+         Material 3 design tokens (UI modernization) - DARK
+         OLED-friendly: surfaces are deep grey-green, never pure black.
+         =================================================================== -->
+    <color name="ags_primary">#C1D08C</color>
+    <color name="ags_on_primary">#2C3700</color>
+    <color name="ags_primary_container">#414F16</color>
+    <color name="ags_on_primary_container">#DDEAC0</color>
+
+    <color name="ags_secondary">#C0CBA6</color>
+    <color name="ags_on_secondary">#2B331B</color>
+    <color name="ags_secondary_container">#414A30</color>
+    <color name="ags_on_secondary_container">#DCE7C7</color>
+
+    <color name="ags_tertiary">#A0CFD0</color>
+    <color name="ags_on_tertiary">#003738</color>
+    <color name="ags_tertiary_container">#1E4E4F</color>
+    <color name="ags_on_tertiary_container">#BCEBEC</color>
+
+    <color name="ags_background">#12140D</color>
+    <color name="ags_on_background">#E3E3DB</color>
+    <color name="ags_surface">#12140D</color>
+    <color name="ags_on_surface">#E3E3DB</color>
+    <color name="ags_surface_variant">#45483C</color>
+    <color name="ags_on_surface_variant">#C5C8B9</color>
+    <color name="ags_surface_container">#1E211A</color>
+    <color name="ags_surface_container_high">#292C24</color>
+    <color name="ags_card">#1E211A</color>
+
+    <color name="ags_outline">#8F9285</color>
+    <color name="ags_outline_variant">#45483C</color>
+    <color name="ags_scrim">#000000</color>
+
+    <color name="ags_success">#7FD98A</color>
+    <color name="ags_on_success">#00390B</color>
+    <color name="ags_success_container">#1F5023</color>
+    <color name="ags_warning">#FFB873</color>
+    <color name="ags_on_warning">#4A2800</color>
+    <color name="ags_warning_container">#6A3D00</color>
+    <color name="ags_error">#FFB4AB</color>
+    <color name="ags_on_error">#690005</color>
+    <color name="ags_error_container">#93000A</color>
+    <color name="ags_info">#7FCFFF</color>
+    <color name="ags_on_info">#00344C</color>
+
+    <color name="ags_text_primary">#E3E3DB</color>
+    <color name="ags_text_secondary">#C5C8B9</color>
+    <color name="ags_text_hint">#8F9285</color>
+    <color name="ags_divider">#22FFFFFF</color>
+    <color name="ags_shimmer_base">#26291F</color>
+    <color name="ags_shimmer_highlight">#34372D</color>
 </resources>
