@@ -142,7 +142,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     protected Font fontCustomer;
     BaseFont bfheader;
     BaseFont bfCell;
-    private DatabaseReference appStatusRef,appStatusRef2;
+    private DatabaseReference appStatusRef, appStatusRef2;
+
     public double div(Double x, Double y) {
         Log.i("beforePercentage", "" + (int) (x / y));
         return (x / y) * 100;
@@ -245,7 +246,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             toolbar.setTitle("Dashboard");
             if (getIntent().hasExtra("isGuestAccount") || sp.isGuestUserLoggedIn() && !sp.isLoggedIn()) {
                 if (getIntent().getBooleanExtra("isGuestAccount", false) || sp.isGuestUserLoggedIn() && !sp.isLoggedIn()) {
-                    user_title.setText("Guest Account: You can Only 1 Order once in a day(24 hr's)");
+                    user_title.setText("Guest Account: Place multiple orders anytime (data syncs once every 24 hrs)");
                 }
             } else {
                 if (sp.getrole() != null && sp.getUser_Category() != null) {
@@ -322,6 +323,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             String message = snapshot.getValue(String.class);
                             showDisabledAlert(message);
                         }
+
                         @Override
                         public void onCancelled(DatabaseError error) {
                             Toast.makeText(DashboardActivity.this, "Error fetching app status", Toast.LENGTH_SHORT).show();
@@ -329,6 +331,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     });
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
                 Toast.makeText(DashboardActivity.this, "Error fetching app status", Toast.LENGTH_SHORT).show();
@@ -1016,7 +1019,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     return true;
                 } catch (Exception e) {
                     return false;
-                }finally {
+                } finally {
                     return true;
                 }
 
@@ -1259,18 +1262,21 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 try {
                                     String version = dataSnapshot.child("latestverion").getValue().toString();
-                                    if (BuildConfig.VERSION_NAME.equals(version)) {
+                                    if (BuildConfig.VERSION_NAME.equalsIgnoreCase(version)) {
                                         utils.alertBox(DashboardActivity.this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
                                                 utils.hideLoader();
                                                 if (sp.getusername() != null && !TextUtils.isEmpty(sp.getusername())) {
-                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword(),sp.isLoggedIn());
+                                                    utils.loginOrActiveCheck(false, true, false, null, sp.getusername(), sp.getpassword(), sp.isLoggedIn());
                                                 }
                                                 view.dismiss();
                                             }
                                         });
-                                    } else {
+                                    } /*else if (sp.isGuestUserLoggedIn()) {
+                                            utils.downloadMasterData();
+                                    }*/
+                                    else{
                                         utils.hideLoader();
                                         utils.update(DashboardActivity.this);
                                     }
@@ -1492,7 +1498,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     private Intent shareFile(File file, String filename) {
-        Uri uri = FileProvider.getUriForFile(this, "com.agsadil.agssalesandroidclientorderdocter.provider", new File(file.getPath() + "/" + filename));
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(file.getPath() + "/" + filename));
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND);
         share.setType("*/*");
@@ -1504,7 +1510,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     public void openFile(File file, String filename) {
-        Uri uri = FileProvider.getUriForFile(this, "com.agsadil.agssalesandroidclientorderdocter.provider", new File(file.getPath() + "/" + filename));
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(file.getPath() + "/" + filename));
         try {
             Intent intentUrl = new Intent(Intent.ACTION_VIEW);
             intentUrl.setDataAndType(uri, "application/*");
@@ -1527,39 +1533,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void uploadSyncData() {
         if (sp.isGuestUserLoggedIn()) {
-            String previousDate = SharedPreferenceManager.getInstance(DashboardActivity.this).getStringFromSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
-            try {
-                String currentTime = simpleDateFormat.format(Calendar.getInstance().getTime());
-                Date startDate = simpleDateFormat.parse(currentTime);
-                Date endDate = simpleDateFormat.parse(previousDate);
-                Log.i("currentTime", endDate + " = " + startDate);
-                long different = endDate.getTime() - startDate.getTime();
-                System.out.println("startDate : " + startDate);
-                System.out.println("endDate : " + endDate);
-                System.out.println("different : " + different);
-                long secondsInMilli = 1000;
-                long minutesInMilli = secondsInMilli * 60;
-                long hoursInMilli = minutesInMilli * 60;
-                long daysInMilli = hoursInMilli * 24;
-                long elapsedDays = different / daysInMilli;
-                different = different % daysInMilli;
-                long elapsedHours = different / hoursInMilli;
-                different = different % hoursInMilli;
-                long elapsedMinutes = different / minutesInMilli;
-                different = different % minutesInMilli;
-                long elapsedSeconds = different / secondsInMilli;
-                System.out.printf("dateCheck=> %d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
-                if (elapsedDays > 0 || elapsedHours > 24) {
-                    utils.showLoader(this);
-                    uploadProductSyncData();
-                    SharedPreferenceManager.getInstance(this).storeIntInSharedPreferences(Constant.UPLOAD_DATA_ONLY_ONCE_TIME, 1);
-                } else {
-                    utils.showMessage(DashboardActivity.this, "You can only an (1) order once in a day, you can try after 24 hrs or Next Day");
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            // Guests may place and sync multiple orders per day (no 1-order/24h limit).
+            utils.showLoader(this);
+            uploadProductSyncData();
         } else {
             UploadData();
         }

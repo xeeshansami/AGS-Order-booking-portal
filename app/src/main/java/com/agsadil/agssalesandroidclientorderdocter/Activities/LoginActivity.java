@@ -116,11 +116,11 @@ public class LoginActivity extends AppCompatActivity {
         as_guest__button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                 sp.setGuestUserLogin(true);
                 db.deleteOldRecordOfOrders();
-                intent.putExtra("isGuestAccount", true);
-                startActivity(intent);
+                // Download all master data for the guest (throttled to once/24h),
+                // then it navigates to the dashboard on completion.
+                utils.downloadGuestMasterData(as_guest__button);
             }
         });
         btnLogin.setOnClickListener(new View.OnClickListener() {

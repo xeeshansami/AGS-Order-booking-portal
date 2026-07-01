@@ -50,6 +50,16 @@ public interface APIInterface {
     @GET("LoginForPassword?")
     Call<String> getLoginForPassword(@Query("uname") String uname, @Query("mobilenumb") String mobilenumb);
 
+    // ===== Password-reset / OTP flow (PLACEHOLDER GET APIs) =====
+    // TODO: replace the endpoint paths below with the real ones when provided.
+    // 1) Verify that the user (by username/userid) owns this mobile number.
+    @GET("VerifyUserForReset?")
+    Call<String> verifyUserForReset(@Query("mobile") String mobile, @Query("userid") String userid);
+
+    // 2) Update the password after OTP verification.
+    @GET("ResetPasswordTwo?")
+    Call<String> resetPassword(@Query("newpwd") String newpwd, @Query("userid") String userid);
+
     @GET("SubmitFeedBack?")
     Call<String> postFeedBack(@Query("userid") String userid,
                               @Query("userName") String userName,

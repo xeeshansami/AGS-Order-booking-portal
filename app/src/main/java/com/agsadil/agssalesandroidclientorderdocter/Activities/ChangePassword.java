@@ -114,13 +114,15 @@ public class ChangePassword extends AppCompatActivity {
                 @Override
                 public void onConnectionSuccess() {
                     if (validation()) {
-                        if(getIntent().hasExtra("userid")) {
-                            String username = getIntent().getStringExtra("userid");
-                            String password = txtRePassword.getText().toString().trim();
-                            updatePwd(password, username);
-                        }else{
-
+                        String uid = getIntent().hasExtra("userid")
+                                ? getIntent().getStringExtra("userid")
+                                : sp.getuserid();
+                        String password = txtRePassword.getText().toString().trim();
+                        if (TextUtils.isEmpty(uid)) {
+                            Toast.makeText(ChangePassword.this, "Missing user id, please restart the reset process.", Toast.LENGTH_LONG).show();
+                            return;
                         }
+                        updatePwd(password, uid);
                     }
                 }
 
@@ -161,47 +163,53 @@ public class ChangePassword extends AppCompatActivity {
         String pwd = txtPassword.getText().toString().trim();
         String rePwd = txtRePassword.getText().toString().trim();
         if (TextUtils.isEmpty(pwd)) {
-            txtPassword.setFocusable(true);
-            txtPassword.setError("Password should not be empty");
-            Snackbar.make(findViewById(android.R.id.content), "Password should not be empty", 1000).show();
-            return false;
-        } else if (pwd.length() < 6) {
-            txtPassword.setFocusable(true);
-            txtPassword.setError("Password should be atleast 6 characters");
-            Snackbar.make(findViewById(android.R.id.content), "Password should be atleast 6 characters", 1000).show();
-            return false;
+            return fail(txtPassword, "Password should not be empty");
+        } else if (pwd.length() < 8) {
+            return fail(txtPassword, "Password must be at least 8 characters");
+        } else if (!pwd.matches(".*[A-Z].*")) {
+            return fail(txtPassword, "Add at least one uppercase letter (A-Z)");
+        } else if (!pwd.matches(".*[a-z].*")) {
+            return fail(txtPassword, "Add at least one lowercase letter (a-z)");
+        } else if (!pwd.matches(".*\\d.*")) {
+            return fail(txtPassword, "Add at least one number (0-9)");
+        } else if (!pwd.matches(".*[^A-Za-z0-9].*")) {
+            return fail(txtPassword, "Add at least one special character (e.g. @ # $ !)");
+        } else if (pwd.contains(" ")) {
+            return fail(txtPassword, "Password must not contain spaces");
         } else if (TextUtils.isEmpty(rePwd)) {
-            txtRePassword.setFocusable(true);
-            txtRePassword.setError("Confirm password should not be empty");
-            Snackbar.make(findViewById(android.R.id.content), "Confirm password should not be empty", 1000).show();
-            return false;
+            return fail(txtRePassword, "Confirm password should not be empty");
         } else if (!pwd.equals(rePwd)) {
-            txtPassword.setFocusable(true);
-            txtPassword.setError("Password & confirm password not matched");
             txtRePassword.setText("");
-            Snackbar.make(findViewById(android.R.id.content), "Password & confirm password not matched", 1000).show();
-            return false;
-        } else {
-            return true;
+            return fail(txtRePassword, "Password & confirm password do not match");
         }
+        return true;
     }
+
+    private boolean fail(EditText field, String message) {
+        field.setFocusable(true);
+        field.setError(message);
+        Snackbar.make(findViewById(android.R.id.content), message, 1000).show();
+        return false;
+    }
+
+    // TODO: set to false once the real "reset password" GET API is provided.
+    private static final boolean DUMMY_RESET = true;
 
     public void updatePwd(final String pwd, final String uid) {
         utils.showLoader(this);
-        AGSStore.getInstance().setUpdatePwd(pwd, uid, new callback() {
+
+        if (DUMMY_RESET) {
+            // Placeholder: simulate a successful password update.
+            utils.hideLoader();
+            onPasswordUpdated();
+            return;
+        }
+
+        AGSStore.getInstance().resetPassword(pwd, uid, new callback() {
             @Override
             public void Success(String response) {
                 utils.hideLoader();
-                if(sp.getuserid()!=null && sp.getuserid().equalsIgnoreCase(uid)) {
-                    sp.setpassword(pwd);
-                }
-                utils.alertBox(ChangePassword.this, "Congratulations!", "Your password has been updated", "ok", new setOnitemClickListner() {
-                    @Override
-                    public void onClick(DialogInterface view, int i) {
-                        onBackPressed();
-                        view.dismiss();
-                    }
-                });
+                onPasswordUpdated();
             }
 
             @Override
@@ -210,6 +218,23 @@ public class ChangePassword extends AppCompatActivity {
                 utils.hideLoader();
             }
         });
+    }
+
+    /** Clears the session and sends the user back to the login screen. */
+    private void onPasswordUpdated() {
+        sp.clearAll();
+        utils.alertBox(ChangePassword.this, "Congratulations!",
+                "Your password has been updated. Please login again.", "ok",
+                new setOnitemClickListner() {
+                    @Override
+                    public void onClick(DialogInterface view, int i) {
+                        view.dismiss();
+                        Intent intent = new Intent(ChangePassword.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
     }
 
     public void onBackPressed() {

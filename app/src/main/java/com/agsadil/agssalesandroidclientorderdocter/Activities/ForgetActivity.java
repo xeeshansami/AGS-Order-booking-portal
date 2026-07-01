@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,74 +13,67 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Network.model.response.ErrorResponse;
 import com.agsadil.agssalesandroidclientorderdocter.Network.responseHandler.callbacks.callback;
 import com.agsadil.agssalesandroidclientorderdocter.Network.store.AGSStore;
 import com.agsadil.agssalesandroidclientorderdocter.R;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.SharedPreferenceHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Utils.Utils;
-import com.agsadil.agssalesandroidclientorderdocter.Utils.setOnitemClickListner;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Step 1 of the password reset flow.
+ * 1. User enters username/userid + mobile number.
+ * 2. We verify the pair against the backend (placeholder GET API for now).
+ * 3. We send a Firebase phone OTP and move to the verification screen.
+ */
 public class ForgetActivity extends AppCompatActivity {
-    String SENT = "Code has been sent again, Please check your phone";
-    String DELIVERED = "Code has not been send due to some problem occurred, please try again later.";
-    private DatabaseHandler db;
+
+    // TODO: set to false once the real "verify user" GET API is provided.
+    // While true, the backend verification step is skipped so the OTP flow
+    // can be tested end-to-end.
+    private static final boolean DUMMY_RESET = true;
+
     private SharedPreferenceHandler sp;
-    Utils utils;
+    private Utils utils;
+    private FirebaseAuth firebaseAuth;
+
     EditText txtUserName, txtUserNumber;
     Button forget_btn;
-    private final static int SEND_SMS_PERMISSION_REQ = 1;
 
-    //    BroadcastReceiver sendBroadcastReceiver = new SentReceiver();
-//    BroadcastReceiver deliveryBroadcastReciever = new DeliverReceiver();;
+    private String e164Phone;       // +92XXXXXXXXXX
+    private String resolvedUserId;  // returned by the verify API
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot);
         sp = new SharedPreferenceHandler(this);
         utils = new Utils(this);
-        db = new DatabaseHandler(this);
-        boolean isDarkMode = sp.isDarkMode();
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        AppCompatDelegate.setDefaultNightMode(
+                sp.isDarkMode() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         txtUserName = findViewById(R.id.txtUserName);
         txtUserNumber = findViewById(R.id.txtUserNumber);
         forget_btn = findViewById(R.id.forget_btn);
         myToolbar.setSubtitle("Forget Password");
         myToolbar.setNavigationIcon(R.drawable.ic_arrow_back_app_24dp);
-        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        forget_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validation()) {
-//                    if (checkPermission(Manifest.permission.SEND_SMS)) {
-                    forget();
-                /*    utils.alertBox(ForgetActivity.this, "Alert", "This sms charge with standard rate apply!", "Yes", "No", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
+        myToolbar.setNavigationOnClickListener(v -> finish());
 
-                            view.dismiss();
-                        }
-                    });*/
-//                    } else {
-//                        ActivityCompat.requestPermissions(ForgetActivity.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQ);
-//                    }
-
-                }
+        forget_btn.setOnClickListener(v -> {
+            if (validation()) {
+                verifyUserThenSendOtp();
             }
         });
     }
@@ -91,183 +83,120 @@ public class ForgetActivity extends AppCompatActivity {
         String username = txtUserName.getText().toString().trim();
         if (TextUtils.isEmpty(usernumber)) {
             txtUserNumber.setError("User number should not be empty");
-            txtUserNumber.setFocusable(true);
             Snackbar.make(findViewById(android.R.id.content), "User number should not be empty", 1000).show();
             return false;
         } else if (TextUtils.isEmpty(username)) {
             txtUserName.setError("User name should not be empty");
-            txtUserName.setFocusable(true);
             Snackbar.make(findViewById(android.R.id.content), "User name should not be empty", 1000).show();
             return false;
         } else if (usernumber.length() < 11) {
-            txtUserNumber.setFocusable(true);
             txtUserNumber.setError("User number should be at least 11 numbers");
             Snackbar.make(findViewById(android.R.id.content), "User number should be at least 11 numbers", 1000).show();
             return false;
-        }/* else if (!usernumber.startsWith("03")) {
-            txtUserNumber.setFocusable(true);
-            txtUserNumber.setError("User number starts with 03 format like this 03XXXXXXXXX");
-            Snackbar.make(findViewById(android.R.id.content), "User number starts with 03 format like this 03XXXXXXXXX", 1000).show();
-            return false;
-        }*/ else {
-            return true;
         }
+        return true;
     }
 
-    String usernumberReplace;
+    /** Converts a local number (03XXXXXXXXX) to E.164 (+923XXXXXXXXX). */
+    private String toE164(String number) {
+        String n = number.trim().replaceAll("[\\s-]", "");
+        if (n.startsWith("+")) return n;
+        if (n.startsWith("03")) return "+92" + n.substring(1);   // 03XX -> +923XX
+        if (n.startsWith("92")) return "+" + n;
+        if (n.startsWith("0")) return "+92" + n.substring(1);
+        return "+92" + n;
+    }
 
-    public void forget() {
-        final String usernumber = txtUserNumber.getText().toString().trim();
+    private void verifyUserThenSendOtp() {
         final String username = txtUserName.getText().toString().trim();
-        if (usernumber.startsWith("03")) {
-            usernumberReplace = usernumber.replace("03", "923");
-        } else {
-            usernumberReplace = usernumber;
-        }
+        final String number = txtUserNumber.getText().toString().trim();
+        e164Phone = toE164(number);
         utils.showLoader(this);
-        AGSStore.getInstance().getLoginForPassword(username, usernumberReplace, new callback() {
+
+        if (DUMMY_RESET) {
+            // Placeholder: accept the entered user and proceed to OTP.
+            resolvedUserId = username;
+            sendOtp();
+            return;
+        }
+
+        AGSStore.getInstance().verifyUserForReset(e164Phone, username, new callback() {
             @Override
             public void Success(String response) {
                 try {
-                    JSONObject objects = new JSONObject(response);
-                    final String userid = objects.get("userid").toString();
-                    String userphonenumber = objects.get("role").toString();
-                    if (!userid.equalsIgnoreCase("0") && !userphonenumber.equalsIgnoreCase("0")) {
-                  /*      final String random = String.format("%04d", new Random().nextInt(10000));
-                        String messageToSend = "Your OTP for AGS mobile app is :" + random + "\n" + "Warning! Do not share your OTP with anyone.";
-                        sp.setRandomNumber(random);
-                        PendingIntent sentPI = PendingIntent.getBroadcast(ForgetActivity.this, 0, new Intent(
-                                SENT), 0);
-                        PendingIntent deliveredPI = PendingIntent.getBroadcast(ForgetActivity.this, 0,
-                                new Intent(DELIVERED), 0);
-                        registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
-                        registerReceiver(deliveryBroadcastReciever, new IntentFilter(DELIVERED));
-                        SmsManager.getDefault().sendTextMessage(usernumber, null, messageToSend, null, null);*/
-                        utils.alertBox(ForgetActivity.this, "Congratulations!!!", "Your account have verified", "Next", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                Intent intent = new Intent(ForgetActivity.this, ChangePassword.class);
-                                intent.putExtra("userid", userid);
-                                intent.putExtra("usernumber", usernumberReplace);
-                                startActivity(intent);
-                                finish();
-                                view.dismiss();
-                            }
-                        });
-//                        Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
+                    JSONObject obj = new JSONObject(response);
+                    String userid = obj.optString("userid", "0");
+                    if (!"0".equalsIgnoreCase(userid)) {
+                        resolvedUserId = userid;
+                        sendOtp();
                     } else {
-                        utils.alertBox(ForgetActivity.this, "Alert", "This user number or userid is invalid, please enter a valid user number & username again.", "ok", new setOnitemClickListner() {
-                            @Override
-                            public void onClick(DialogInterface view, int i) {
-                                view.dismiss();
-                            }
-                        });
+                        utils.hideLoader();
+                        utils.alertBox(ForgetActivity.this, "Alert",
+                                "This user number or username is invalid. Please try again.", "ok",
+                                (view, i) -> view.dismiss());
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    utils.hideLoader();
+                    Toast.makeText(ForgetActivity.this, "Unexpected response, please try again.", Toast.LENGTH_SHORT).show();
                 }
-                utils.hideLoader();
             }
 
             @Override
             public void Failure(ErrorResponse response) {
-                Toast.makeText(ForgetActivity.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
                 utils.hideLoader();
+                Toast.makeText(ForgetActivity.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        try {
-      /*      unregisterReceiver(sendBroadcastReceiver);
-            unregisterReceiver(deliveryBroadcastReciever);*/
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    private void sendOtp() {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                e164Phone, 60, TimeUnit.SECONDS, this, otpCallbacks);
     }
 
-    @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        try {
-       /*     unregisterReceiver(sendBroadcastReceiver);
-            unregisterReceiver(deliveryBroadcastReciever);*/
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+    private final PhoneAuthProvider.OnVerificationStateChangedCallbacks otpCallbacks =
+            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                @Override
+                public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+                    // Instant / auto-retrieval: verify silently and skip code entry.
+                    firebaseAuth.signInWithCredential(credential)
+                            .addOnCompleteListener(ForgetActivity.this, task -> {
+                                utils.hideLoader();
+                                if (task.isSuccessful()) {
+                                    goToChangePassword();
+                                } else {
+                                    Toast.makeText(ForgetActivity.this, "Verification failed, please try again.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-         /*   case SEND_SMS_PERMISSION_REQ:
-                if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    utils.alertBox(ForgetActivity.this, "Alert", "This sms charge with standard rate apply!", "ok", new setOnitemClickListner() {
-                        @Override
-                        public void onClick(DialogInterface view, int i) {
-                            forget();
-                            view.dismiss();
-                        }
-                    });
-                } else {
+                @Override
+                public void onVerificationFailed(@NonNull FirebaseException e) {
+                    utils.hideLoader();
+                    utils.alertBox(ForgetActivity.this, "Verification failed",
+                            e.getMessage() != null ? e.getMessage() : "Could not send the OTP. Please try again.",
+                            "ok", (view, i) -> view.dismiss());
+                }
+
+                @Override
+                public void onCodeSent(@NonNull String verificationId,
+                                       @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                    utils.hideLoader();
+                    Toast.makeText(ForgetActivity.this, "OTP sent to " + e164Phone, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ForgetActivity.this, VarificationActivity.class);
+                    intent.putExtra("verificationId", verificationId);
+                    intent.putExtra("userid", resolvedUserId);
+                    intent.putExtra("usernumber", e164Phone);
+                    startActivity(intent);
                     finish();
                 }
-                break;*/
-        }
+            };
+
+    private void goToChangePassword() {
+        Intent intent = new Intent(ForgetActivity.this, ChangePassword.class);
+        intent.putExtra("userid", resolvedUserId);
+        intent.putExtra("usernumber", e164Phone);
+        startActivity(intent);
+        finish();
     }
-
-  /*  private boolean checkPermission(String sendSms) {
-        int checkpermission = ContextCompat.checkSelfPermission(this, sendSms);
-        return checkpermission == PackageManager.PERMISSION_GRANTED;
-    }*/
-
- /*   class SentReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent arg1) {
-            switch (getResultCode()) {
-                case Activity.RESULT_OK:
-                    Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
-                *//*    startActivity(new Intent(SendSMS.this, ChooseOption.class));
-                    overridePendingTransition(R.anim.animation, R.anim.animation2);*//*
-                    break;
-                case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                    Toast.makeText(getBaseContext(), "Sms sending failed", Toast.LENGTH_SHORT).show();
-                    break;
-                case SmsManager.RESULT_ERROR_NO_SERVICE:
-                    Toast.makeText(getBaseContext(), "No service available",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case SmsManager.RESULT_ERROR_NULL_PDU:
-                    Toast.makeText(getBaseContext(), "Null PDU", Toast.LENGTH_SHORT)
-                            .show();
-                    break;
-                case SmsManager.RESULT_ERROR_RADIO_OFF:
-                    Toast.makeText(getBaseContext(), "Radio off",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-
-        }
-    }
-
-    class DeliverReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent arg1) {
-            switch (getResultCode()) {
-                case Activity.RESULT_OK:
-                    Toast.makeText(ForgetActivity.this, "Code has been sent again, Please check your phone", Toast.LENGTH_LONG).show();
-                    break;
-                case Activity.RESULT_CANCELED:
-                    Toast.makeText(ForgetActivity.this, getResources().getString(R.string.something_went_wrong), Toast.LENGTH_LONG).show();
-                    break;
-            }
-
-        }
-    }*/
 }

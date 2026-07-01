@@ -73,6 +73,15 @@ public class AGSStore extends Application implements IOnConnectionTimeoutListene
         consumerAPI.getLoginForPassword(uname, mobileNumber).enqueue(new BaseHR(callback));
     }
 
+    // ===== Password-reset / OTP flow (placeholder GET APIs) =====
+    public void verifyUserForReset(String mobile, String userid, callback callback) {
+        consumerAPI.verifyUserForReset(mobile, userid).enqueue(new BaseHR(callback));
+    }
+
+    public void resetPassword(String newpwd, String userid, callback callback) {
+        consumerAPI.resetPassword(newpwd, userid).enqueue(new BaseHR(callback));
+    }
+
     public void postFeedBack(String userid, String userName, String Subject, String usercategory, String iMessage, String branch, callback callback) {
         consumerAPI.postFeedBack(userid, userName, Subject, usercategory, iMessage, branch).enqueue(new BaseHR(callback));
     }

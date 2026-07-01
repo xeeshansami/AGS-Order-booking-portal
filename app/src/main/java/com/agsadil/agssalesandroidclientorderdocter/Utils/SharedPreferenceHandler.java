@@ -115,6 +115,18 @@ public class SharedPreferenceHandler {
         return pref.getBoolean(LOGGEDIN_GUEST_USER_SHARED_PREF, false);
     }
 
+    // Timestamp (millis) of the last guest master-data download, for 24h throttle.
+    public static final String GUEST_SYNC_TIME = "guest_sync_time";
+
+    public void setGuestSyncTime(long time) {
+        editor.putLong(GUEST_SYNC_TIME, time);
+        editor.apply();
+    }
+
+    public long getGuestSyncTime() {
+        return pref.getLong(GUEST_SYNC_TIME, 0L);
+    }
+
     // ================= Theme =================
     public void setDarkMode(boolean isDarkMode) {
         editor.putBoolean(DARK_MODE, isDarkMode);

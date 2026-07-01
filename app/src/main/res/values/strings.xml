@@ -2,7 +2,7 @@
     <string name="app_name">AGS - Order Booking Portal</string>
     <!-- Google Maps SDK key. Ensure "Maps SDK for Android" is enabled for this key
          in the Google Cloud console, otherwise the map tiles will not load. -->
-    <string name="google_maps_key" translatable="false">AIzaSyCG3S4m8EJeJK_PVb1EDYV42JN0AImCJEU</string>
+    <string name="google_maps_key" translatable="false">AIzaSyBXCeX7nO_VnHAz5_i9Jb_VJXrVFkH74Yg</string>
     <string name="title_activity_customer">CustomerActivity</string>
     <string name="title_activity_product">ProductActivity</string>
     <string name="title_activity_dashboard">DashboardActivity</string>

@@ -29,7 +29,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.agsadil.agssalesandroidclientorderdocter.Activities.DashboardActivity;
 import com.agsadil.agssalesandroidclientorderdocter.Activities.LoginActivity;
-import com.agsadil.agssalesandroidclientorderdocter.BuildConfig;
 import com.agsadil.agssalesandroidclientorderdocter.Database.DatabaseHandler;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityCustomer;
 import com.agsadil.agssalesandroidclientorderdocter.Models.EntityProduct;
@@ -394,6 +393,98 @@ public class Utils implements IOnConnectionTimeoutListener {
         }
     }
 
+    // ================= Guest master-data download =================
+    // Fixed branch used for guest sessions (guests never log in, so there is no
+    // branch/category to send). Only ALL-master-data endpoints are called here;
+    // user-specific (self customer/salesman, CompID) calls are intentionally skipped.
+    public static final String GUEST_BRANCH = "7";
+
+    /**
+     * Downloads ALL master data for a guest, throttled to once per 24 hours.
+     * If data already exists and the last sync was under 24h ago, it skips the
+     * network call and goes straight to the dashboard (guests can keep ordering).
+     */
+    public void downloadGuestMasterData(final Button button) {
+        long last = sp.getGuestSyncTime();
+        long now = System.currentTimeMillis();
+        boolean hasData = db.getAllProducts().size() > 0
+                && db.getAllCustomers().size() > 0
+                && db.getAllSalesman().size() > 0;
+        if (hasData && last > 0 && (now - last) < 24L * 60 * 60 * 1000) {
+            if (button != null) { button.setEnabled(true); button.setClickable(true); }
+            context.startActivity(new Intent(context, DashboardActivity.class));
+            ((Activity) context).finish();
+            return;
+        }
+        if (!checkConnection(context)) {
+            if (button != null) { button.setEnabled(true); button.setClickable(true); }
+            alertBox(context, "Internet Connections", "Network not available, please check your connection.", "ok",
+                    new setOnitemClickListner() {
+                        @Override
+                        public void onClick(DialogInterface view, int i) { view.dismiss(); }
+                    });
+            return;
+        }
+        sp.setbranch(GUEST_BRANCH);
+        jsonMainArrays.clear();
+        showLoader(context);
+        guestGetProducts(button);
+    }
+
+    private void guestGetProducts(final Button button) {
+        AGSStore.getInstance().getProducts(GUEST_BRANCH, new callback() {
+            @Override
+            public void Success(String response) {
+                try {
+                    jsonMainArrays.add(new JSONArray(response.substring(response.indexOf("["), response.indexOf("}]") + 2)));
+                    guestGetCustomers(button);
+                } catch (Exception e) { guestFail(button, e.getMessage()); }
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) { guestFail(button, response != null ? response.getMessage() : null); }
+        });
+    }
+
+    private void guestGetCustomers(final Button button) {
+        AGSStore.getInstance().getCustomer(GUEST_BRANCH, new callback() {
+            @Override
+            public void Success(String response) {
+                try {
+                    jsonMainArrays.add(new JSONArray(response.substring(response.indexOf("["), response.indexOf("}]") + 2)));
+                    guestGetSalesmen(button);
+                } catch (Exception e) { guestFail(button, e.getMessage()); }
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) { guestFail(button, response != null ? response.getMessage() : null); }
+        });
+    }
+
+    private void guestGetSalesmen(final Button button) {
+        AGSStore.getInstance().getSalesmanForCustomer(GUEST_BRANCH, new callback() {
+            @Override
+            public void Success(String response) {
+                try {
+                    jsonMainArrays.add(new JSONArray(response.substring(response.indexOf("["), response.indexOf("}]") + 2)));
+                    hideLoader();
+                    sp.setGuestSyncTime(System.currentTimeMillis());
+                    // Order in jsonMainArrays is [products, customers, salesman] -> inWhich 0.
+                    new Downloading(button, 0).execute();
+                } catch (Exception e) { guestFail(button, e.getMessage()); }
+            }
+
+            @Override
+            public void Failure(ErrorResponse response) { guestFail(button, response != null ? response.getMessage() : null); }
+        });
+    }
+
+    private void guestFail(Button button, String msg) {
+        hideLoader();
+        if (button != null) { button.setEnabled(true); button.setClickable(true); }
+        Toast.makeText(context, msg != null ? msg : context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+    }
+
     public void getAppVersion() {
         try {
             database.addValueEventListener(new ValueEventListener() {
@@ -403,7 +494,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                         String version = dataSnapshot.child("latestverion").getValue().toString();
                        /* Map<String, String> map = (Map) dataSnapshot.getValue();
                         version = map.get("latestverion");*/
-                        if (BuildConfig.VERSION_NAME.equals(version)) {
+                        String appVersion = context.getPackageManager()
+                                .getPackageInfo(context.getPackageName(), 0).versionName;
+                        if (appVersion != null && appVersion.equals(version)) {
                         } else {
                             update(context);
                         }
@@ -436,6 +529,9 @@ public class Utils implements IOnConnectionTimeoutListener {
                     db.clearAll();
                     JSONObject jsonObject = new JSONObject(response.toString().substring(response.indexOf("{"), response.indexOf("}") + 1));
                     if (Integer.parseInt(jsonObject.get("userid").toString()) > 0) {
+                        // A real login is NOT a guest session - clear the guest flag
+                        // so guest-only behaviour never applies to logged-in users.
+                        sp.setGuestUserLogin(false);
                         sp.setuserid(jsonObject.get("userid").toString());
                         sp.setusername(jsonObject.get("username").toString());
                         sp.setpassword(password);
