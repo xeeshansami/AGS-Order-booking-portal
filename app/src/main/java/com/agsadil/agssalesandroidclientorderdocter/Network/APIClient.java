@@ -56,21 +56,18 @@ public class APIClient {
         timeoutListener = listener;
 
         if (retrofit == null) {
-            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(context);
-            X509TrustManager trustManager = getTrustManager(context);
-
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-            if (sslSocketFactory != null && trustManager != null) {
-                builder.sslSocketFactory(sslSocketFactory, trustManager);
-            }
-
-            builder.hostnameVerifier((hostname, session) -> true); // Optional: use strict hostname in prod
+            // NOTE: We intentionally use the device's default (system CA) trust and
+            // default hostname verification. The backend uses a publicly-trusted
+            // GlobalSign/AlphaSSL certificate, so custom certificate pinning is
+            // unnecessary and previously broke the app when the pinned cert expired.
+            // Do NOT re-add a custom SSLSocketFactory/hostnameVerifier here.
 
             builder.readTimeout(APIConstants.READ_TIMEOUT, TimeUnit.SECONDS);
             builder.writeTimeout(APIConstants.WRITE_TIMEOUT, TimeUnit.SECONDS);
             builder.connectTimeout(APIConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
-            builder.callTimeout(90, TimeUnit.SECONDS);
+            builder.callTimeout(50, TimeUnit.SECONDS);
 
             if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

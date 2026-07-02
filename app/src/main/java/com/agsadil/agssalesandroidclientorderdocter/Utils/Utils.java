@@ -483,6 +483,13 @@ public class Utils implements IOnConnectionTimeoutListener {
         hideLoader();
         if (button != null) { button.setEnabled(true); button.setClickable(true); }
         Toast.makeText(context, msg != null ? msg : context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+        // Never strand the guest on a spinner/login: proceed to the dashboard so the
+        // app always reaches its main UI (data can be re-synced later).
+        try {
+            context.startActivity(new Intent(context, DashboardActivity.class));
+            ((Activity) context).finish();
+        } catch (Exception ignored) {
+        }
     }
 
     public void getAppVersion() {
@@ -493,7 +500,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                     try {
                         String version = dataSnapshot.child("latestverion").getValue().toString();
                        /* Map<String, String> map = (Map) dataSnapshot.getValue();
-                        version = map.get("latestverion");*/
+                        version = map.get("latestversion");*/
                         String appVersion = context.getPackageManager()
                                 .getPackageInfo(context.getPackageName(), 0).versionName;
                         if (appVersion != null && appVersion.equals(version)) {

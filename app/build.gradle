@@ -22,13 +22,13 @@ android {
         applicationId "com.agsadil.agssalesandroidclientorderdocter"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 35
-        versionName "16.0.0"
+        versionCode 37
+        versionName "16.0.2"
         multiDexEnabled true
         // AGP 8 does not expose VERSION_NAME in BuildConfig here; define it
         // explicitly so existing BuildConfig.VERSION_NAME references compile.
         // Keep this value in sync with versionName above.
-        buildConfigField "String", "VERSION_NAME", "\"15.1.0\""
+        buildConfigField "String", "VERSION_NAME", "\"16.0.2\""
     }
 
     // BuildConfig is OFF by default in AGP 8; the app uses BuildConfig.DEBUG.
