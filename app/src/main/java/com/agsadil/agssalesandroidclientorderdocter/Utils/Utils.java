@@ -492,6 +492,42 @@ public class Utils implements IOnConnectionTimeoutListener {
         }
     }
 
+    /**
+     * Returns true only when the installed version is OLDER than the version
+     * required by Firebase (a minimum-supported-version gate). This replaces the
+     * old exact-equality check, which forced an update on ANY version that didn't
+     * exactly match - so older active users and the newest Play build can both
+     * keep working. To force an update in future, set Firebase "latestverion" to
+     * a value ABOVE the versions you want to block.
+     */
+    public static boolean isUpdateRequired(String currentVersion, String requiredVersion) {
+        if (requiredVersion == null || requiredVersion.trim().isEmpty()) return false;
+        if (currentVersion == null || currentVersion.trim().isEmpty()) return false;
+        try {
+            String[] c = currentVersion.trim().split("\\.");
+            String[] r = requiredVersion.trim().split("\\.");
+            int n = Math.max(c.length, r.length);
+            for (int i = 0; i < n; i++) {
+                int cv = i < c.length ? parseVersionPart(c[i]) : 0;
+                int rv = i < r.length ? parseVersionPart(r[i]) : 0;
+                if (cv < rv) return true;   // installed older than required -> update
+                if (cv > rv) return false;  // installed newer -> no update
+            }
+            return false;                   // same version -> no update
+        } catch (Exception e) {
+            return false;                   // never hard-block users on a parse error
+        }
+    }
+
+    private static int parseVersionPart(String s) {
+        try {
+            String digits = s.replaceAll("[^0-9]", "");
+            return digits.isEmpty() ? 0 : Integer.parseInt(digits);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     public void getAppVersion() {
         try {
             database.addValueEventListener(new ValueEventListener() {
@@ -503,8 +539,7 @@ public class Utils implements IOnConnectionTimeoutListener {
                         version = map.get("latestversion");*/
                         String appVersion = context.getPackageManager()
                                 .getPackageInfo(context.getPackageName(), 0).versionName;
-                        if (appVersion != null && appVersion.equals(version)) {
-                        } else {
+                        if (isUpdateRequired(appVersion, version)) {
                             update(context);
                         }
                     } catch (Exception e) {

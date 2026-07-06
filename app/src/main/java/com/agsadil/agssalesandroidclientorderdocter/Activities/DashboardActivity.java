@@ -235,6 +235,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(broadcastReceiver, new IntentFilter(Constant.SYNC_MASTER_DATA_UPDATE_CANCELLED));
             db = new DatabaseHandler(this);
             sp = new SharedPreferenceHandler(this);
+            // Force-update check on app open: if Firebase requires a newer version
+            // than the one installed, show the non-cancelable update alert.
+            checkForForceUpdate();
             boolean isDarkMode = sp.isDarkMode();
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -577,7 +580,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 try {
                                     String version = dataSnapshot.child("latestverion").getValue().toString();
-                                    if (BuildConfig.VERSION_NAME.equals(version)) {
+                                    if (!Utils.isUpdateRequired(BuildConfig.VERSION_NAME, version)) {
                                         utils.alertBox(DashboardActivity.this, syncBtn, "Alert", "Do you want to Upload All Orders?", "Yes", "No", new setOnitemClickListner() {
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
@@ -1262,7 +1265,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 try {
                                     String version = dataSnapshot.child("latestverion").getValue().toString();
-                                    if (BuildConfig.VERSION_NAME.equalsIgnoreCase(version)) {
+                                    if (!Utils.isUpdateRequired(BuildConfig.VERSION_NAME, version)) {
                                         utils.alertBox(DashboardActivity.this, "Alert", "Do you want to download again?", "Yes", "No", new setOnitemClickListner() {
                                             @Override
                                             public void onClick(DialogInterface view, int i) {
@@ -1528,6 +1531,29 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             syncBtn.setEnabled(false);
             syncBtn.setClickable(false);
             uploadSyncData();
+        }
+    }
+
+    /** One-shot version check on app open; shows the forced-update alert if needed. */
+    private void checkForForceUpdate() {
+        try {
+            databse.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        Object v = dataSnapshot.child("latestverion").getValue();
+                        if (v != null && Utils.isUpdateRequired(BuildConfig.VERSION_NAME, v.toString())) {
+                            utils.update(DashboardActivity.this);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        } catch (Exception ignored) {
         }
     }
 
